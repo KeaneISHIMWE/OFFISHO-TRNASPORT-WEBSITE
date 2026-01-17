@@ -47,23 +47,25 @@ const Cars: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 pt-20">
-      <div className="container mx-auto px-4 lg:px-8 py-12">
+    <div className="min-h-screen" style={{ backgroundColor: '#F0F9FF' }}>
+      <div className="container mx-auto px-4 lg:px-8 py-12 pt-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <span className="text-sky-blue font-semibold text-sm uppercase tracking-wider">Our Collection</span>
-          <h1 className="text-4xl md:text-5xl font-bold text-navy-blue mt-4 mb-4">
-            Explore Our Premium Fleet
+          <span className="text-sky-blue font-semibold text-sm uppercase tracking-wider" style={{ color: '#3B82F6' }}>Our Fleet</span>
+          <h1 className="text-4xl md:text-5xl font-bold text-navy-blue mt-4 mb-4" style={{ color: '#001F3F' }}>
+            Choose Your Perfect Ride
           </h1>
-          <div className="w-24 h-1 bg-gradient-to-r from-sky-blue to-navy-blue mx-auto"></div>
+          <p className="text-gray-600 text-lg mt-4 mb-6 max-w-2xl mx-auto" style={{ color: '#6B7280' }}>
+            From elegant sedans to luxurious limousines, find the perfect vehicle for your special occasion.
+          </p>
         </motion.div>
 
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
-          {/* Filters Sidebar */}
-          <aside className="lg:w-64 xl:w-72 bg-white p-4 sm:p-6 rounded-2xl shadow-lg border border-gray-100 h-fit lg:sticky lg:top-24">
+          {/* Filters Sidebar - Hidden by default, can be toggled */}
+          <aside className="hidden lg:block lg:w-64 xl:w-72 bg-white p-4 sm:p-6 rounded-2xl shadow-lg border border-gray-100 h-fit lg:sticky lg:top-24">
             <div className="flex items-center mb-6">
               <svg className="w-6 h-6 text-sky-blue mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -200,7 +202,7 @@ const Cars: React.FC = () => {
                     Showing <span className="font-semibold text-navy-blue">{cars.length}</span> {cars.length === 1 ? 'car' : 'cars'}
                   </p>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto">
                   {cars.map((car) => (
                     <CarCard key={car.id} car={car} />
                   ))}

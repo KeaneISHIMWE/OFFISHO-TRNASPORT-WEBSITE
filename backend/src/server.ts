@@ -22,6 +22,26 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  next();
+});
+
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Offisho Transport API', 
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      cars: '/api/cars',
+      requests: '/api/requests'
+    }
+  });
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Offisho Transport API is running' });
@@ -42,7 +62,34 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 
 // 404 handler
 app.use((req: express.Request, res: express.Response) => {
-  res.status(404).json({ error: 'Route not found' });
+  console.error(`404 - Route not found: ${req.method} ${req.path}`);
+  res.status(404).json({ 
+    error: 'Route not found',
+    method: req.method,
+    path: req.path,
+    availableEndpoints: {
+      health: 'GET /api/health',
+      auth: {
+        register: 'POST /api/auth/register',
+        login: 'POST /api/auth/login',
+        me: 'GET /api/auth/me'
+      },
+      cars: {
+        getAll: 'GET /api/cars',
+        getById: 'GET /api/cars/:id',
+        create: 'POST /api/cars (admin only)',
+        update: 'PUT /api/cars/:id (admin only)',
+        delete: 'DELETE /api/cars/:id (admin only)'
+      },
+      requests: {
+        getAll: 'GET /api/requests (auth required)',
+        getById: 'GET /api/requests/:id (auth required)',
+        create: 'POST /api/requests (auth required)',
+        updateStatus: 'PUT /api/requests/:id/status (admin only)',
+        delete: 'DELETE /api/requests/:id (auth required)'
+      }
+    }
+  });
 });
 
 // Only start server if not in test environment

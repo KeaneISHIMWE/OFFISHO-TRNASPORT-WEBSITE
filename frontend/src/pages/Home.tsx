@@ -27,20 +27,14 @@ const Home: React.FC = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-navy-blue via-navy-blue to-[#003366] text-white overflow-hidden pt-20">
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-48 h-48 md:w-72 md:h-72 bg-sky-blue rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-          <div className="absolute top-40 right-10 w-48 h-48 md:w-72 md:h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-8 left-1/2 w-48 h-48 md:w-72 md:h-72 bg-sky-blue rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
-        </div>
-        
-        {/* Background Image Overlay */}
+      <section className="relative min-h-screen flex items-center justify-center text-white overflow-hidden pt-20" style={{ backgroundColor: '#001F3F' }}>
+        {/* Background Image Overlay - Blurred luxury car */}
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-10"
+          className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage:
               'url(https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920)',
+            filter: 'blur(3px) brightness(0.3)',
           }}
         ></div>
         
@@ -56,52 +50,43 @@ const Home: React.FC = () => {
             transition={{ delay: 0.2, duration: 0.6 }}
             className="mb-4 sm:mb-6"
           >
-            <span className="inline-block px-3 sm:px-4 py-1.5 sm:py-2 bg-sky-blue bg-opacity-20 backdrop-blur-sm rounded-full text-sky-blue font-semibold text-xs sm:text-sm border border-sky-blue border-opacity-30">
-              Premium Transportation Services
+            <span className="inline-block px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-semibold text-xs sm:text-sm" style={{ color: '#87CEEB' }}>
+              Premium Event Car Rentals
             </span>
           </motion.div>
           
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-4 sm:mb-6 leading-tight px-2">
-            <span className="block">Premium Cars for</span>
-            <span className="block bg-gradient-to-r from-sky-blue to-white bg-clip-text text-transparent">
-              Your Special Events
-            </span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-4 sm:mb-6 leading-tight px-2" style={{ color: '#FFFFFF' }}>
+            <span className="block">Arrive in Style at</span>
+            <span className="block">Every Event</span>
           </h1>
           
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 sm:mb-10 text-gray-200 max-w-2xl mx-auto leading-relaxed px-4">
-            Experience luxury and reliability with our premium vehicle fleet. Perfect for weddings, corporate functions, and unforgettable tours.
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 sm:mb-10 max-w-2xl mx-auto leading-relaxed px-4" style={{ color: '#FFFFFF' }}>
+            From weddings to corporate events, make a lasting impression with our premium fleet of luxury vehicles. Experience elegance, comfort, and reliability.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-4">
             <Link
-              to="/cars"
-              className="group relative w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-sky-blue text-navy-blue rounded-xl font-bold text-base sm:text-lg hover:bg-opacity-90 transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl overflow-hidden"
+              to="/booking"
+              className="group relative w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-bold text-base sm:text-lg hover:bg-opacity-90 transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl"
+              style={{ backgroundColor: '#87CEEB', color: '#FFFFFF' }}
             >
-              <span className="relative z-10">Browse Our Fleet</span>
-              <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+              Book Your Ride
             </Link>
             <Link
-              to="/contact"
-              className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-transparent border-2 border-white text-white rounded-xl font-bold text-base sm:text-lg hover:bg-white hover:text-navy-blue transition-all duration-300 transform hover:scale-105"
+              to="/cars"
+              className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-transparent border-2 border-white rounded-lg font-bold text-base sm:text-lg hover:bg-white transition-all duration-300 transform hover:scale-105"
+              style={{ color: '#FFFFFF' }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#FFFFFF';
+                e.currentTarget.style.color = '#001F3F';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = '#FFFFFF';
+              }}
             >
-              Get In Touch
+              View Our Fleet
             </Link>
-          </div>
-        </motion.div>
-        
-        {/* Scroll Indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-          className="absolute bottom-6 sm:bottom-8 left-1/2 transform -translate-x-1/2 hidden sm:block"
-        >
-          <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
-            <motion.div
-              animate={{ y: [0, 12, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-              className="w-1 h-3 bg-white rounded-full mt-2"
-            ></motion.div>
           </div>
         </motion.div>
       </section>

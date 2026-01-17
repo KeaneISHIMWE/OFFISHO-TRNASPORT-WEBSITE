@@ -8,6 +8,7 @@ import Cars from './pages/Cars';
 import CarDetails from './pages/CarDetails';
 import AboutUs from './pages/AboutUs';
 import Contact from './pages/Contact';
+import Booking from './pages/Booking';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminPortal from './pages/AdminPortal';
@@ -26,6 +27,7 @@ function App() {
               <Route path="/cars/:id" element={<CarDetails />} />
               <Route path="/about" element={<AboutUs />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/booking" element={<Booking />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/admin" element={<AdminPortal />} />
