@@ -3,19 +3,104 @@ import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="text-white mt-auto" style={{ backgroundColor: '#001F3F' }}>
-      <div className="container mx-auto px-4 lg:px-8 py-12">
+    <footer className="text-white mt-auto relative overflow-hidden" style={{ backgroundColor: '#001F3F' }}>
+      {/* 3D SUV Car Decorations */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Small SUV Car 1 - Top Left */}
+        <div className="absolute top-10 left-10 w-16 h-10 opacity-30 floating-car-1">
+          <div className="relative w-full h-full">
+            {/* Car Body */}
+            <div className="absolute inset-0 rounded-lg" style={{ 
+              background: 'linear-gradient(135deg, #C0C0C0 0%, #808080 50%, #606060 100%)',
+              boxShadow: '0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3)'
+            }}>
+              {/* Windshield */}
+              <div className="absolute top-1 left-2 w-4 h-2 rounded-sm" style={{ backgroundColor: 'rgba(135, 206, 235, 0.3)' }}></div>
+              {/* Windows */}
+              <div className="absolute top-1 right-2 w-3 h-2 rounded-sm" style={{ backgroundColor: 'rgba(135, 206, 235, 0.2)' }}></div>
+              {/* Wheels */}
+              <div className="absolute bottom-0 left-1 w-2 h-2 rounded-full" style={{ backgroundColor: '#333', boxShadow: 'inset 0 0 4px rgba(0,0,0,0.5)' }}></div>
+              <div className="absolute bottom-0 right-1 w-2 h-2 rounded-full" style={{ backgroundColor: '#333', boxShadow: 'inset 0 0 4px rgba(0,0,0,0.5)' }}></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Medium SUV Car 2 - Top Right */}
+        <div className="absolute top-20 right-20 w-20 h-12 opacity-25 floating-car-2">
+          <div className="relative w-full h-full">
+            <div className="absolute inset-0 rounded-lg" style={{ 
+              background: 'linear-gradient(135deg, #C0C0C0 0%, #808080 50%, #606060 100%)',
+              boxShadow: '0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3)'
+            }}>
+              <div className="absolute top-1 left-2 w-5 h-2.5 rounded-sm" style={{ backgroundColor: 'rgba(135, 206, 235, 0.3)' }}></div>
+              <div className="absolute top-1 right-2 w-4 h-2.5 rounded-sm" style={{ backgroundColor: 'rgba(135, 206, 235, 0.2)' }}></div>
+              <div className="absolute bottom-0 left-1.5 w-2.5 h-2.5 rounded-full" style={{ backgroundColor: '#333', boxShadow: 'inset 0 0 4px rgba(0,0,0,0.5)' }}></div>
+              <div className="absolute bottom-0 right-1.5 w-2.5 h-2.5 rounded-full" style={{ backgroundColor: '#333', boxShadow: 'inset 0 0 4px rgba(0,0,0,0.5)' }}></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Large SUV Car 3 - Bottom Left */}
+        <div className="absolute bottom-20 left-16 w-24 h-14 opacity-20 floating-car-3">
+          <div className="relative w-full h-full">
+            <div className="absolute inset-0 rounded-lg" style={{ 
+              background: 'linear-gradient(135deg, #C0C0C0 0%, #808080 50%, #606060 100%)',
+              boxShadow: '0 6px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3)'
+            }}>
+              <div className="absolute top-1.5 left-3 w-6 h-3 rounded-sm" style={{ backgroundColor: 'rgba(135, 206, 235, 0.3)' }}></div>
+              <div className="absolute top-1.5 right-3 w-5 h-3 rounded-sm" style={{ backgroundColor: 'rgba(135, 206, 235, 0.2)' }}></div>
+              <div className="absolute bottom-0 left-2 w-3 h-3 rounded-full" style={{ backgroundColor: '#333', boxShadow: 'inset 0 0 4px rgba(0,0,0,0.5)' }}></div>
+              <div className="absolute bottom-0 right-2 w-3 h-3 rounded-full" style={{ backgroundColor: '#333', boxShadow: 'inset 0 0 4px rgba(0,0,0,0.5)' }}></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Small SUV Car 4 - Bottom Right */}
+        <div className="absolute bottom-16 right-24 w-18 h-10 opacity-30 floating-car-4">
+          <div className="relative w-full h-full">
+            <div className="absolute inset-0 rounded-lg" style={{ 
+              background: 'linear-gradient(135deg, #C0C0C0 0%, #808080 50%, #606060 100%)',
+              boxShadow: '0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3)'
+            }}>
+              <div className="absolute top-1 left-2 w-4 h-2 rounded-sm" style={{ backgroundColor: 'rgba(135, 206, 235, 0.3)' }}></div>
+              <div className="absolute top-1 right-2 w-3 h-2 rounded-sm" style={{ backgroundColor: 'rgba(135, 206, 235, 0.2)' }}></div>
+              <div className="absolute bottom-0 left-1 w-2 h-2 rounded-full" style={{ backgroundColor: '#333', boxShadow: 'inset 0 0 4px rgba(0,0,0,0.5)' }}></div>
+              <div className="absolute bottom-0 right-1 w-2 h-2 rounded-full" style={{ backgroundColor: '#333', boxShadow: 'inset 0 0 4px rgba(0,0,0,0.5)' }}></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Small SUV Car 5 - Center Top */}
+        <div className="absolute top-32 left-1/2 w-14 h-8 opacity-25 floating-car-5">
+          <div className="relative w-full h-full">
+            <div className="absolute inset-0 rounded-lg" style={{ 
+              background: 'linear-gradient(135deg, #C0C0C0 0%, #808080 50%, #606060 100%)',
+              boxShadow: '0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3)'
+            }}>
+              <div className="absolute top-1 left-2 w-3.5 h-1.5 rounded-sm" style={{ backgroundColor: 'rgba(135, 206, 235, 0.3)' }}></div>
+              <div className="absolute top-1 right-2 w-3 h-1.5 rounded-sm" style={{ backgroundColor: 'rgba(135, 206, 235, 0.2)' }}></div>
+              <div className="absolute bottom-0 left-1 w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#333', boxShadow: 'inset 0 0 4px rgba(0,0,0,0.5)' }}></div>
+              <div className="absolute bottom-0 right-1 w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#333', boxShadow: 'inset 0 0 4px rgba(0,0,0,0.5)' }}></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Horizontal Line */}
+        <div className="absolute bottom-32 left-0 right-0 h-px opacity-20" style={{ backgroundColor: '#87CEEB' }}></div>
+      </div>
+      
+      <div className="container mx-auto px-4 lg:px-8 py-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Company Information */}
           <div>
             {/* Logo */}
             <div className="mb-4">
               <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center mb-3 shadow-lg">
-                <svg className="w-10 h-10 text-navy-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: '#001F3F' }}>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                 </svg>
               </div>
-              <h3 className="text-lg font-bold" style={{ color: '#FFFFFF' }}>OFFISHO TRANSPORT</h3>
+              <h3 className="text-xl font-bold uppercase" style={{ color: '#FFFFFF' }}>OFFISHO TRANSPORT</h3>
             </div>
             <p className="text-sm leading-relaxed mb-4" style={{ color: '#D1D5DB' }}>
               Your premium choice for luxury event transportation. Making every journey an experience to remember.
@@ -83,51 +168,51 @@ const Footer: React.FC = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4" style={{ color: '#FFFFFF' }}>Quick Links</h3>
+            <h3 className="text-lg font-semibold mb-4 uppercase" style={{ color: '#FFFFFF' }}>Quick Links</h3>
             <ul className="space-y-2" style={{ color: '#D1D5DB' }}>
               <li>
-                <Link to="/" className="hover:text-sky-blue transition-colors">Home</Link>
+                <Link to="/" className="hover:text-sky-blue transition-colors" style={{ color: '#D1D5DB' }}>Home</Link>
               </li>
               <li>
-                <Link to="/cars" className="hover:text-sky-blue transition-colors">Our Fleet</Link>
+                <Link to="/cars" className="hover:text-sky-blue transition-colors" style={{ color: '#D1D5DB' }}>Our Fleet</Link>
               </li>
               <li>
-                <Link to="/about" className="hover:text-sky-blue transition-colors">About Us</Link>
+                <Link to="/about" className="hover:text-sky-blue transition-colors" style={{ color: '#D1D5DB' }}>About Us</Link>
               </li>
               <li>
-                <Link to="/cars" className="hover:text-sky-blue transition-colors">Book Now</Link>
+                <Link to="/booking" className="hover:text-sky-blue transition-colors" style={{ color: '#D1D5DB' }}>Book Now</Link>
               </li>
             </ul>
           </div>
 
           {/* Our Services */}
           <div>
-            <h3 className="text-lg font-semibold mb-4" style={{ color: '#FFFFFF' }}>Our Services</h3>
+            <h3 className="text-lg font-semibold mb-4 uppercase" style={{ color: '#FFFFFF' }}>Our Services</h3>
             <ul className="space-y-2" style={{ color: '#D1D5DB' }}>
               <li>
-                <Link to="/cars?eventType=wedding" className="hover:text-sky-blue transition-colors">Wedding Transportation</Link>
+                <Link to="/cars?eventType=wedding" className="hover:text-sky-blue transition-colors" style={{ color: '#D1D5DB' }}>Wedding Transportation</Link>
               </li>
               <li>
-                <Link to="/cars?eventType=corporate" className="hover:text-sky-blue transition-colors">Corporate Events</Link>
+                <Link to="/cars?eventType=corporate" className="hover:text-sky-blue transition-colors" style={{ color: '#D1D5DB' }}>Corporate Events</Link>
               </li>
               <li>
-                <a href="/contact" className="hover:text-sky-blue transition-colors">Airport Transfers</a>
+                <a href="/contact" className="hover:text-sky-blue transition-colors" style={{ color: '#D1D5DB' }}>Airport Transfers</a>
               </li>
               <li>
-                <Link to="/cars" className="hover:text-sky-blue transition-colors">Prom & Graduation</Link>
+                <Link to="/cars" className="hover:text-sky-blue transition-colors" style={{ color: '#D1D5DB' }}>Prom & Graduation</Link>
               </li>
               <li>
-                <Link to="/cars" className="hover:text-sky-blue transition-colors">Birthday Celebrations</Link>
+                <Link to="/cars" className="hover:text-sky-blue transition-colors" style={{ color: '#D1D5DB' }}>Birthday Celebrations</Link>
               </li>
               <li>
-                <Link to="/cars" className="hover:text-sky-blue transition-colors">VIP Services</Link>
+                <Link to="/cars" className="hover:text-sky-blue transition-colors" style={{ color: '#D1D5DB' }}>VIP Services</Link>
               </li>
             </ul>
           </div>
 
           {/* Contact Us */}
           <div>
-            <h3 className="text-lg font-semibold mb-4" style={{ color: '#FFFFFF' }}>Contact Us</h3>
+            <h3 className="text-lg font-semibold mb-4 uppercase" style={{ color: '#FFFFFF' }}>Contact Us</h3>
             <ul className="space-y-3" style={{ color: '#D1D5DB' }}>
               <li className="flex items-start gap-3">
                 <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: '#FFFFFF' }}>
@@ -159,8 +244,8 @@ const Footer: React.FC = () => {
               © 2026 Offisho Transport. All rights reserved.
             </p>
             <div className="flex gap-6 text-sm" style={{ color: '#D1D5DB' }}>
-              <a href="#" className="hover:text-sky-blue transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-sky-blue transition-colors">Terms of Service</a>
+              <a href="#" className="hover:text-sky-blue transition-colors" style={{ color: '#D1D5DB' }}>Privacy Policy</a>
+              <a href="#" className="hover:text-sky-blue transition-colors" style={{ color: '#D1D5DB' }}>Terms of Service</a>
             </div>
           </div>
         </div>

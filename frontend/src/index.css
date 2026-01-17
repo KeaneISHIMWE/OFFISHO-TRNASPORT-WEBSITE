@@ -185,3 +185,79 @@ a:focus {
 .shadow-glow {
   box-shadow: 0 0 20px rgba(135, 206, 235, 0.3);
 }
+
+/* Floating SUV Car Animations */
+@keyframes floatCar1 {
+  0%, 100% {
+    transform: perspective(500px) rotateY(-15deg) rotateX(5deg) translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: perspective(500px) rotateY(-15deg) rotateX(5deg) translateY(-10px) translateX(5px);
+  }
+}
+
+@keyframes floatCar2 {
+  0%, 100% {
+    transform: perspective(500px) rotateY(20deg) rotateX(-5deg) translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: perspective(500px) rotateY(20deg) rotateX(-5deg) translateY(-8px) translateX(-5px);
+  }
+}
+
+@keyframes floatCar3 {
+  0%, 100% {
+    transform: perspective(500px) rotateY(-10deg) rotateX(3deg) translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: perspective(500px) rotateY(-10deg) rotateX(3deg) translateY(-12px) translateX(3px);
+  }
+}
+
+@keyframes floatCar4 {
+  0%, 100% {
+    transform: perspective(500px) rotateY(15deg) rotateX(-3deg) translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: perspective(500px) rotateY(15deg) rotateX(-3deg) translateY(-10px) translateX(-3px);
+  }
+}
+
+@keyframes floatCar5 {
+  0%, 100% {
+    transform: translateX(-50%) perspective(500px) rotateY(0deg) rotateX(5deg) translateY(0px);
+  }
+  50% {
+    transform: translateX(-50%) perspective(500px) rotateY(0deg) rotateX(5deg) translateY(-8px);
+  }
+}
+
+.floating-car-5 {
+  animation: floatCar5 7.5s ease-in-out infinite;
+  animation-delay: 0.5s;
+  transform: translateX(-50%);
+}
+
+.floating-car-1 {
+  animation: floatCar1 6s ease-in-out infinite;
+}
+
+.floating-car-2 {
+  animation: floatCar2 7s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+.floating-car-3 {
+  animation: floatCar3 8s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+.floating-car-4 {
+  animation: floatCar4 6.5s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+
+.floating-car-5 {
+  animation: floatCar5 7.5s ease-in-out infinite;
+  animation-delay: 0.5s;
+}
