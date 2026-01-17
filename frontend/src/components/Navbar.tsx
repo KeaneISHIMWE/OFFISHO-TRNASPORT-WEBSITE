@@ -7,6 +7,7 @@ const Navbar: React.FC = () => {
   const { isAuthenticated, user, logout, isAdmin } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleSearch = (e: React.FormEvent) => {
@@ -28,14 +29,14 @@ const Navbar: React.FC = () => {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 group">
-            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-lg">
-              <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: '#001F3F' }}>
+            <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-lg">
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: '#001F3F' }}>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
               </svg>
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-bold leading-tight" style={{ color: '#FFFFFF' }}>OFFISHO</span>
-              <span className="text-xs font-medium leading-tight" style={{ color: '#FFFFFF' }}>TRANSPORT</span>
+              <span className="text-2xl font-bold leading-tight" style={{ color: '#FFFFFF' }}>OFFISHO</span>
+              <span className="text-sm font-medium leading-tight" style={{ color: '#FFFFFF' }}>TRANSPORT</span>
             </div>
           </Link>
 
@@ -119,45 +120,54 @@ const Navbar: React.FC = () => {
               Book Now
             </Link>
 
-            {/* Search Bar - Hidden on smaller screens */}
-            <form onSubmit={handleSearch} className="hidden xl:flex items-center ml-2">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search cars..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-4 py-2 rounded-lg bg-white bg-opacity-10 backdrop-blur-sm text-white placeholder-gray-300 border border-white border-opacity-20 focus:outline-none focus:ring-2 focus:ring-sky-blue focus:border-transparent w-48 2xl:w-64 transition-all duration-300"
-                />
-                <svg className="absolute left-3 top-2.5 w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {/* Search Bar - Collapsible */}
+            {isSearchOpen ? (
+              <form onSubmit={handleSearch} className="hidden xl:flex items-center ml-2 animate-fade-in">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search cars..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    autoFocus
+                    className="pl-10 pr-4 py-2 rounded-lg bg-white bg-opacity-10 backdrop-blur-sm text-white placeholder-gray-300 border border-white border-opacity-20 focus:outline-none focus:ring-2 focus:ring-sky-blue focus:border-transparent w-48 2xl:w-64 transition-all duration-300"
+                  />
+                  <svg className="absolute left-3 top-2.5 w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsSearchOpen(false)}
+                  className="ml-2 px-3 py-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition-all duration-300"
+                  style={{ color: '#FFFFFF' }}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </form>
+            ) : (
+              <button
+                onClick={() => setIsSearchOpen(true)}
+                className="hidden xl:flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white hover:bg-opacity-10 transition-all duration-300 ml-2"
+                style={{ color: '#FFFFFF' }}
+                aria-label="Search"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-              </div>
-              <button
-                type="submit"
-                className="ml-3 px-5 xl:px-6 py-2.5 rounded-lg transition-all duration-300 font-semibold shadow-lg text-sm xl:text-base text-white hover:shadow-xl hover:scale-105"
-                style={{ backgroundColor: '#87CEEB' }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#6BB6D6';
-                  e.currentTarget.style.transform = 'scale(1.05)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#87CEEB';
-                  e.currentTarget.style.transform = 'scale(1)';
-                }}
-              >
-                Search
               </button>
-            </form>
+            )}
 
             {/* Auth Links */}
             {isAuthenticated ? (
               <div className="relative group ml-2 xl:ml-4">
-                <button className="flex items-center space-x-2 px-3 xl:px-4 py-2 rounded-lg hover:bg-sky-blue hover:bg-opacity-10 transition-all duration-300">
-                  <div className="w-7 h-7 xl:w-8 xl:h-8 bg-sky-blue rounded-full flex items-center justify-center">
-                    <span className="text-navy-blue font-semibold text-xs xl:text-sm">{user?.name.charAt(0).toUpperCase()}</span>
+                <button className="flex items-center space-x-2 px-3 xl:px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition-all duration-300">
+                  <div className="w-7 h-7 xl:w-8 xl:h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#87CEEB' }}>
+                    <span className="font-semibold text-xs xl:text-sm" style={{ color: '#001F3F' }}>{user?.name.charAt(0).toUpperCase()}</span>
                   </div>
-                  <span className="font-medium text-sm xl:text-base hidden 2xl:inline">{user?.name}</span>
+                  <span className="font-medium text-sm xl:text-base hidden 2xl:inline" style={{ color: '#FFFFFF' }}>Account</span>
                   <svg
                     className="w-4 h-4 transition-transform group-hover:rotate-180"
                     fill="none"
