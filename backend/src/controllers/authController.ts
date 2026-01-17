@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { convexClient } from '../models/db';
+import { v4 as uuidv4 } from 'uuid';
+import { pool } from '../models/db';
 import { User, JwtPayload } from '../types';
-import { api } from '../../convex/_generated/api';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-change-in-production';
 const JWT_EXPIRES_IN = '24h';
@@ -13,9 +13,12 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const { name, email, password } = req.body;
 
     // Check if user already exists
-    const existingUser = await convexClient.query(api.users.getUserByEmail, { email });
+    const [existingUsers] = await pool.execute(
+      'SELECT id FROM users WHERE email = ?',
+      [email]
+    ) as any[];
 
-    if (existingUser) {
+    if (existingUsers.length > 0) {
       res.status(400).json({ error: 'User with this email already exists' });
       return;
     }
@@ -24,15 +27,22 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    // Insert user
-    const userId = await convexClient.mutation(api.users.createUser, {
-      name,
-      email,
-      password_hash: passwordHash,
-      role: 'user',
-    });
+    // Generate UUID for user
+    const userId = uuidv4();
 
-    const user = await convexClient.query(api.users.getUserById, { id: userId });
+    // Insert user
+    await pool.execute(
+      'INSERT INTO users (id, name, email, password_hash, role) VALUES (?, ?, ?, ?, ?)',
+      [userId, name, email, passwordHash, 'user']
+    );
+
+    // Get created user
+    const [users] = await pool.execute(
+      'SELECT id, name, email, role FROM users WHERE id = ?',
+      [userId]
+    ) as any[];
+
+    const user = users[0];
 
     if (!user) {
       res.status(500).json({ error: 'Failed to create user' });
@@ -41,7 +51,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     // Generate JWT token
     const tokenPayload: JwtPayload = {
-      userId: user._id,
+      userId: user.id,
       email: user.email,
       role: user.role,
     };
@@ -52,7 +62,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       message: 'User registered successfully',
       token,
       user: {
-        id: user._id,
+        id: user.id,
         name: user.name,
         email: user.email,
         role: user.role,
@@ -69,7 +79,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const { email, password } = req.body;
 
     // Find user
-    const user = await convexClient.query(api.users.getUserByEmail, { email });
+    const [users] = await pool.execute(
+      'SELECT id, name, email, password_hash, role FROM users WHERE email = ?',
+      [email]
+    ) as any[];
+
+    const user = users[0];
 
     if (!user) {
       res.status(401).json({ error: 'Invalid email or password' });
@@ -86,7 +101,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     // Generate JWT token
     const tokenPayload: JwtPayload = {
-      userId: user._id,
+      userId: user.id,
       email: user.email,
       role: user.role,
     };
@@ -97,7 +112,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       message: 'Login successful',
       token,
       user: {
-        id: user._id,
+        id: user.id,
         name: user.name,
         email: user.email,
         role: user.role,
@@ -116,7 +131,12 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const user = await convexClient.query(api.users.getUserById, { id: req.user.userId as any });
+    const [users] = await pool.execute(
+      'SELECT id, name, email, role, created_at, updated_at FROM users WHERE id = ?',
+      [req.user.userId]
+    ) as any[];
+
+    const user = users[0];
 
     if (!user) {
       res.status(404).json({ error: 'User not found' });
@@ -125,7 +145,7 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
 
     res.json({
       user: {
-        id: user._id,
+        id: user.id,
         name: user.name,
         email: user.email,
         role: user.role,

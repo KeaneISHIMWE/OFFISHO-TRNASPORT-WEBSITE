@@ -5,7 +5,8 @@ A modern, responsive web application for Offisho Transport, specializing in sell
 ## Tech Stack
 
 - **Frontend**: React 19, TypeScript, Tailwind CSS, Framer Motion, React Router, React Hook Form, Zod
-- **Backend**: Node.js, Express, TypeScript, Convex (database)
+- **Backend**: Node.js, Express, TypeScript
+- **Database**: MySQL
 - **Authentication**: JWT (JSON Web Tokens)
 - **File Storage**: Cloudinary (cloud storage)
 - **Email**: Nodemailer
@@ -28,6 +29,99 @@ A modern, responsive web application for Offisho Transport, specializing in sell
 - View analytics (total cars, available cars, pending requests, revenue)
 - Update request statuses
 
+## Prerequisites
+
+- Node.js (v18 or higher)
+- MySQL (v8.0 or higher)
+- npm or yarn
+
+## Installation
+
+### 1. Clone the repository
+
+```bash
+git clone <repository-url>
+cd "OFFISHO TRANSPORT"
+```
+
+### 2. Database Setup
+
+1. Install MySQL if you haven't already
+2. Create a MySQL database:
+```bash
+mysql -u root -p
+```
+
+3. Run the schema file:
+```bash
+mysql -u root -p < database/schema.sql
+```
+
+Or manually:
+```sql
+CREATE DATABASE offisho_transport;
+USE offisho_transport;
+SOURCE database/schema.sql;
+```
+
+### 3. Backend Setup
+
+```bash
+cd backend
+npm install
+```
+
+Create a `.env` file in the `backend` directory:
+```env
+PORT=5000
+NODE_ENV=development
+FRONTEND_URL=http://localhost:3000
+
+JWT_SECRET=your-super-secret-jwt-key-change-in-production
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=your-mysql-password
+DB_NAME=offisho_transport
+
+CLOUDINARY_CLOUD_NAME=your-cloudinary-cloud-name
+CLOUDINARY_API_KEY=your-cloudinary-api-key
+CLOUDINARY_API_SECRET=your-cloudinary-api-secret
+
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-email-password
+```
+
+### 4. Frontend Setup
+
+```bash
+cd frontend
+npm install
+```
+
+## Running the Application
+
+### Start Backend Server
+
+```bash
+cd backend
+npm run dev
+```
+
+The backend server will run on `http://localhost:5000`
+
+### Start Frontend Server
+
+```bash
+cd frontend
+npm start
+```
+
+The frontend will run on `http://localhost:3000`
+
 ## Project Structure
 
 ```
@@ -45,180 +139,51 @@ offisho-transport/
 ├── backend/
 │   ├── src/
 │   │   ├── routes/         # Express routes
-│   │   ├── controllers/    # Route handlers
-│   │   ├── models/         # Database models
+│   │   ├── controllers/   # Route handlers
+│   │   ├── models/         # Database models (MySQL connection)
 │   │   ├── middleware/     # Auth, validation, upload
-│   │   ├── utils/          # Helpers, email service
+│   │   ├── utils/         # Utility functions
 │   │   └── server.ts
 │   └── package.json
 ├── database/
-│   └── schema.sql          # PostgreSQL schema
+│   └── schema.sql         # MySQL database schema
 └── README.md
 ```
-
-## Setup Instructions
-
-### Prerequisites
-- Node.js (v16 or higher)
-- Convex account (free tier available at https://convex.dev)
-- npm or yarn
-
-### Backend Setup
-
-1. Navigate to backend directory:
-```bash
-cd backend
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Set up Convex:
-```bash
-# Login to Convex (will open browser)
-npx convex dev --once
-
-# This will generate the Convex URL - copy it for step 4
-```
-
-4. Create a `.env` file in the backend directory:
-```env
-CONVEX_URL=https://your-project.convex.cloud
-JWT_SECRET=your-secret-key-change-in-production
-NODE_ENV=development
-PORT=5000
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your-email@gmail.com
-SMTP_PASS=your-app-password
-CLOUDINARY_URL=cloudinary://api_key:api_secret@cloud_name
-FRONTEND_URL=http://localhost:3000
-```
-
-5. Generate Convex types (run this in backend directory):
-```bash
-npx convex dev --once
-```
-
-6. Start the backend server:
-```bash
-npm run dev
-```
-
-The backend will run on `http://localhost:5000`
-
-### Frontend Setup
-
-1. Navigate to frontend directory:
-```bash
-cd frontend
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Create a `.env` file in the frontend directory:
-```env
-REACT_APP_API_URL=http://localhost:5000/api
-```
-
-4. Start the frontend development server:
-```bash
-npm start
-```
-
-The frontend will run on `http://localhost:3000`
-
-## Database Schema
-
-The database uses Convex and includes the following tables:
-- **users**: User accounts and authentication
-- **cars**: Vehicle inventory
-- **requests**: Booking/rental requests
-- **payments**: Payment records
-
-See `backend/convex/schema.ts` for the complete schema definition. The schema is automatically synced with Convex when you run `npx convex dev`.
 
 ## API Endpoints
 
 ### Authentication
-- `POST /api/auth/register` - Register new user
+- `POST /api/auth/register` - Register a new user
 - `POST /api/auth/login` - Login user
-- `GET /api/auth/me` - Get current user (protected)
+- `GET /api/auth/me` - Get current user (requires auth)
 
 ### Cars
-- `GET /api/cars` - List all cars (with filters)
-- `GET /api/cars/:id` - Get car details
+- `GET /api/cars` - Get all cars (with filters)
+- `GET /api/cars/:id` - Get car by ID
 - `POST /api/cars` - Create car (admin only)
 - `PUT /api/cars/:id` - Update car (admin only)
 - `DELETE /api/cars/:id` - Delete car (admin only)
 
 ### Requests
-- `GET /api/requests` - List requests (user sees own, admin sees all)
-- `GET /api/requests/:id` - Get request details
-- `POST /api/requests` - Create booking request
+- `GET /api/requests` - Get all requests (user's own or all if admin)
+- `GET /api/requests/:id` - Get request by ID
+- `POST /api/requests` - Create request (auth required)
 - `PUT /api/requests/:id/status` - Update request status (admin only)
-- `DELETE /api/requests/:id` - Cancel request
+- `DELETE /api/requests/:id` - Delete request
 
-## Rental Logic
+## Default Admin Account
 
-- **Base rental price**: From `car.rental_price_per_day`
-- **With driver**: Total = base + 10,000 FRW
-- **Without driver**: Total = base + 50,000 FRW (refundable deposit)
+After setting up the database, create an admin user through the registration endpoint or manually:
 
-## Payment Information
-
-- **MTN MoMo**: +250 788 123 456
-- **Bank Transfer**: Account: 1234567890, Bank: Bank of Rwanda
-
-## Security Features
-
-- JWT authentication with 24-hour expiration
-- Password hashing with bcrypt (10 rounds)
-- Input validation (Joi backend, Zod frontend)
-- SQL injection prevention (parameterized queries)
-- CORS configuration
-- Helmet.js for security headers
-- Rate limiting on auth endpoints
-
-## Testing
-
-### Backend Tests
-```bash
-cd backend
-npm test
+```sql
+-- Generate a UUID and hash password 'admin123' using bcrypt
+-- Use the registration endpoint or create manually with proper password hash
 ```
-
-### Frontend Tests
-```bash
-cd frontend
-npm test
-```
-
-## Deployment
-
-### Backend Deployment
-1. Set environment variables on your hosting platform
-2. Build the project: `npm run build`
-3. Start the server: `npm start`
-
-### Frontend Deployment
-1. Set `REACT_APP_API_URL` to your backend URL
-2. Build the project: `npm run build`
-3. Deploy the `dist` folder to Vercel/Netlify
 
 ## Environment Variables
 
-See `.env.example` files in both frontend and backend directories for required environment variables.
+See `.env.example` files in backend directory for required environment variables.
 
 ## License
 
 ISC
-
-## Contact
-
-For questions or support, please contact info@offisho.com

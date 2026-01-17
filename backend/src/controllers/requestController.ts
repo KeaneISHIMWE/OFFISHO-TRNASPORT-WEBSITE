@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { convexClient } from '../models/db';
+import { v4 as uuidv4 } from 'uuid';
+import { pool } from '../models/db';
 import { sendRequestConfirmationEmail, sendAdminNotificationEmail } from '../utils/email';
-import { api } from '../../convex/_generated/api';
 
 const DRIVER_FEE = 10000; // 10,000 FRW
 const DEPOSIT_AMOUNT = 50000; // 50,000 FRW (refundable)
@@ -14,27 +14,26 @@ export const getRequests = async (req: Request, res: Response): Promise<void> =>
     }
 
     // Users can only see their own requests, admins see all
-    const userId = req.user.role !== 'admin' ? (req.user.userId as any) : undefined;
-    const requests = await convexClient.query(api.requests.getRequests, { userId });
+    let query = `
+      SELECT r.*, c.name as car_name, c.model as car_model, c.image_url as car_image,
+             u.name as user_name, u.email as user_email
+      FROM requests r
+      JOIN cars c ON r.car_id = c.id
+      JOIN users u ON r.user_id = u.id
+      WHERE 1=1
+    `;
+    const params: any[] = [];
 
-    // Enrich requests with car and user data
-    const enrichedRequests = await Promise.all(
-      requests.map(async (req: any) => {
-        const car = await convexClient.query(api.cars.getCarById, { id: req.car_id });
-        const user = await convexClient.query(api.users.getUserById, { id: req.user_id });
-        return {
-          ...req,
-          id: req._id,
-          car_name: car?.name,
-          car_model: car?.model,
-          car_image: car?.image_url,
-          user_name: user?.name,
-          user_email: user?.email,
-        };
-      })
-    );
+    if (req.user.role !== 'admin') {
+      query += ' AND r.user_id = ?';
+      params.push(req.user.userId);
+    }
 
-    res.json({ requests: enrichedRequests });
+    query += ' ORDER BY r.created_at DESC';
+
+    const [requests] = await pool.execute(query, params) as any[];
+
+    res.json({ requests });
   } catch (error) {
     console.error('Get requests error:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -50,7 +49,17 @@ export const getRequestById = async (req: Request, res: Response): Promise<void>
       return;
     }
 
-    const request = await convexClient.query(api.requests.getRequestById, { id: id as any });
+    const [requests] = await pool.execute(
+      `SELECT r.*, c.name as car_name, c.model as car_model, c.image_url as car_image,
+              u.name as user_name, u.email as user_email
+       FROM requests r
+       JOIN cars c ON r.car_id = c.id
+       JOIN users u ON r.user_id = u.id
+       WHERE r.id = ?`,
+      [id]
+    ) as any[];
+
+    const request = requests[0];
 
     if (!request) {
       res.status(404).json({ error: 'Request not found' });
@@ -63,21 +72,7 @@ export const getRequestById = async (req: Request, res: Response): Promise<void>
       return;
     }
 
-    // Enrich with car and user data
-    const car = await convexClient.query(api.cars.getCarById, { id: request.car_id });
-    const user = await convexClient.query(api.users.getUserById, { id: request.user_id });
-
-    const enrichedRequest = {
-      ...request,
-      id: request._id,
-      car_name: car?.name,
-      car_model: car?.model,
-      car_image: car?.image_url,
-      user_name: user?.name,
-      user_email: user?.email,
-    };
-
-    res.json({ request: enrichedRequest });
+    res.json({ request });
   } catch (error) {
     console.error('Get request by id error:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -102,7 +97,12 @@ export const createRequest = async (req: Request, res: Response): Promise<void> 
     } = req.body;
 
     // Get car details
-    const car = await convexClient.query(api.cars.getCarById, { id: car_id as any });
+    const [cars] = await pool.execute(
+      'SELECT * FROM cars WHERE id = ?',
+      [car_id]
+    ) as any[];
+
+    const car = cars[0];
     if (!car) {
       res.status(404).json({ error: 'Car not found' });
       return;
@@ -119,7 +119,7 @@ export const createRequest = async (req: Request, res: Response): Promise<void> 
     let depositAmount = 0;
 
     if (request_type === 'rent') {
-      totalAmount = car.rental_price_per_day;
+      totalAmount = parseFloat(car.rental_price_per_day);
       if (with_driver) {
         totalAmount += DRIVER_FEE;
       } else {
@@ -131,44 +131,64 @@ export const createRequest = async (req: Request, res: Response): Promise<void> 
         res.status(400).json({ error: 'Car is not available for purchase' });
         return;
       }
-      totalAmount = car.buy_price;
+      totalAmount = parseFloat(car.buy_price);
     } else if (request_type === 'sell') {
       if (!car.sell_price) {
         res.status(400).json({ error: 'Car sell price not set' });
         return;
       }
-      totalAmount = car.sell_price;
+      totalAmount = parseFloat(car.sell_price);
     }
 
-    // Parse event_date if provided
-    let eventDateTimestamp: number | null = null;
-    if (event_date) {
-      eventDateTimestamp = new Date(event_date).getTime();
-    }
+    // Generate UUID for request
+    const requestId = uuidv4();
 
     // Create request
-    const requestId = await convexClient.mutation(api.requests.createRequest, {
-      user_id: req.user.userId as any,
-      car_id: car_id as any,
-      request_type: request_type as any,
-      with_driver: with_driver || false,
-      deposit_amount: depositAmount,
-      total_amount: totalAmount,
-      event_date: eventDateTimestamp,
-      event_type: event_type || null,
-      agreement_text: agreement_text || null,
-      payment_method: payment_method || null,
-    });
+    await pool.execute(
+      `INSERT INTO requests (
+        id, user_id, car_id, request_type, with_driver, deposit_amount,
+        total_amount, event_date, event_type, agreement_text, payment_method
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        requestId,
+        req.user.userId,
+        car_id,
+        request_type,
+        with_driver || false,
+        depositAmount,
+        totalAmount,
+        event_date || null,
+        event_type || null,
+        agreement_text || null,
+        payment_method || null,
+      ]
+    );
 
-    const newRequest = await convexClient.query(api.requests.getRequestById, { id: requestId });
+    // Get created request with joins
+    const [newRequests] = await pool.execute(
+      `SELECT r.*, c.name as car_name, c.model as car_model, c.image_url as car_image,
+              u.name as user_name, u.email as user_email
+       FROM requests r
+       JOIN cars c ON r.car_id = c.id
+       JOIN users u ON r.user_id = u.id
+       WHERE r.id = ?`,
+      [requestId]
+    ) as any[];
 
-    // Get user details for email
-    const user = await convexClient.query(api.users.getUserById, { id: req.user.userId as any });
+    const newRequest = newRequests[0];
 
-    if (!user || !newRequest) {
+    if (!newRequest) {
       res.status(500).json({ error: 'Failed to create request' });
       return;
     }
+
+    // Get user details for email
+    const [users] = await pool.execute(
+      'SELECT * FROM users WHERE id = ?',
+      [req.user.userId]
+    ) as any[];
+
+    const user = users[0];
 
     // Send confirmation email to user
     try {
@@ -187,10 +207,7 @@ export const createRequest = async (req: Request, res: Response): Promise<void> 
 
     res.status(201).json({
       message: 'Request created successfully',
-      request: {
-        ...newRequest,
-        id: newRequest._id,
-      },
+      request: newRequest,
     });
   } catch (error) {
     console.error('Create request error:', error);
@@ -217,7 +234,12 @@ export const updateRequestStatus = async (
     }
 
     // Get request details
-    const request = await convexClient.query(api.requests.getRequestById, { id: id as any });
+    const [requests] = await pool.execute(
+      'SELECT * FROM requests WHERE id = ?',
+      [id]
+    ) as any[];
+
+    const request = requests[0];
 
     if (!request) {
       res.status(404).json({ error: 'Request not found' });
@@ -225,53 +247,72 @@ export const updateRequestStatus = async (
     }
 
     // Update request status
-    const updatedRequest = await convexClient.mutation(api.requests.updateRequestStatus, {
-      id: id as any,
-      status: status as any,
-    });
+    await pool.execute(
+      'UPDATE requests SET status = ? WHERE id = ?',
+      [status, id]
+    );
 
     // Update car availability if approved
     if (status === 'approved' && request.request_type === 'rent') {
-      await convexClient.mutation(api.requests.updateCarAvailability, {
-        car_id: request.car_id,
-        availability_status: 'rented',
-      });
+      await pool.execute(
+        'UPDATE cars SET availability_status = ? WHERE id = ?',
+        ['rented', request.car_id]
+      );
     } else if (status === 'completed' || status === 'cancelled') {
       // Reset car availability
-      await convexClient.mutation(api.requests.updateCarAvailability, {
-        car_id: request.car_id,
-        availability_status: 'available',
-      });
+      await pool.execute(
+        'UPDATE cars SET availability_status = ? WHERE id = ?',
+        ['available', request.car_id]
+      );
     } else if (status === 'approved' && request.request_type === 'buy') {
-      await convexClient.mutation(api.requests.updateCarAvailability, {
-        car_id: request.car_id,
-        availability_status: 'sold',
-      });
+      await pool.execute(
+        'UPDATE cars SET availability_status = ? WHERE id = ?',
+        ['sold', request.car_id]
+      );
     }
 
+    // Get updated request with joins
+    const [updatedRequests] = await pool.execute(
+      `SELECT r.*, c.name as car_name, c.model as car_model, c.image_url as car_image,
+              u.name as user_name, u.email as user_email
+       FROM requests r
+       JOIN cars c ON r.car_id = c.id
+       JOIN users u ON r.user_id = u.id
+       WHERE r.id = ?`,
+      [id]
+    ) as any[];
+
+    const updatedRequest = updatedRequests[0];
+
     // Get car and user for email
-    const car = await convexClient.query(api.cars.getCarById, { id: request.car_id });
-    const user = await convexClient.query(api.users.getUserById, { id: request.user_id });
+    const [cars] = await pool.execute(
+      'SELECT * FROM cars WHERE id = ?',
+      [request.car_id]
+    ) as any[];
+
+    const car = cars[0];
+
+    const [users] = await pool.execute(
+      'SELECT * FROM users WHERE id = ?',
+      [request.user_id]
+    ) as any[];
+
+    const user = users[0];
 
     // Send email notification to user
     try {
       const { sendStatusUpdateEmail } = await import('../utils/email');
       await sendStatusUpdateEmail(
-        user!.email,
-        user!.name,
-        updatedRequest!,
+        user.email,
+        user.name,
+        updatedRequest,
         { car_name: car?.name || '', car_model: car?.model || '' }
       );
     } catch (emailError) {
       console.error('Email sending error:', emailError);
     }
 
-    res.json({
-      request: {
-        ...updatedRequest,
-        id: updatedRequest?._id,
-      },
-    });
+    res.json({ request: updatedRequest });
   } catch (error) {
     console.error('Update request status error:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -288,7 +329,12 @@ export const deleteRequest = async (req: Request, res: Response): Promise<void> 
     const { id } = req.params;
 
     // Check if request exists and user has permission
-    const request = await convexClient.query(api.requests.getRequestById, { id: id as any });
+    const [requests] = await pool.execute(
+      'SELECT * FROM requests WHERE id = ?',
+      [id]
+    ) as any[];
+
+    const request = requests[0];
 
     if (!request) {
       res.status(404).json({ error: 'Request not found' });
@@ -309,7 +355,7 @@ export const deleteRequest = async (req: Request, res: Response): Promise<void> 
       return;
     }
 
-    await convexClient.mutation(api.requests.deleteRequest, { id: id as any });
+    await pool.execute('DELETE FROM requests WHERE id = ?', [id]);
 
     res.json({ message: 'Request deleted successfully' });
   } catch (error) {

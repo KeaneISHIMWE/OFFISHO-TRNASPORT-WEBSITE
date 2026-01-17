@@ -1,23 +1,26 @@
 -- Offisho Transport Database Schema
--- PostgreSQL Database Setup
+-- MySQL Database Setup
 
--- Enable UUID extension
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- Create database if not exists
+CREATE DATABASE IF NOT EXISTS offisho_transport CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+USE offisho_transport;
 
 -- Users table
 CREATE TABLE IF NOT EXISTS users (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id VARCHAR(36) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    role VARCHAR(20) NOT NULL DEFAULT 'user' CHECK (role IN ('user', 'admin')),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    role ENUM('user', 'admin') NOT NULL DEFAULT 'user',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_email (email)
 );
 
 -- Cars table
 CREATE TABLE IF NOT EXISTS cars (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id VARCHAR(36) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     model VARCHAR(255) NOT NULL,
     description TEXT,
@@ -25,74 +28,54 @@ CREATE TABLE IF NOT EXISTS cars (
     rental_price_per_day DECIMAL(10, 2) NOT NULL,
     buy_price DECIMAL(10, 2),
     sell_price DECIMAL(10, 2),
-    car_type VARCHAR(50) NOT NULL CHECK (car_type IN ('luxury', 'suv', 'sedan', 'convertible', 'van')),
-    event_suitability TEXT[] DEFAULT ARRAY[]::TEXT[],
-    availability_status VARCHAR(20) NOT NULL DEFAULT 'available' CHECK (availability_status IN ('available', 'rented', 'sold', 'maintenance')),
-    specs JSONB DEFAULT '{}'::jsonb,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    car_type ENUM('luxury', 'suv', 'sedan', 'convertible', 'van') NOT NULL,
+    event_suitability JSON,
+    availability_status ENUM('available', 'rented', 'sold', 'maintenance') NOT NULL DEFAULT 'available',
+    specs JSON,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_car_type (car_type),
+    INDEX idx_availability (availability_status)
 );
 
 -- Requests table
 CREATE TABLE IF NOT EXISTS requests (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    car_id UUID NOT NULL REFERENCES cars(id) ON DELETE CASCADE,
-    request_type VARCHAR(20) NOT NULL CHECK (request_type IN ('rent', 'buy', 'sell')),
+    id VARCHAR(36) PRIMARY KEY,
+    user_id VARCHAR(36) NOT NULL,
+    car_id VARCHAR(36) NOT NULL,
+    request_type ENUM('rent', 'buy', 'sell') NOT NULL,
     with_driver BOOLEAN DEFAULT false,
     deposit_amount DECIMAL(10, 2) DEFAULT 0,
     total_amount DECIMAL(10, 2) NOT NULL,
     event_date DATE,
     event_type VARCHAR(100),
-    status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected', 'completed', 'cancelled')),
+    status ENUM('pending', 'approved', 'rejected', 'completed', 'cancelled') NOT NULL DEFAULT 'pending',
     agreement_text TEXT,
     payment_method VARCHAR(50),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (car_id) REFERENCES cars(id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id),
+    INDEX idx_car_id (car_id),
+    INDEX idx_status (status)
 );
 
 -- Payments table
 CREATE TABLE IF NOT EXISTS payments (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    request_id UUID NOT NULL REFERENCES requests(id) ON DELETE CASCADE,
+    id VARCHAR(36) PRIMARY KEY,
+    request_id VARCHAR(36) NOT NULL,
     amount DECIMAL(10, 2) NOT NULL,
     payment_method VARCHAR(50) NOT NULL,
     transaction_id VARCHAR(255),
-    status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'completed', 'failed', 'refunded')),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    status ENUM('pending', 'completed', 'failed', 'refunded') NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (request_id) REFERENCES requests(id) ON DELETE CASCADE,
+    INDEX idx_request_id (request_id)
 );
 
--- Indexes for better query performance
-CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
-CREATE INDEX IF NOT EXISTS idx_cars_type ON cars(car_type);
-CREATE INDEX IF NOT EXISTS idx_cars_availability ON cars(availability_status);
-CREATE INDEX IF NOT EXISTS idx_requests_user_id ON requests(user_id);
-CREATE INDEX IF NOT EXISTS idx_requests_car_id ON requests(car_id);
-CREATE INDEX IF NOT EXISTS idx_requests_status ON requests(status);
-CREATE INDEX IF NOT EXISTS idx_payments_request_id ON payments(request_id);
-
--- Function to update updated_at timestamp
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
-
--- Triggers to automatically update updated_at
-CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TRIGGER update_cars_updated_at BEFORE UPDATE ON cars
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TRIGGER update_requests_updated_at BEFORE UPDATE ON requests
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
--- Insert default admin user (password: admin123 - should be changed in production)
+-- Note: UUIDs will be generated in the application code using the uuid package
+-- Insert default admin user (password: admin123)
 -- Password hash for 'admin123' using bcrypt with 10 rounds
--- This is a placeholder - in production, use proper password hashing
-INSERT INTO users (name, email, password_hash, role) 
-VALUES ('Admin User', 'admin@offisho.com', '$2b$10$rOzJqZqZqZqZqZqZqZqZqOqZqZqZqZqZqZqZqZqZqZqZqZqZqZqZq', 'admin')
-ON CONFLICT (email) DO NOTHING;
+-- Change this password in production!
+-- Run this after creating a user with UUID in your application

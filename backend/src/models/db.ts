@@ -1,15 +1,34 @@
-import { ConvexHttpClient } from "convex/browser";
+import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const CONVEX_URL = process.env.CONVEX_URL || "";
+// MySQL connection configuration
+const dbConfig = {
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '3306'),
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'offisho_transport',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 0,
+};
 
-if (!CONVEX_URL) {
-  console.warn("Warning: CONVEX_URL not set. Convex client will not work.");
-  console.warn("Please run 'npx convex dev' to get your Convex URL and add it to .env");
-}
+// Create connection pool
+export const pool = mysql.createPool(dbConfig);
 
-export const convexClient = new ConvexHttpClient(CONVEX_URL);
+// Test database connection
+pool.getConnection()
+  .then((connection) => {
+    console.log('✅ MySQL database connected successfully');
+    connection.release();
+  })
+  .catch((error) => {
+    console.error('❌ MySQL database connection error:', error.message);
+    console.error('Please check your database configuration in .env file');
+  });
 
-export default convexClient;
+export default pool;
