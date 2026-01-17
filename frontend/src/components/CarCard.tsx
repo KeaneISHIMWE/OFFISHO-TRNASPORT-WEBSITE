@@ -51,7 +51,7 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
       className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border border-gray-100"
     >
       {/* Car Image */}
-      <div className="relative h-64 bg-gradient-to-br from-gray-900 to-black overflow-hidden">
+      <div className="relative h-48 sm:h-56 md:h-64 bg-gradient-to-br from-gray-900 to-black overflow-hidden">
         {car.image_url ? (
           <motion.img
             src={car.image_url}
@@ -77,19 +77,19 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
           </div>
         )}
         {/* Category Badge */}
-        <span className="absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg" style={{ backgroundColor: '#87CEEB', color: '#001F3F' }}>
+        <span className="absolute top-3 sm:top-4 left-3 sm:left-4 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs font-bold shadow-lg bg-sky-blue text-navy-blue">
           {getCategoryLabel()}
         </span>
       </div>
 
       {/* Car Details */}
-      <div className="p-6">
-        <h3 className="text-xl font-bold mb-4 transition-colors" style={{ color: '#001F3F' }}>
+      <div className="p-4 sm:p-6">
+        <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-navy-blue transition-colors">
           {car.name} {car.model}
         </h3>
 
         {/* Specs Icons */}
-        <div className="flex items-center gap-4 mb-4" style={{ color: '#6B7280' }}>
+        <div className="flex items-center flex-wrap gap-3 sm:gap-4 mb-3 sm:mb-4 text-gray-600">
           <div className="flex items-center gap-1.5">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -111,25 +111,24 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
         </div>
 
         {/* Price and Book Button */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 pt-3 sm:pt-4 border-t border-gray-200">
           <div>
-            <p className="text-2xl font-bold" style={{ color: '#001F3F' }}>
+            <p className="text-xl sm:text-2xl font-bold text-navy-blue">
               {formatPrice(car.rental_price_per_day)}
-              <span className="text-sm font-normal" style={{ color: '#6B7280' }}>/day</span>
+              <span className="text-xs sm:text-sm font-normal text-gray-600">/day</span>
             </p>
           </div>
           {car.availability_status === 'available' ? (
             <Link
               to={`/cars/${car.id}?action=rent`}
-              className="px-6 py-2.5 rounded-lg font-semibold hover:bg-opacity-90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-              style={{ backgroundColor: '#3B82F6', color: '#FFFFFF' }}
+              className="w-full sm:w-auto px-5 sm:px-6 py-2 sm:py-2.5 rounded-lg bg-blue-500 text-white font-semibold hover:bg-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-center sm:text-left"
             >
               Book Now
             </Link>
           ) : (
             <button
               disabled
-              className="bg-gray-300 text-gray-500 px-6 py-2.5 rounded-lg font-semibold cursor-not-allowed"
+              className="w-full sm:w-auto px-5 sm:px-6 py-2 sm:py-2.5 rounded-lg bg-gray-300 text-gray-500 font-semibold cursor-not-allowed"
             >
               Unavailable
             </button>

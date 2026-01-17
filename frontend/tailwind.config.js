@@ -9,7 +9,8 @@ module.exports = {
       colors: {
         'navy-blue': '#001F3F',
         'sky-blue': '#87CEEB',
-        'white': '#FFFFFF',
+        'sky-light': '#B0E0E6',
+        'navy-light': '#003366',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

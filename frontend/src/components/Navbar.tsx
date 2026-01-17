@@ -24,81 +24,45 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="text-white fixed w-full top-0 z-50 shadow-xl" style={{ backgroundColor: '#001F3F' }}>
+    <nav className="bg-navy-blue text-white fixed w-full top-0 z-50 shadow-xl">
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3 group">
-            <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-lg">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: '#001F3F' }}>
+          <Link to="/" className="flex items-center space-x-2 md:space-x-3 group">
+            <div className="w-12 h-12 md:w-14 md:h-14 bg-white rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-lg">
+              <svg className="w-6 h-6 md:w-8 md:h-8 text-navy-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
               </svg>
             </div>
             <div className="flex flex-col">
-              <span className="text-2xl font-bold leading-tight" style={{ color: '#FFFFFF' }}>OFFISHO</span>
-              <span className="text-sm font-medium leading-tight" style={{ color: '#FFFFFF' }}>TRANSPORT</span>
+              <span className="text-lg md:text-2xl font-bold leading-tight text-white">OFFISHO</span>
+              <span className="text-xs md:text-sm font-medium leading-tight text-white">TRANSPORT</span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-4 xl:gap-6">
+          <div className="hidden lg:flex items-center gap-3 xl:gap-6">
             <Link
               to="/"
-              className="px-4 xl:px-5 py-2.5 rounded-lg transition-all duration-300 font-medium text-sm xl:text-base hover:bg-white hover:bg-opacity-10 hover:scale-105"
-              style={{ color: '#FFFFFF' }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-                e.currentTarget.style.color = '#87CEEB';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.color = '#FFFFFF';
-              }}
+              className="px-3 xl:px-5 py-2 rounded-lg transition-all duration-300 font-medium text-sm xl:text-base text-white hover:bg-white/10 hover:text-sky-blue hover:scale-105"
             >
               Home
             </Link>
             <Link
               to="/cars"
-              className="px-4 xl:px-5 py-2.5 rounded-lg transition-all duration-300 font-medium text-sm xl:text-base hover:bg-white hover:bg-opacity-10 hover:scale-105"
-              style={{ color: '#FFFFFF' }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-                e.currentTarget.style.color = '#87CEEB';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.color = '#FFFFFF';
-              }}
+              className="px-3 xl:px-5 py-2 rounded-lg transition-all duration-300 font-medium text-sm xl:text-base text-white hover:bg-white/10 hover:text-sky-blue hover:scale-105"
             >
               Cars
             </Link>
             <Link
               to="/about"
-              className="px-4 xl:px-5 py-2.5 rounded-lg transition-all duration-300 font-medium text-sm xl:text-base hover:bg-white hover:bg-opacity-10 hover:scale-105"
-              style={{ color: '#FFFFFF' }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-                e.currentTarget.style.color = '#87CEEB';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.color = '#FFFFFF';
-              }}
+              className="px-3 xl:px-5 py-2 rounded-lg transition-all duration-300 font-medium text-sm xl:text-base text-white hover:bg-white/10 hover:text-sky-blue hover:scale-105"
             >
               About Us
             </Link>
             <Link
               to="/contact"
-              className="px-4 xl:px-5 py-2.5 rounded-lg transition-all duration-300 font-medium text-sm xl:text-base hover:bg-white hover:bg-opacity-10 hover:scale-105"
-              style={{ color: '#FFFFFF' }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-                e.currentTarget.style.color = '#87CEEB';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.color = '#FFFFFF';
-              }}
+              className="px-3 xl:px-5 py-2 rounded-lg transition-all duration-300 font-medium text-sm xl:text-base text-white hover:bg-white/10 hover:text-sky-blue hover:scale-105"
             >
               Contact
             </Link>
@@ -106,16 +70,7 @@ const Navbar: React.FC = () => {
             {/* Book Now Button */}
             <Link
               to="/booking"
-              className="px-6 xl:px-8 py-2.5 rounded-lg transition-all duration-300 font-semibold shadow-lg text-sm xl:text-base text-white ml-2 hover:shadow-xl hover:scale-105"
-              style={{ backgroundColor: '#87CEEB' }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#6BB6D6';
-                e.currentTarget.style.transform = 'scale(1.05)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#87CEEB';
-                e.currentTarget.style.transform = 'scale(1)';
-              }}
+              className="px-4 xl:px-8 py-2 rounded-lg bg-sky-blue text-white font-semibold shadow-lg text-sm xl:text-base ml-2 hover:bg-sky-blue/90 hover:shadow-xl hover:scale-105 transition-all duration-300"
             >
               Book Now
             </Link>
