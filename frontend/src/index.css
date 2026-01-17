@@ -232,12 +232,6 @@ a:focus {
   }
 }
 
-.floating-car-5 {
-  animation: floatCar5 7.5s ease-in-out infinite;
-  animation-delay: 0.5s;
-  transform: translateX(-50%);
-}
-
 .floating-car-1 {
   animation: floatCar1 6s ease-in-out infinite;
 }
@@ -255,6 +249,12 @@ a:focus {
 .floating-car-4 {
   animation: floatCar4 6.5s ease-in-out infinite;
   animation-delay: 1.5s;
+}
+
+.floating-car-5 {
+  animation: floatCar5 7.5s ease-in-out infinite;
+  animation-delay: 0.5s;
+  transform: translateX(-50%);
 }
 
 .floating-car-5 {
