@@ -32,8 +32,12 @@ const Login: React.FC = () => {
     try {
       setLoading(true);
       setError('');
-      await login(data.email, data.password);
-      navigate('/');
+      const user = await login(data.email, data.password);
+      if (user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     } catch (err: any) {
       setError(err.response?.data?.error || 'Login failed. Please try again.');
     } finally {
