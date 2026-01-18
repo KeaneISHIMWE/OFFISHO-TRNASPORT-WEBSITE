@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { carsAPI } from '../services/api';
 import { Car } from '../types';
+import { User, Mail, Phone, Car as CarIcon, Calendar, CalendarDays, MessageSquare, Check, ArrowRight } from 'lucide-react';
+import { cn } from '../utils/cn';
 
 const Booking: React.FC = () => {
   const navigate = useNavigate();
@@ -47,24 +49,26 @@ const Booking: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex pt-20">
+    <div className="min-h-screen flex pt-20 bg-background">
       {/* Left Section - Informational */}
-      <div className="hidden lg:flex lg:w-1/2 bg-navy-blue text-white p-12 flex-col justify-center" style={{ backgroundColor: '#001F3F' }}>
+      <div className="hidden lg:flex lg:w-1/2 bg-surface text-white p-12 flex-col justify-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-primary/10 z-0" />
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
+          className="relative z-10 max-w-lg mx-auto"
         >
-          <h2 className="text-2xl font-semibold mb-6" style={{ color: '#87CEEB' }}>
+          <span className="text-primary font-semibold tracking-wider text-sm uppercase mb-4 block">
             Book Your Ride
-          </h2>
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-            Ready to Make Your Event Unforgettable?
+          </span>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white leading-tight">
+            Ready to Make Your Event <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-sky-300">Unforgettable?</span>
           </h1>
-          <p className="text-lg mb-8 text-white leading-relaxed">
+          <p className="text-lg mb-10 text-slate-300 leading-relaxed">
             Fill out the form and our team will get back to you within 24 hours with availability and a personalized quote.
           </p>
-          <div className="space-y-4">
+          <div className="space-y-6">
             {[
               'Professional and courteous drivers',
               'Flexible pickup and drop-off locations',
@@ -76,23 +80,12 @@ const Booking: React.FC = () => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 + index * 0.1 }}
-                className="flex items-center gap-3"
+                className="flex items-center gap-4"
               >
-                <svg
-                  className="w-6 h-6 flex-shrink-0"
-                  style={{ color: '#87CEEB' }}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span className="text-white">{feature}</span>
+                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                  <Check className="w-5 h-5" />
+                </div>
+                <span className="text-slate-200">{feature}</span>
               </motion.div>
             ))}
           </div>
@@ -100,20 +93,23 @@ const Booking: React.FC = () => {
       </div>
 
       {/* Right Section - Booking Form */}
-      <div className="w-full lg:w-1/2 bg-white p-8 lg:p-12 flex items-center justify-center">
+      <div className="w-full lg:w-1/2 bg-card p-8 lg:p-16 flex items-center justify-center border-l border-white/5">
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
           className="w-full max-w-lg"
         >
+          <div className="mb-8 lg:hidden">
+            <h1 className="text-3xl font-bold text-white mb-2">Book Your Ride</h1>
+            <p className="text-slate-400">Fill in the details below to request a booking.</p>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Full Name */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
+              <label className="block text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2">
+                <User className="w-4 h-4 text-primary" />
                 Full Name
               </label>
               <input
@@ -121,17 +117,15 @@ const Booking: React.FC = () => {
                 name="fullName"
                 value={formData.fullName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-blue focus:border-transparent"
+                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                 required
               />
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
+              <label className="block text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2">
+                <Mail className="w-4 h-4 text-primary" />
                 Email
               </label>
               <input
@@ -139,17 +133,15 @@ const Booking: React.FC = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-blue focus:border-transparent"
+                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                 required
               />
             </div>
 
             {/* Phone */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
+              <label className="block text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2">
+                <Phone className="w-4 h-4 text-primary" />
                 Phone
               </label>
               <input
@@ -157,24 +149,22 @@ const Booking: React.FC = () => {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-blue focus:border-transparent"
+                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                 required
               />
             </div>
 
             {/* Select Vehicle */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                </svg>
+              <label className="block text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2">
+                <CarIcon className="w-4 h-4 text-primary" />
                 Select Vehicle
               </label>
               <select
                 name="vehicle"
                 value={formData.vehicle}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-blue focus:border-transparent bg-white"
+                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                 required
               >
                 <option value="">Choose a car</option>
@@ -186,57 +176,54 @@ const Booking: React.FC = () => {
               </select>
             </div>
 
-            {/* Event Type */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                Event Type
-              </label>
-              <select
-                name="eventType"
-                value={formData.eventType}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-blue focus:border-transparent bg-white"
-                required
-              >
-                <option value="">Select event type</option>
-                <option value="wedding">Wedding</option>
-                <option value="corporate">Corporate Event</option>
-                <option value="tour">Tour</option>
-                <option value="party">Party</option>
-                <option value="graduation">Prom & Graduation</option>
-                <option value="birthday">Birthday Celebration</option>
-                <option value="vip">VIP Service</option>
-              </select>
-            </div>
+            {/* Event Type & Date Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Event Type */}
+              <div>
+                <label className="block text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-primary" />
+                  Event Type
+                </label>
+                <select
+                  name="eventType"
+                  value={formData.eventType}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                  required
+                >
+                  <option value="">Select event type</option>
+                  <option value="wedding">Wedding</option>
+                  <option value="corporate">Corporate Event</option>
+                  <option value="tour">Tour</option>
+                  <option value="party">Party</option>
+                  <option value="graduation">Prom & Graduation</option>
+                  <option value="birthday">Birthday Celebration</option>
+                  <option value="vip">VIP Service</option>
+                </select>
+              </div>
 
-            {/* Event Date */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                Event Date
-              </label>
-              <input
-                type="date"
-                name="eventDate"
-                value={formData.eventDate}
-                onChange={handleChange}
-                min={new Date().toISOString().split('T')[0]}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-blue focus:border-transparent"
-                required
-              />
+              {/* Event Date */}
+              <div>
+                <label className="block text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2">
+                  <CalendarDays className="w-4 h-4 text-primary" />
+                  Event Date
+                </label>
+                <input
+                  type="date"
+                  name="eventDate"
+                  value={formData.eventDate}
+                  onChange={handleChange}
+                  min={new Date().toISOString().split('T')[0]}
+                  className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all [color-scheme:dark]"
+                  required
+                />
+              </div>
             </div>
 
             {/* Additional Details */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
+              <label className="block text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2">
+                <MessageSquare className="w-4 h-4 text-primary" />
                 Additional Details
               </label>
               <textarea
@@ -245,17 +232,17 @@ const Booking: React.FC = () => {
                 onChange={handleChange}
                 rows={4}
                 placeholder="Tell us about your event and any special requirements..."
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-blue focus:border-transparent resize-none"
+                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none"
               />
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-4 rounded-lg font-semibold text-white transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-              style={{ backgroundColor: '#3B82F6' }}
+              className="w-full py-4 rounded-xl font-bold text-white bg-primary hover:bg-primary/90 transition-all duration-300 transform hover:scale-[1.02] shadow-lg shadow-primary/25 flex items-center justify-center gap-2"
             >
               Submit Booking Request
+              <ArrowRight className="w-5 h-5" />
             </button>
           </form>
         </motion.div>

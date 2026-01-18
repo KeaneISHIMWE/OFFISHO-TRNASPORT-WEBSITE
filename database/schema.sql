@@ -75,7 +75,5 @@ CREATE TABLE IF NOT EXISTS payments (
 );
 
 -- Note: UUIDs will be generated in the application code using the uuid package
--- Insert default admin user (password: admin123)
--- Password hash for 'admin123' using bcrypt with 10 rounds
--- Change this password in production!
--- Run this after creating a user with UUID in your application
+
+

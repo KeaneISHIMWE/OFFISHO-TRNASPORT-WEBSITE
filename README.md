@@ -77,8 +77,10 @@ PORT=5000
 NODE_ENV=development
 FRONTEND_URL=http://localhost:3000
 
-JWT_SECRET=your-super-secret-jwt-key-change-in-production
+JWT_SECRET=your-super-secret-jwt-key
+JWT_EXPIRES_IN=24h
 
+# MySQL Configuration
 DB_HOST=localhost
 DB_PORT=3306
 DB_USER=root

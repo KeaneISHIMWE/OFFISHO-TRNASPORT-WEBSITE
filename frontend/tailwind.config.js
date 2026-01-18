@@ -1,16 +1,65 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: ["class"],
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
     "./public/index.html"
   ],
   theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
     extend: {
       colors: {
-        'navy-blue': '#001F3F',
-        'sky-blue': '#87CEEB',
-        'sky-light': '#B0E0E6',
-        'navy-light': '#003366',
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        // Lovable Specific Colors
+        lovable: {
+          navy: '#0F172A', // Slate 900
+          'navy-light': '#1E293B', // Slate 800
+          blue: '#0EA5E9', // Sky 500
+          'blue-hover': '#0284C7', // Sky 600
+        }
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
@@ -20,6 +69,8 @@ module.exports = {
         'scaleUp': 'scaleUp 0.4s ease-out',
         'slideIn': 'slideIn 0.6s ease-out',
         'blob': 'blob 7s infinite',
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
       },
       keyframes: {
         fadeIn: {
@@ -40,12 +91,20 @@ module.exports = {
           '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
           '100%': { transform: 'translate(0px, 0px) scale(1)' },
         },
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
       },
       boxShadow: {
-        'glow': '0 0 20px rgba(135, 206, 235, 0.3)',
-        'glow-lg': '0 0 30px rgba(135, 206, 235, 0.5)',
+        'glow': '0 0 20px rgba(14, 165, 233, 0.3)', // Updated to Sky 500
+        'glow-lg': '0 0 30px rgba(14, 165, 233, 0.5)',
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 }

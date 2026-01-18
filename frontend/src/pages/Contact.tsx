@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Mail, Phone, MapPin, Send, MessageSquare } from 'lucide-react';
+import { cn } from '../utils/cn';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -30,37 +32,44 @@ const Contact: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-20">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <div className="min-h-screen bg-background pt-24 pb-12">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8 sm:mb-12"
+          className="text-center mb-12"
         >
-          <span className="text-sky-blue font-semibold text-xs sm:text-sm uppercase tracking-wider">Get In Touch</span>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-navy-blue mt-3 sm:mt-4 mb-3 sm:mb-4">
-            Contact Us
+          <span className="inline-block px-3 py-1 text-xs font-semibold tracking-wider text-primary uppercase bg-primary/10 rounded-full mb-4">
+            Get In Touch
+          </span>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            Contact <span className="text-primary">Us</span>
           </h1>
-          <div className="w-24 h-1 bg-gradient-to-r from-sky-blue to-navy-blue mx-auto"></div>
+          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+            We're here to help you plan your perfect event transportation. Reach out to us with any questions or special requests.
+          </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 max-w-6xl mx-auto">
           {/* Contact Form */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-100"
+            className="bg-card p-8 rounded-2xl border border-white/10"
           >
-            <h2 className="text-xl sm:text-2xl font-bold text-navy-blue mb-4 sm:mb-6">Send us a Message</h2>
+            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+              <MessageSquare className="w-6 h-6 text-primary" />
+              Send us a Message
+            </h2>
             {submitted ? (
-              <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+              <div className="bg-green-500/10 border border-green-500/20 text-green-400 px-6 py-4 rounded-xl mb-4 flex items-center">
                 Thank you! Your message has been sent successfully.
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="name" className="block text-sm font-semibold text-slate-300 mb-2">
                     Name
                   </label>
                   <input
@@ -71,11 +80,11 @@ const Contact: React.FC = () => {
                     onChange={handleChange}
                     required
                     placeholder="Your full name"
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-blue focus:border-transparent transition-all duration-300"
+                    className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="email" className="block text-sm font-semibold text-slate-300 mb-2">
                     Email
                   </label>
                   <input
@@ -86,13 +95,13 @@ const Contact: React.FC = () => {
                     onChange={handleChange}
                     required
                     placeholder="your.email@example.com"
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-blue focus:border-transparent transition-all duration-300"
+                    className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                   />
                 </div>
                 <div>
                   <label
                     htmlFor="message"
-                    className="block text-sm font-semibold text-gray-700 mb-2"
+                    className="block text-sm font-semibold text-slate-300 mb-2"
                   >
                     Message
                   </label>
@@ -104,14 +113,15 @@ const Contact: React.FC = () => {
                     required
                     rows={6}
                     placeholder="Tell us how we can help you..."
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-blue focus:border-transparent transition-all duration-300 resize-none"
+                    className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none"
                   ></textarea>
                 </div>
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-sky-blue to-blue-400 text-white py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg hover:from-sky-blue hover:to-sky-blue transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-[1.02] shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
                 >
                   Send Message
+                  <Send className="w-5 h-5" />
                 </button>
               </form>
             )}
@@ -122,82 +132,48 @@ const Contact: React.FC = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
-            className="space-y-6 sm:space-y-8"
+            className="space-y-8"
           >
-            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-100">
-              <h2 className="text-xl sm:text-2xl font-bold text-navy-blue mb-4 sm:mb-6">Get in Touch</h2>
-              <div className="space-y-4 sm:space-y-5">
-                <div className="flex items-start">
-                  <svg
-                    className="w-6 h-6 text-sky-blue mr-4 mt-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                    />
-                  </svg>
-                  <div>
-                    <h3 className="font-semibold text-navy-blue">Phone</h3>
-                    <p className="text-gray-600">+250 788 123 456</p>
+            <div className="bg-card p-8 rounded-2xl border border-white/10 h-full flex flex-col justify-between">
+              <div>
+                <h2 className="text-2xl font-bold text-white mb-8">Get in Touch</h2>
+                <div className="space-y-8">
+                  <div className="flex items-start group">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 mr-5">
+                      <Phone className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-lg text-white mb-1">Phone</h3>
+                      <p className="text-slate-400">+250 788 123 456</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-start">
-                  <svg
-                    className="w-6 h-6 text-sky-blue mr-4 mt-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                    />
-                  </svg>
-                  <div>
-                    <h3 className="font-semibold text-navy-blue">Email</h3>
-                    <p className="text-gray-600">info@offisho.com</p>
+
+                  <div className="flex items-start group">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 mr-5">
+                      <Mail className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-lg text-white mb-1">Email</h3>
+                      <p className="text-slate-400">info@offisho.com</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-start">
-                  <svg
-                    className="w-6 h-6 text-sky-blue mr-4 mt-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                  <div>
-                    <h3 className="font-semibold text-navy-blue">Address</h3>
-                    <p className="text-gray-600">Kigali, Rwanda</p>
+
+                  <div className="flex items-start group">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 mr-5">
+                      <MapPin className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-lg text-white mb-1">Address</h3>
+                      <p className="text-slate-400">Kigali, Rwanda</p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Google Maps Embed */}
-            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-100">
-              <h2 className="text-xl sm:text-2xl font-bold text-navy-blue mb-4">Find Us</h2>
-              <div className="w-full h-48 sm:h-64 lg:h-80 bg-gray-200 rounded-xl overflow-hidden">
+              {/* Google Maps Embed */}
+              <div className="mt-8 relative overflow-hidden rounded-xl border border-white/10 h-64 grayscale hover:grayscale-0 transition-all duration-500">
                 <iframe
+                  title="Map"
                   width="100%"
                   height="100%"
                   frameBorder="0"

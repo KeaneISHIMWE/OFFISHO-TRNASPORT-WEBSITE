@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { carsAPI } from '../services/api';
 import { Car } from '../types';
 import BookingForm from '../components/BookingForm';
+import { ArrowLeft, Car as CarIcon, Calendar, DollarSign, CheckCircle2, XCircle, AlertCircle, Fuel, Gauge, Users } from 'lucide-react';
+import { cn } from '../utils/cn';
 
 const CarDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -38,23 +40,25 @@ const CarDetails: React.FC = () => {
       style: 'currency',
       currency: 'RWF',
       minimumFractionDigits: 0,
-    }).format(price);
+      maximumFractionDigits: 0,
+    }).format(price).replace('RWF', 'FRW');
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 pt-16 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-blue"></div>
+      <div className="min-h-screen bg-background pt-24 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   if (!car) {
     return (
-      <div className="min-h-screen bg-gray-50 pt-16 flex items-center justify-center">
+      <div className="min-h-screen bg-background pt-24 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-navy-blue mb-4">Car not found</h1>
-          <Link to="/cars" className="text-sky-blue hover:underline">
+          <h1 className="text-2xl font-bold text-white mb-4">Car not found</h1>
+          <Link to="/cars" className="text-primary hover:underline flex items-center justify-center gap-2">
+            <ArrowLeft className="w-4 h-4" />
             Back to Cars
           </Link>
         </div>
@@ -63,21 +67,22 @@ const CarDetails: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-16">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-background pt-24 pb-12">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <Link
           to="/cars"
-          className="text-sky-blue hover:underline mb-4 inline-block"
+          className="text-slate-400 hover:text-white transition-colors mb-6 inline-flex items-center gap-2 group"
         >
-          ← Back to Cars
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          Back to Cars
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Car Image */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="bg-white rounded-lg shadow-lg overflow-hidden"
+            className="bg-card rounded-2xl overflow-hidden border border-white/10"
           >
             {car.image_url ? (
               <img
@@ -86,10 +91,9 @@ const CarDetails: React.FC = () => {
                 className="w-full h-96 object-cover"
               />
             ) : (
-              <div className="w-full h-96 bg-gray-200 flex items-center justify-center">
-                <svg className="w-24 h-24 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
+              <div className="w-full h-96 bg-slate-800 flex items-center justify-center text-slate-600 flex-col gap-4">
+                <CarIcon className="w-24 h-24 opacity-50" />
+                <span>No Image Available</span>
               </div>
             )}
           </motion.div>
@@ -98,78 +102,87 @@ const CarDetails: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="bg-white rounded-lg shadow-lg p-6"
+            className="bg-card rounded-2xl p-8 border border-white/10 flex flex-col h-full"
           >
-            <h1 className="text-4xl font-bold text-navy-blue mb-2">
-              {car.name} {car.model}
-            </h1>
-            <p className="text-gray-600 mb-6">{car.description || 'Premium vehicle for your special events.'}</p>
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <h1 className="text-4xl font-bold text-white">
+                  {car.name} <span className="font-normal text-slate-400">{car.model}</span>
+                </h1>
+                <span className={cn(
+                  "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border",
+                  car.availability_status === 'available' ? "bg-green-500/10 text-green-400 border-green-500/20" :
+                    car.availability_status === 'rented' ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/20" :
+                      "bg-red-500/10 text-red-400 border-red-500/20"
+                )}>
+                  {car.availability_status}
+                </span>
+              </div>
+              <p className="text-slate-400 text-lg">{car.description || 'Premium vehicle for your special events.'}</p>
+            </div>
 
-            <div className="space-y-4 mb-6">
-              <div className="flex justify-between">
-                <span className="font-semibold text-gray-700">Car Type:</span>
-                <span className="text-navy-blue capitalize">{car.car_type}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-semibold text-gray-700">Availability:</span>
-                <span className={`px-3 py-1 rounded ${
-                  car.availability_status === 'available' ? 'bg-green-100 text-green-800' :
-                  car.availability_status === 'rented' ? 'bg-yellow-100 text-yellow-800' :
-                  'bg-red-100 text-red-800'
-                }`}>
-                  {car.availability_status.toUpperCase()}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-semibold text-gray-700">Rental Price:</span>
-                <span className="text-navy-blue font-bold text-xl">
-                  {formatPrice(car.rental_price_per_day)}/day
-                </span>
-              </div>
-              {car.buy_price && (
-                <div className="flex justify-between">
-                  <span className="font-semibold text-gray-700">Buy Price:</span>
-                  <span className="text-navy-blue font-bold text-xl">
-                    {formatPrice(car.buy_price)}
+            <div className="space-y-6 mb-8 flex-1">
+              {/* Type and Price */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-background/50 p-4 rounded-xl border border-white/5">
+                  <span className="block text-slate-500 text-xs uppercase tracking-wider font-semibold mb-1">Type</span>
+                  <span className="text-white font-medium capitalize flex items-center gap-2">
+                    <CarIcon className="w-4 h-4 text-primary" />
+                    {car.car_type}
                   </span>
+                </div>
+                <div className="bg-background/50 p-4 rounded-xl border border-white/5">
+                  <span className="block text-slate-500 text-xs uppercase tracking-wider font-semibold mb-1">Rental Price</span>
+                  <span className="text-white font-bold text-lg flex items-center gap-2">
+                    <DollarSign className="w-4 h-4 text-primary" />
+                    {formatPrice(car.rental_price_per_day)}/day
+                  </span>
+                </div>
+              </div>
+
+              {/* Specs Grid */}
+              {car.specs && Object.keys(car.specs).length > 0 && (
+                <div>
+                  <h3 className="font-semibold text-white mb-3 flex items-center gap-2">
+                    <Gauge className="w-4 h-4 text-primary" />
+                    Specifications
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {Object.entries(car.specs).map(([key, value]) => (
+                      <div key={key} className="bg-background/30 px-3 py-2 rounded-lg border border-white/5 flex flex-col">
+                        <span className="text-slate-500 text-xs capitalize">{key.replace(/_/g, ' ')}</span>
+                        <span className="text-white font-medium text-sm">{String(value)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Suitability */}
+              {car.event_suitability && car.event_suitability.length > 0 && (
+                <div>
+                  <h3 className="font-semibold text-white mb-3 flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-primary" />
+                    Perfect For
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {car.event_suitability.map((event, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full text-sm font-medium"
+                      >
+                        {event}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
 
-            {car.event_suitability && car.event_suitability.length > 0 && (
-              <div className="mb-6">
-                <h3 className="font-semibold text-gray-700 mb-2">Suitable for:</h3>
-                <div className="flex flex-wrap gap-2">
-                  {car.event_suitability.map((event, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 bg-sky-blue bg-opacity-20 text-sky-blue rounded"
-                    >
-                      {event}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {car.specs && Object.keys(car.specs).length > 0 && (
-              <div className="mb-6">
-                <h3 className="font-semibold text-gray-700 mb-2">Specifications:</h3>
-                <ul className="space-y-2">
-                  {Object.entries(car.specs).map(([key, value]) => (
-                    <li key={key} className="flex justify-between">
-                      <span className="text-gray-600 capitalize">{key.replace(/_/g, ' ')}:</span>
-                      <span className="text-navy-blue">{String(value)}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
             {car.availability_status === 'available' && (
               <button
                 onClick={() => setShowBookingForm(!showBookingForm)}
-                className="w-full bg-sky-blue text-white py-3 rounded font-semibold hover:bg-opacity-80 transition-colors"
+                className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-xl font-bold text-lg transition-all duration-300 shadow-lg shadow-primary/25"
               >
                 {showBookingForm ? 'Hide Booking Form' : 'Book This Car'}
               </button>
@@ -182,9 +195,12 @@ const CarDetails: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-8"
+            className="mt-12"
           >
-            <BookingForm carId={car.id} car={car} />
+            <div className="bg-card border border-white/10 rounded-2xl p-6 lg:p-8">
+              <h2 className="text-2xl font-bold text-white mb-6">Complete Your Booking</h2>
+              <BookingForm carId={car.id} car={car} />
+            </div>
           </motion.div>
         )}
       </div>

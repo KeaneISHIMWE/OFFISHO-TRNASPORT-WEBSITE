@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion } from 'framer-motion';
+import { UserPlus, User, Mail, Lock, AlertCircle } from 'lucide-react';
 
 const registerSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -46,94 +47,94 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 pt-20 flex items-center justify-center py-12 px-4">
+    <div className="min-h-screen bg-background pt-20 flex items-center justify-center py-12 px-4 relative overflow-hidden">
+      <div className="absolute inset-0 bg-primary/5 pointer-events-none" />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 md:p-10 border border-gray-100"
+        className="max-w-md w-full bg-card rounded-2xl shadow-2xl p-8 md:p-10 border border-white/10 relative z-10"
       >
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-sky-blue to-navy-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-            </svg>
+          <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 text-primary">
+            <UserPlus className="w-8 h-8" />
           </div>
-          <h2 className="text-3xl font-bold text-navy-blue mb-2">Create Account</h2>
-          <p className="text-gray-600">Join us and start your journey</p>
+          <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
+          <p className="text-slate-400">Join us and start your journey</p>
         </div>
 
         {error && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-r-lg mb-6 flex items-center"
+            className="bg-red-500/10 border-l-4 border-red-500 text-red-500 px-4 py-3 rounded-r-lg mb-6 flex items-center"
           >
-            <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-            </svg>
+            <AlertCircle className="w-5 h-5 mr-2" />
             {error}
           </motion.div>
         )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div>
-            <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+            <label htmlFor="name" className="block text-sm font-semibold text-slate-300 mb-2">
               Full Name
             </label>
-            <input
-              type="text"
-              id="name"
-              {...register('name')}
-              placeholder="John Doe"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-blue focus:border-transparent transition-all duration-300"
-            />
+            <div className="relative">
+              <input
+                type="text"
+                id="name"
+                {...register('name')}
+                placeholder="John Doe"
+                className="w-full pl-10 pr-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+              />
+              <User className="absolute left-3 top-3.5 w-5 h-5 text-slate-500" />
+            </div>
             {errors.name && (
               <p className="text-red-500 text-sm mt-1 flex items-center">
-                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                </svg>
+                <AlertCircle className="w-4 h-4 mr-1" />
                 {errors.name.message}
               </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+            <label htmlFor="email" className="block text-sm font-semibold text-slate-300 mb-2">
               Email Address
             </label>
-            <input
-              type="email"
-              id="email"
-              {...register('email')}
-              placeholder="you@example.com"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-blue focus:border-transparent transition-all duration-300"
-            />
+            <div className="relative">
+              <input
+                type="email"
+                id="email"
+                {...register('email')}
+                placeholder="you@example.com"
+                className="w-full pl-10 pr-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+              />
+              <Mail className="absolute left-3 top-3.5 w-5 h-5 text-slate-500" />
+            </div>
             {errors.email && (
               <p className="text-red-500 text-sm mt-1 flex items-center">
-                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                </svg>
+                <AlertCircle className="w-4 h-4 mr-1" />
                 {errors.email.message}
               </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+            <label htmlFor="password" className="block text-sm font-semibold text-slate-300 mb-2">
               Password
             </label>
-            <input
-              type="password"
-              id="password"
-              {...register('password')}
-              placeholder="At least 6 characters"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-blue focus:border-transparent transition-all duration-300"
-            />
+            <div className="relative">
+              <input
+                type="password"
+                id="password"
+                {...register('password')}
+                placeholder="At least 6 characters"
+                className="w-full pl-10 pr-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+              />
+              <Lock className="absolute left-3 top-3.5 w-5 h-5 text-slate-500" />
+            </div>
             {errors.password && (
               <p className="text-red-500 text-sm mt-1 flex items-center">
-                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                </svg>
+                <AlertCircle className="w-4 h-4 mr-1" />
                 {errors.password.message}
               </p>
             )}
@@ -142,22 +143,23 @@ const Register: React.FC = () => {
           <div>
             <label
               htmlFor="confirmPassword"
-              className="block text-sm font-semibold text-gray-700 mb-2"
+              className="block text-sm font-semibold text-slate-300 mb-2"
             >
               Confirm Password
             </label>
-            <input
-              type="password"
-              id="confirmPassword"
-              {...register('confirmPassword')}
-              placeholder="Re-enter your password"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-blue focus:border-transparent transition-all duration-300"
-            />
+            <div className="relative">
+              <input
+                type="password"
+                id="confirmPassword"
+                {...register('confirmPassword')}
+                placeholder="Re-enter your password"
+                className="w-full pl-10 pr-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+              />
+              <Lock className="absolute left-3 top-3.5 w-5 h-5 text-slate-500" />
+            </div>
             {errors.confirmPassword && (
               <p className="text-red-500 text-sm mt-1 flex items-center">
-                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                </svg>
+                <AlertCircle className="w-4 h-4 mr-1" />
                 {errors.confirmPassword.message}
               </p>
             )}
@@ -166,7 +168,7 @@ const Register: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-sky-blue to-blue-400 text-white py-4 rounded-xl font-bold text-lg hover:from-sky-blue hover:to-sky-blue transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:transform-none"
+            className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-[1.02] shadow-lg shadow-primary/25 disabled:opacity-50 disabled:transform-none"
           >
             {loading ? (
               <span className="flex items-center justify-center">
@@ -182,9 +184,9 @@ const Register: React.FC = () => {
           </button>
         </form>
 
-        <p className="mt-8 text-center text-gray-600">
+        <p className="mt-8 text-center text-slate-400">
           Already have an account?{' '}
-          <Link to="/login" className="text-sky-blue font-semibold hover:text-navy-blue transition-colors">
+          <Link to="/login" className="text-primary font-semibold hover:text-primary/80 transition-colors">
             Sign in here
           </Link>
         </p>

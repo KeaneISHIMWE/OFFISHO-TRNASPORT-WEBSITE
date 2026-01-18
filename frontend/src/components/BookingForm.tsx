@@ -4,8 +4,9 @@ import { useAuth } from '../context/AuthContext';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { requestsAPI, carsAPI } from '../services/api';
+import { requestsAPI } from '../services/api';
 import { Car } from '../types';
+import { CreditCard, Calendar, AlertCircle, Info, Check, User } from 'lucide-react';
 
 interface BookingFormProps {
   carId: string;
@@ -82,7 +83,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
       style: 'currency',
       currency: 'RWF',
       minimumFractionDigits: 0,
-    }).format(price);
+      maximumFractionDigits: 0,
+    }).format(price).replace('RWF', 'FRW');
   };
 
   const onSubmit = async (data: BookingFormData) => {
@@ -130,30 +132,32 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
   `;
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
-      <h2 className="text-2xl font-bold text-navy-blue mb-6">Booking Request</h2>
-
+    <div className="bg-transparent">
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl mb-6 flex items-center">
+          <AlertCircle className="w-5 h-5 mr-2" />
           {error}
         </div>
       )}
 
       {!isAuthenticated && (
-        <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
-          Please <a href="/login" className="underline">login</a> to submit a booking request.
+        <div className="bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 px-4 py-3 rounded-xl mb-6 flex items-center">
+          <Info className="w-5 h-5 mr-2" />
+          <span>
+            Please <a href="/login" className="underline font-bold hover:text-yellow-400">login</a> to submit a booking request.
+          </span>
         </div>
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Request Type */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-slate-300 mb-2">
             Request Type
           </label>
           <select
             {...register('request_type')}
-            className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-sky-blue"
+            className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
           >
             <option value="rent">Rent</option>
             {car.buy_price && <option value="buy">Buy</option>}
@@ -165,40 +169,46 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
         {requestType === 'rent' && (
           <>
             <div>
-              <label className="flex items-center space-x-2">
+              <label className="flex items-start space-x-3 cursor-pointer p-4 rounded-xl border border-white/10 hover:border-primary/50 transition-colors">
                 <input
                   type="checkbox"
                   {...register('with_driver')}
-                  className="w-4 h-4 text-sky-blue border-gray-300 rounded focus:ring-sky-blue"
+                  className="mt-1 w-5 h-5 text-primary border-white/20 rounded focus:ring-primary bg-background"
                 />
-                <span className="text-sm font-semibold text-gray-700">
-                  Rent with driver (+{formatPrice(DRIVER_FEE)})
-                </span>
+                <div>
+                  <span className="block text-sm font-semibold text-white flex items-center">
+                    <User className="w-4 h-4 mr-2" />
+                    Rent with driver (+{formatPrice(DRIVER_FEE)})
+                  </span>
+                  <p className="text-xs text-slate-400 mt-1">
+                    If unchecked, a refundable deposit of {formatPrice(DEPOSIT_AMOUNT)} will be added.
+                  </p>
+                </div>
               </label>
-              <p className="text-xs text-gray-500 mt-1">
-                If unchecked, a refundable deposit of {formatPrice(DEPOSIT_AMOUNT)} will be added.
-              </p>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-slate-300 mb-2">
                 Event Date
               </label>
-              <input
-                type="date"
-                {...register('event_date')}
-                min={new Date().toISOString().split('T')[0]}
-                className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-sky-blue"
-              />
+              <div className="relative">
+                <input
+                  type="date"
+                  {...register('event_date')}
+                  min={new Date().toISOString().split('T')[0]}
+                  className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-slate-500"
+                />
+                <Calendar className="absolute right-3 top-3.5 w-5 h-5 text-slate-500 pointer-events-none" />
+              </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-slate-300 mb-2">
                 Event Type
               </label>
               <select
                 {...register('event_type')}
-                className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-sky-blue"
+                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
               >
                 <option value="">Select event type</option>
                 <option value="wedding">Wedding</option>
@@ -213,23 +223,26 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
 
         {/* Payment Method */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-slate-300 mb-2">
             Payment Method
           </label>
-          <select
-            {...register('payment_method')}
-            className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-sky-blue"
-          >
-            <option value="">Select payment method</option>
-            <option value="mtn_momo">MTN MoMo</option>
-            <option value="bank_transfer">Bank Transfer</option>
-          </select>
+          <div className="relative">
+            <select
+              {...register('payment_method')}
+              className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all appearance-none"
+            >
+              <option value="">Select payment method</option>
+              <option value="mtn_momo">MTN MoMo</option>
+              <option value="bank_transfer">Bank Transfer</option>
+            </select>
+            <CreditCard className="absolute right-3 top-3.5 w-5 h-5 text-slate-500 pointer-events-none" />
+          </div>
         </div>
 
         {/* Price Breakdown */}
-        <div className="bg-gray-50 p-4 rounded">
-          <h3 className="font-semibold text-gray-700 mb-2">Price Breakdown</h3>
-          <div className="space-y-1 text-sm">
+        <div className="bg-background/50 p-6 rounded-xl border border-white/5">
+          <h3 className="font-semibold text-white mb-4">Price Breakdown</h3>
+          <div className="space-y-3 text-sm text-slate-300">
             {requestType === 'rent' && (
               <>
                 <div className="flex justify-between">
@@ -261,53 +274,56 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
                 <span>{formatPrice(car.sell_price)}</span>
               </div>
             )}
-            <div className="flex justify-between font-bold text-lg pt-2 border-t">
+            <div className="flex justify-between font-bold text-lg pt-4 border-t border-white/10 text-white">
               <span>Total:</span>
-              <span className="text-sky-blue">{formatPrice(totalAmount)}</span>
+              <span className="text-primary">{formatPrice(totalAmount)}</span>
             </div>
           </div>
         </div>
 
         {/* Payment Information */}
-        <div className="bg-sky-blue bg-opacity-10 p-4 rounded">
-          <h3 className="font-semibold text-navy-blue mb-2">Payment Information</h3>
-          <p className="text-sm text-gray-700 mb-1">
-            <strong>MTN MoMo:</strong> {PAYMENT_INFO.mtnMomo}
+        <div className="bg-primary/10 p-6 rounded-xl border border-primary/20">
+          <h3 className="font-semibold text-primary mb-3 flex items-center gap-2">
+            <Info className="w-4 h-4" />
+            Payment Information
+          </h3>
+          <p className="text-sm text-slate-300 mb-1">
+            <strong className="text-white">MTN MoMo:</strong> {PAYMENT_INFO.mtnMomo}
           </p>
-          <p className="text-sm text-gray-700">
-            <strong>Bank Transfer:</strong> {PAYMENT_INFO.bankAccount}
+          <p className="text-sm text-slate-300">
+            <strong className="text-white">Bank Transfer:</strong> {PAYMENT_INFO.bankAccount}
           </p>
-          <p className="text-xs text-gray-600 mt-2">
+          <p className="text-xs text-slate-500 mt-3">
             Please include your request ID when making payment.
           </p>
         </div>
 
         {/* Terms and Conditions */}
         <div>
-          <div className="flex items-start space-x-2">
+          <div className="flex items-start space-x-3">
             <input
               type="checkbox"
               {...register('agreed_to_terms')}
-              className="mt-1 w-4 h-4 text-sky-blue border-gray-300 rounded focus:ring-sky-blue"
+              className="mt-1 w-4 h-4 text-primary border-white/20 rounded focus:ring-primary bg-background"
             />
-            <label className="text-sm text-gray-700">
+            <label className="text-sm text-slate-300">
               I agree to the{' '}
               <button
                 type="button"
                 onClick={() => setShowTerms(!showTerms)}
-                className="text-sky-blue hover:underline"
+                className="text-primary hover:underline hover:text-primary/80 font-medium"
               >
                 terms and conditions
               </button>
             </label>
           </div>
           {errors.agreed_to_terms && (
-            <p className="text-red-500 text-sm mt-1">{errors.agreed_to_terms.message}</p>
+            <p className="text-red-400 text-sm mt-1">{errors.agreed_to_terms.message}</p>
           )}
         </div>
 
         {showTerms && (
-          <div className="bg-gray-50 p-4 rounded text-sm text-gray-700 whitespace-pre-line">
+          <div className="bg-background p-4 rounded-xl text-sm text-slate-400 whitespace-pre-line border border-white/10">
             {TERMS_AND_CONDITIONS}
           </div>
         )}
@@ -316,7 +332,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
         <button
           type="submit"
           disabled={loading || !isAuthenticated}
-          className="w-full bg-sky-blue text-white py-3 rounded font-semibold hover:bg-opacity-80 transition-colors disabled:opacity-50"
+          className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-xl font-bold text-lg transition-all duration-300 shadow-lg shadow-primary/25 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? 'Submitting...' : 'Submit Request'}
         </button>
