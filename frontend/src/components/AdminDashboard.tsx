@@ -518,23 +518,10 @@ const CarForm: React.FC<CarFormProps> = ({ car, onClose, onSuccess }) => {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-semibold text-slate-300 mb-2">Car Type</label>
-              <select
-                name="car_type"
-                value={formData.car_type}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-              >
-                <option value="luxury">Luxury</option>
-                <option value="suv">SUV</option>
-                <option value="sedan">Sedan</option>
-                <option value="convertible">Convertible</option>
-                <option value="van">Van</option>
-              </select>
-            </div>
-            <div>
+            {/* Car Type Hidden */}
+            <input type="hidden" name="car_type" value={formData.car_type} />
+
+            <div className="col-span-2">
               <label className="block text-sm font-semibold text-slate-300 mb-2">Status</label>
               <select
                 name="availability_status"
@@ -543,10 +530,10 @@ const CarForm: React.FC<CarFormProps> = ({ car, onClose, onSuccess }) => {
                 required
                 className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
               >
-                <option value="available">Available</option>
-                <option value="rented">Rented</option>
-                <option value="sold">Sold</option>
-                <option value="maintenance">Maintenance</option>
+                <option value="available" className="bg-card text-white">Available</option>
+                <option value="rented" className="bg-card text-white">Rented</option>
+                <option value="sold" className="bg-card text-white">Sold</option>
+                <option value="maintenance" className="bg-card text-white">Maintenance</option>
               </select>
             </div>
           </div>
