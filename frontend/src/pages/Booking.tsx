@@ -16,6 +16,7 @@ const Booking: React.FC = () => {
     vehicle: '',
     eventType: '',
     eventDate: '',
+    withDriver: false, // Default to false (Self Drive)
     additionalDetails: '',
   });
 
@@ -35,10 +36,17 @@ const Booking: React.FC = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    if (e.target.name === 'withDriver') {
+      setFormData({
+        ...formData,
+        withDriver: e.target.value === 'yes',
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [e.target.name]: e.target.value,
+      });
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -217,6 +225,42 @@ const Booking: React.FC = () => {
                   className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all [color-scheme:dark]"
                   required
                 />
+              </div>
+            </div>
+
+            {/* With Driver Option */}
+            <div>
+              <label className="block text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2">
+                <User className="w-4 h-4 text-primary" />
+                Driver Preference
+              </label>
+              <div className="flex gap-4">
+                <label className="flex-1 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="withDriver"
+                    value="yes"
+                    checked={formData.withDriver === true}
+                    onChange={handleChange}
+                    className="hidden peer"
+                  />
+                  <div className="px-4 py-3 bg-background border border-white/10 rounded-xl text-white text-center peer-checked:border-primary peer-checked:bg-primary/20 transition-all hover:bg-white/5">
+                    With Driver (+10,000 FRW)
+                  </div>
+                </label>
+                <label className="flex-1 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="withDriver"
+                    value="no"
+                    checked={formData.withDriver === false}
+                    onChange={handleChange}
+                    className="hidden peer"
+                  />
+                  <div className="px-4 py-3 bg-background border border-white/10 rounded-xl text-white text-center peer-checked:border-primary peer-checked:bg-primary/20 transition-all hover:bg-white/5">
+                    Without Driver (Self Drive)
+                  </div>
+                </label>
               </div>
             </div>
 

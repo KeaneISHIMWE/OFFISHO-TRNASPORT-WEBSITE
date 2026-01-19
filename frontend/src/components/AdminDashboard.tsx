@@ -180,7 +180,6 @@ const AdminDashboard: React.FC = () => {
                       <tr>
                         <th className="px-6 py-4 font-semibold">Image</th>
                         <th className="px-6 py-4 font-semibold">Name</th>
-                        <th className="px-6 py-4 font-semibold">Type</th>
                         <th className="px-6 py-4 font-semibold">Price/Day</th>
                         <th className="px-6 py-4 font-semibold">Status</th>
                         <th className="px-6 py-4 font-semibold">Actions</th>
@@ -203,7 +202,6 @@ const AdminDashboard: React.FC = () => {
                             )}
                           </td>
                           <td className="px-6 py-4 font-medium text-white">{car.name}</td>
-                          <td className="px-6 py-4 text-slate-300 capitalize">{car.car_type}</td>
                           <td className="px-6 py-4 text-white font-mono">
                             {new Intl.NumberFormat('en-RW', {
                               style: 'currency',

@@ -101,7 +101,7 @@ export const sendAdminNotificationEmail = async (
   car: any,
   user: any
 ): Promise<void> => {
-  const adminEmail = process.env.ADMIN_EMAIL || process.env.SMTP_USER;
+  const adminEmail = 'keaneishimwe@gmail.com';
 
   const mailOptions = {
     from: `"Offisho Transport" <${process.env.SMTP_USER}>`,
