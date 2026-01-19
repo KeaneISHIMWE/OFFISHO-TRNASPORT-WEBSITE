@@ -229,3 +229,57 @@ export const sendStatusUpdateEmail = async (
 
   await transporter.sendMail(mailOptions);
 };
+
+export const sendContactEmail = async (
+  name: string,
+  email: string,
+  message: string
+): Promise<void> => {
+  const adminEmail = 'keaneishimwe@gmail.com';
+
+  const mailOptions = {
+    from: `"Offisho Transport" <${process.env.SMTP_USER}>`,
+    to: adminEmail,
+    replyTo: email,
+    subject: `New Contact Message from ${name}`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background-color: #001F3F; color: #FFFFFF; padding: 20px; text-align: center; }
+          .content { padding: 20px; background-color: #f9f9f9; }
+          .details { background-color: #FFFFFF; padding: 15px; margin: 10px 0; border-left: 4px solid #87CEEB; }
+          .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>New Contact Message</h1>
+          </div>
+          <div class="content">
+            <div class="details">
+              <h3>Sender Information:</h3>
+              <p><strong>Name:</strong> ${name}</p>
+              <p><strong>Email:</strong> ${email}</p>
+            </div>
+
+            <div class="details">
+              <h3>Message:</h3>
+              <p>${message.replace(/\n/g, '<br>')}</p>
+            </div>
+          </div>
+          <div class="footer">
+            <p>© ${new Date().getFullYear()} Offisho Transport. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  };
+
+  await transporter.sendMail(mailOptions);
+};

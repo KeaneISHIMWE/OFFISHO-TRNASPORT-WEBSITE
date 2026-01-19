@@ -6,6 +6,7 @@ import path from 'path';
 import authRoutes from './routes/auth';
 import carRoutes from './routes/cars';
 import requestRoutes from './routes/requests';
+import contactRoutes from './routes/contact';
 
 dotenv.config();
 
@@ -57,6 +58,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/cars', carRoutes);
 app.use('/api/requests', requestRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

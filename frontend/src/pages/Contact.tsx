@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, MessageSquare } from 'lucide-react';
+import { contactAPI } from '../services/api';
 import { cn } from '../utils/cn';
 
 const Contact: React.FC = () => {
@@ -20,15 +21,19 @@ const Contact: React.FC = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would send the form data to the backend
-    console.log('Form submitted:', formData);
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
+    try {
+      await contactAPI.sendMessage(formData);
+      setSubmitted(true);
       setFormData({ name: '', email: '', message: '' });
-    }, 3000);
+      setTimeout(() => {
+        setSubmitted(false);
+      }, 5000);
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      alert('Failed to send message. Please try again later.');
+    }
   };
 
   return (
