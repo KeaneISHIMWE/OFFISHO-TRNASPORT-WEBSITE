@@ -422,7 +422,22 @@ const CarForm: React.FC<CarFormProps> = ({ car, onClose, onSuccess }) => {
 
       onSuccess();
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to save car');
+      console.error('Save car error:', err);
+      let errorMessage = 'Failed to save car';
+
+      if (err.response?.data?.errors && Array.isArray(err.response.data.errors)) {
+        errorMessage = err.response.data.errors
+          .map((e: any) => e.message.replace(/['"]/g, ''))
+          .join('. ');
+      } else if (err.response?.data?.error) {
+        errorMessage = err.response.data.error;
+      } else if (typeof err.response?.data === 'string') {
+        errorMessage = err.response.data;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

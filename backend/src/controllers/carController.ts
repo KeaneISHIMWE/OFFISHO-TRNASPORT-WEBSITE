@@ -165,9 +165,9 @@ export const createCar = async (req: Request, res: Response): Promise<void> => {
     };
 
     res.status(201).json({ car: formattedCar });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Create car error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: error.message || 'Internal server error' });
   }
 };
 
