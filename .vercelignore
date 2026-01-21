@@ -1,0 +1,9 @@
+backend/
+database/
+node_modules/
+*.md
+*.ps1
+*.sql
+.env
+.env.local
+.env.*.local

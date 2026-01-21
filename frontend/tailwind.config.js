@@ -48,13 +48,16 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Lovable Specific Colors
-        lovable: {
-          navy: '#0F172A', // Slate 900
-          'navy-light': '#1E293B', // Slate 800
-          blue: '#0EA5E9', // Sky 500
-          'blue-hover': '#0284C7', // Sky 600
-        }
+        obsidian: {
+          DEFAULT: '#050505',
+          light: '#0a0a0a',
+          lighter: '#151515',
+        },
+        gold: {
+          DEFAULT: '#F59E0B',
+          light: '#FCD34D',
+          dark: '#D97706',
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -63,6 +66,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Montserrat', 'sans-serif'],
       },
       animation: {
         'fadeIn': 'fadeIn 0.6s ease-out',

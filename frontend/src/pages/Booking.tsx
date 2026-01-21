@@ -9,6 +9,7 @@ import { cn } from '../utils/cn';
 const Booking: React.FC = () => {
   const navigate = useNavigate();
   const [cars, setCars] = useState<Car[]>([]);
+  const [transactionType, setTransactionType] = useState<'rent' | 'buy'>('rent');
   const [formData, setFormData] = useState({
     fullName: 'John Doe',
     email: 'john@example.com',
@@ -101,7 +102,10 @@ const Booking: React.FC = () => {
       </div>
 
       {/* Right Section - Booking Form */}
-      <div className="w-full lg:w-1/2 bg-card p-8 lg:p-16 flex items-center justify-center border-l border-white/5">
+      <div className={cn(
+        "w-full lg:w-1/2 glass-card p-8 lg:p-16 flex items-center justify-center border-l border-white/5 transition-all duration-500",
+        transactionType === 'buy' ? "border-l-gold/30" : "border-l-primary/30"
+      )}>
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -114,10 +118,44 @@ const Booking: React.FC = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Transaction Type Toggle */}
+            <div>
+              <label className="block text-sm font-semibold text-slate-300 mb-3">Transaction Type</label>
+              <div className="flex gap-3 p-1 glass-card rounded-xl">
+                <button
+                  type="button"
+                  onClick={() => setTransactionType('rent')}
+                  className={cn(
+                    "flex-1 px-4 py-3 rounded-lg font-semibold transition-all duration-300",
+                    transactionType === 'rent'
+                      ? "bg-primary text-white glow-blue shadow-lg"
+                      : "text-slate-400 hover:text-white"
+                  )}
+                >
+                  Rent
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTransactionType('buy')}
+                  className={cn(
+                    "flex-1 px-4 py-3 rounded-lg font-semibold transition-all duration-300",
+                    transactionType === 'buy'
+                      ? "bg-gold text-white glow-gold shadow-lg"
+                      : "text-slate-400 hover:text-white"
+                  )}
+                >
+                  Buy
+                </button>
+              </div>
+            </div>
+
             {/* Full Name */}
             <div>
-              <label className="block text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2">
-                <User className="w-4 h-4 text-primary" />
+              <label className={cn(
+                "block text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2",
+                transactionType === 'buy' ? "[&_svg]:text-gold" : "[&_svg]:text-primary"
+              )}>
+                <User className={cn("w-4 h-4", transactionType === 'buy' ? "text-gold" : "text-primary")} />
                 Full Name
               </label>
               <input
@@ -125,7 +163,12 @@ const Booking: React.FC = () => {
                 name="fullName"
                 value={formData.fullName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                className={cn(
+                  "w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none transition-all",
+                  transactionType === 'buy' 
+                    ? "focus:border-gold focus:ring-1 focus:ring-gold" 
+                    : "focus:border-primary focus:ring-1 focus:ring-primary"
+                )}
                 required
               />
             </div>
@@ -141,7 +184,12 @@ const Booking: React.FC = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                className={cn(
+                  "w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none transition-all",
+                  transactionType === 'buy' 
+                    ? "focus:border-gold focus:ring-1 focus:ring-gold" 
+                    : "focus:border-primary focus:ring-1 focus:ring-primary"
+                )}
                 required
               />
             </div>
@@ -157,7 +205,12 @@ const Booking: React.FC = () => {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                className={cn(
+                  "w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none transition-all",
+                  transactionType === 'buy' 
+                    ? "focus:border-gold focus:ring-1 focus:ring-gold" 
+                    : "focus:border-primary focus:ring-1 focus:ring-primary"
+                )}
                 required
               />
             </div>
@@ -172,7 +225,12 @@ const Booking: React.FC = () => {
                 name="vehicle"
                 value={formData.vehicle}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                className={cn(
+                  "w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none transition-all",
+                  transactionType === 'buy' 
+                    ? "focus:border-gold focus:ring-1 focus:ring-gold" 
+                    : "focus:border-primary focus:ring-1 focus:ring-primary"
+                )}
                 required
               >
                 <option value="">Choose a car</option>
@@ -196,7 +254,12 @@ const Booking: React.FC = () => {
                   name="eventType"
                   value={formData.eventType}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                  className={cn(
+                  "w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none transition-all",
+                  transactionType === 'buy' 
+                    ? "focus:border-gold focus:ring-1 focus:ring-gold" 
+                    : "focus:border-primary focus:ring-1 focus:ring-primary"
+                )}
                   required
                 >
                   <option value="">Select event type</option>
@@ -222,7 +285,12 @@ const Booking: React.FC = () => {
                   value={formData.eventDate}
                   onChange={handleChange}
                   min={new Date().toISOString().split('T')[0]}
-                  className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all [color-scheme:dark]"
+                  className={cn(
+                    "w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none transition-all [color-scheme:dark]",
+                    transactionType === 'buy' 
+                      ? "focus:border-gold focus:ring-1 focus:ring-gold" 
+                      : "focus:border-primary focus:ring-1 focus:ring-primary"
+                  )}
                   required
                 />
               </div>
@@ -244,7 +312,12 @@ const Booking: React.FC = () => {
                     onChange={handleChange}
                     className="hidden peer"
                   />
-                  <div className="px-4 py-3 bg-background border border-white/10 rounded-xl text-white text-center peer-checked:border-primary peer-checked:bg-primary/20 transition-all hover:bg-white/5">
+                  <div className={cn(
+                    "px-4 py-3 bg-background border border-white/10 rounded-xl text-white text-center transition-all hover:bg-white/5",
+                    transactionType === 'buy'
+                      ? "peer-checked:border-gold peer-checked:bg-gold/20"
+                      : "peer-checked:border-primary peer-checked:bg-primary/20"
+                  )}>
                     With Driver (+10,000 FRW)
                   </div>
                 </label>
@@ -257,7 +330,12 @@ const Booking: React.FC = () => {
                     onChange={handleChange}
                     className="hidden peer"
                   />
-                  <div className="px-4 py-3 bg-background border border-white/10 rounded-xl text-white text-center peer-checked:border-primary peer-checked:bg-primary/20 transition-all hover:bg-white/5">
+                  <div className={cn(
+                    "px-4 py-3 bg-background border border-white/10 rounded-xl text-white text-center transition-all hover:bg-white/5",
+                    transactionType === 'buy'
+                      ? "peer-checked:border-gold peer-checked:bg-gold/20"
+                      : "peer-checked:border-primary peer-checked:bg-primary/20"
+                  )}>
                     Without Driver (Self Drive)
                   </div>
                 </label>
@@ -276,16 +354,26 @@ const Booking: React.FC = () => {
                 onChange={handleChange}
                 rows={4}
                 placeholder="Tell us about your event and any special requirements..."
-                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none"
+                className={cn(
+                  "w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none transition-all resize-none",
+                  transactionType === 'buy' 
+                    ? "focus:border-gold focus:ring-1 focus:ring-gold" 
+                    : "focus:border-primary focus:ring-1 focus:ring-primary"
+                )}
               />
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-4 rounded-xl font-bold text-white bg-primary hover:bg-primary/90 transition-all duration-300 transform hover:scale-[1.02] shadow-lg shadow-primary/25 flex items-center justify-center gap-2"
+              className={cn(
+                "w-full py-4 rounded-xl font-bold text-white transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center gap-2",
+                transactionType === 'buy'
+                  ? "bg-gold hover:bg-gold-dark shadow-lg shadow-gold/25 glow-gold"
+                  : "bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 glow-blue"
+              )}
             >
-              Submit Booking Request
+              {transactionType === 'buy' ? 'Submit Purchase Request' : 'Submit Booking Request'}
               <ArrowRight className="w-5 h-5" />
             </button>
           </form>

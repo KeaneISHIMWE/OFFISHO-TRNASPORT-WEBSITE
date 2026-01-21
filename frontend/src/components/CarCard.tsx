@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Car } from '../types';
-import { Users, Fuel, Gauge, ArrowRight } from 'lucide-react';
+import { Users, Fuel, Gauge, ArrowRight, Zap, Car as CarIcon } from 'lucide-react';
 import { cn } from '../utils/cn';
 
 interface CarCardProps {
@@ -10,13 +10,16 @@ interface CarCardProps {
 }
 
 const CarCard: React.FC<CarCardProps> = ({ car }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'RWF', // Changed to RWF as per context
+      currency: 'RWF',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(price).replace('RWF', 'FRW'); // Formatting as FRW
+    }).format(price).replace('RWF', 'FRW');
   };
 
   const getCategoryLabel = () => {
@@ -32,6 +35,9 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
   const getSeats = () => car.specs?.seats || (car.car_type === 'suv' ? 5 : 4);
   const getFuelType = () => car.specs?.fuel_type || 'Petrol';
   const getTransmission = () => car.specs?.transmission || 'Auto';
+  const getHP = () => car.specs?.hp || 'N/A';
+  const getTopSpeed = () => car.specs?.top_speed || 'N/A';
+  const getYear = () => car.specs?.year || new Date().getFullYear();
 
   return (
     <motion.div
@@ -40,33 +46,60 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
       viewport={{ once: true }}
       whileHover={{ y: -8 }}
       transition={{ duration: 0.3 }}
-      className="group bg-card rounded-2xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col h-full"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="group glass-card rounded-2xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col h-full"
     >
       {/* Car Image */}
-      <div className="relative h-48 sm:h-56 bg-slate-900 overflow-hidden">
+      <div className="relative h-48 sm:h-56 bg-obsidian overflow-hidden">
+        {!imageLoaded && car.image_url && (
+          <div className="absolute inset-0 skeleton" />
+        )}
         {car.image_url ? (
           <motion.img
             src={car.image_url}
             alt={`${car.name} ${car.model}`}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
             loading="lazy"
+            onLoad={() => setImageLoaded(true)}
+            onError={() => setImageLoaded(true)}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-slate-700 bg-slate-800">
-            <span className="text-sm font-medium">No Image</span>
+          <div className="w-full h-full flex items-center justify-center text-slate-600 bg-obsidian-light">
+            <CarIcon className="w-12 h-12" />
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent opacity-60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/50 to-transparent opacity-80" />
 
         {/* Category Badge */}
-        <span className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold shadow-lg bg-primary text-white">
+        <span className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold shadow-lg bg-primary text-white glow-blue">
           {getCategoryLabel()}
         </span>
+
+        {/* Specs Overlay on Hover */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 20 }}
+          transition={{ duration: 0.3 }}
+          className="absolute inset-0 flex items-center justify-center bg-obsidian/95 backdrop-blur-sm z-10"
+        >
+          <div className="text-center space-y-4">
+            <div className="flex items-center justify-center gap-2 text-primary">
+              <Zap className="w-5 h-5" />
+              <span className="text-xl font-bold">{getHP()}</span>
+            </div>
+            <div className="flex items-center justify-center gap-2 text-white">
+              <Gauge className="w-5 h-5 text-primary" />
+              <span className="text-lg">{getTopSpeed()}</span>
+            </div>
+            <div className="text-slate-400 text-sm">Year {getYear()}</div>
+          </div>
+        </motion.div>
       </div>
 
       {/* Car Details */}
       <div className="p-6 flex flex-col flex-grow">
-        <h3 className="text-xl font-bold mb-4 text-white group-hover:text-primary transition-colors">
+        <h3 className="text-xl font-display font-bold mb-4 text-white group-hover:text-primary transition-colors">
           {car.name} <span className="text-slate-400 font-normal">{car.model}</span>
         </h3>
 
@@ -97,7 +130,7 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
           {car.availability_status === 'available' ? (
             <Link
               to={`/cars/${car.id}?action=rent`}
-              className="px-4 py-2 rounded-lg bg-white/5 hover:bg-primary text-white font-medium transition-all duration-300 border border-white/10 hover:border-transparent flex items-center gap-2 group/btn"
+              className="px-4 py-2 rounded-lg bg-white/5 hover:bg-primary text-white font-medium transition-all duration-300 border border-white/10 hover:border-transparent flex items-center gap-2 group/btn hover:scale-105"
             >
               Book
               <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />

@@ -39,23 +39,28 @@ const Navbar: React.FC = () => {
 
   return (
     <nav
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-background/80 backdrop-blur-md border-b border-white/10 shadow-lg py-4' : 'bg-transparent py-6'
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'glass-effect border-b border-white/10 shadow-xl py-4' : 'bg-transparent py-6'
         }`}
     >
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-xl flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300">
-              <img src="/logo.png" alt="Logo" className="w-8 h-8 md:w-10 md:h-10 object-contain" onError={(e) => {
-                // Fallback if image fails
-                e.currentTarget.style.display = 'none';
-                e.currentTarget.parentElement!.innerHTML = '<span class="text-primary font-bold text-xl">OT</span>';
-              }} />
+            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 relative">
+              <img 
+                src="/logo.png" 
+                alt="Logo" 
+                className="w-8 h-8 md:w-10 md:h-10 object-contain" 
+                style={{ filter: 'drop-shadow(0 0 8px rgba(14, 165, 233, 0.5))' }}
+                onError={(e) => {
+                  const parent = e.currentTarget.parentElement!;
+                  parent.innerHTML = '<span class="text-primary font-bold text-xl font-display">OT</span>';
+                }} 
+              />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl md:text-2xl font-bold font-sans text-white tracking-tight">
-                Offisho<span className="text-primary">Transport</span>
+              <span className="text-xl md:text-2xl font-bold font-display text-white tracking-tight">
+                Offisho<span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-sky-300">Transport</span>
               </span>
             </div>
           </Link>
@@ -89,7 +94,7 @@ const Navbar: React.FC = () => {
                 </button>
 
                 {/* Dropdown */}
-                <div className="absolute right-0 mt-2 w-56 bg-card border border-white/10 rounded-xl shadow-xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right">
+                <div className="absolute right-0 mt-2 w-56 glass-card rounded-xl shadow-xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right">
                   <div className="p-2 space-y-1">
                     {isAdmin && (
                       <Link to="/admin" className="flex items-center gap-2 px-3 py-2 text-sm text-white/80 hover:bg-primary/10 hover:text-primary rounded-lg transition-colors">
@@ -166,7 +171,7 @@ const Navbar: React.FC = () => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden bg-background/95 backdrop-blur-xl border-t border-white/10 overflow-hidden"
+              className="lg:hidden glass-effect border-t border-white/10 overflow-hidden"
             >
               <div className="p-4 space-y-4">
                 <form onSubmit={handleSearch} className="relative">

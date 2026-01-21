@@ -26,8 +26,10 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve uploaded files statically
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+// Serve uploaded files statically (only in non-serverless environments)
+if (!process.env.VERCEL) {
+  app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+}
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -100,8 +102,8 @@ app.use((req: express.Request, res: express.Response) => {
   });
 });
 
-// Only start server if not in test environment
-if (process.env.NODE_ENV !== 'test') {
+// Only start server if not in test environment and not on Vercel
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });

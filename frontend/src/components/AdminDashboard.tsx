@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { carsAPI, requestsAPI } from '../services/api';
 import { Car, Request } from '../types';
-import { LayoutDashboard, Car as CarIcon, FileText, BarChart3, Plus, Edit, Trash2, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { LayoutDashboard, Car as CarIcon, FileText, BarChart3, Plus, Edit, Trash2, CheckCircle, XCircle, Clock, TrendingUp } from 'lucide-react';
 import { cn } from '../utils/cn';
 
 const AdminDashboard: React.FC = () => {
@@ -77,81 +78,195 @@ const AdminDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-24 pb-12">
+    <div className="min-h-screen bg-obsidian pt-24 pb-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-white mb-8 flex items-center gap-2">
-          <LayoutDashboard className="w-8 h-8 text-primary" />
-          Admin Dashboard
-        </h1>
+        <div className="flex gap-8">
+          {/* Side Navigation */}
+          <aside className="hidden lg:block w-64 flex-shrink-0">
+            <div className="glass-card rounded-2xl p-6 sticky top-24">
+              <h1 className="text-2xl font-display font-bold text-white mb-6 flex items-center gap-2">
+                <LayoutDashboard className="w-6 h-6 text-primary" />
+                Dashboard
+              </h1>
+              <nav className="space-y-2">
+                {[
+                  { id: 'cars', label: 'Cars', icon: CarIcon },
+                  { id: 'requests', label: 'Requests', icon: FileText },
+                  { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id as any)}
+                    className={cn(
+                      "w-full px-4 py-3 font-semibold capitalize flex items-center gap-3 transition-all duration-300 rounded-xl",
+                      activeTab === tab.id
+                        ? "bg-primary/20 text-primary border border-primary/30 glow-blue"
+                        : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
+                    )}
+                  >
+                    <tab.icon className="w-5 h-5" />
+                    {tab.label}
+                  </button>
+                ))}
+              </nav>
+            </div>
+          </aside>
 
-        {/* Tabs */}
-        <div className="flex space-x-2 mb-8 border-b border-white/10">
-          {[
-            { id: 'cars', label: 'Cars', icon: CarIcon },
-            { id: 'requests', label: 'Requests', icon: FileText },
-            { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={cn(
-                "px-6 py-4 font-semibold capitalize flex items-center gap-2 transition-all relative top-[1px]",
-                activeTab === tab.id
-                  ? "border-b-2 border-primary text-primary bg-primary/5"
-                  : "text-slate-400 hover:text-white hover:bg-white/5 border-b-2 border-transparent"
+          {/* Main Content */}
+          <main className="flex-1 min-w-0">
+            {/* Mobile Tabs */}
+            <div className="lg:hidden mb-8 flex space-x-2 border-b border-white/10">
+              {[
+                { id: 'cars', label: 'Cars', icon: CarIcon },
+                { id: 'requests', label: 'Requests', icon: FileText },
+                { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={cn(
+                    "px-4 py-3 font-semibold capitalize flex items-center gap-2 transition-all relative top-[1px]",
+                    activeTab === tab.id
+                      ? "border-b-2 border-primary text-primary"
+                      : "text-slate-400 hover:text-white border-b-2 border-transparent"
+                  )}
+                >
+                  <tab.icon className="w-4 h-4" />
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Analytics Tab - Bento Style */}
+            <AnimatePresence mode="wait">
+              {activeTab === 'analytics' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="grid grid-cols-1 md:grid-cols-3 gap-6"
+                >
+                  {/* Large Revenue Card */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.1 }}
+                    className="md:col-span-2 glass-card p-8 rounded-2xl relative overflow-hidden"
+                  >
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl" />
+                    <div className="relative z-10">
+                      <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-slate-400 font-medium flex items-center gap-2">
+                          <TrendingUp className="w-5 h-5 text-primary" />
+                          Total Revenue
+                        </h3>
+                        <span className="text-xs text-green-400 bg-green-500/10 px-2 py-1 rounded-full border border-green-500/20">
+                          +12.5%
+                        </span>
+                      </div>
+                      <p className="text-4xl md:text-5xl font-display font-bold text-white mb-4">
+                        {new Intl.NumberFormat('en-RW', {
+                          style: 'currency',
+                          currency: 'RWF',
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 0,
+                        }).format(analytics.totalRevenue).replace('RWF', 'FRW')}
+                      </p>
+                      {/* Mini Sparkline Chart */}
+                      <div className="flex items-end gap-1 h-16 mt-6">
+                        {[65, 72, 68, 80, 75, 85, 90].map((height, idx) => (
+                          <motion.div
+                            key={idx}
+                            initial={{ height: 0 }}
+                            animate={{ height: `${height}%` }}
+                            transition={{ delay: 0.2 + idx * 0.05, duration: 0.5 }}
+                            className="flex-1 bg-gradient-to-t from-primary to-primary/50 rounded-t"
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Total Cars Card */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="glass-card p-6 rounded-2xl relative overflow-hidden"
+                  >
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 rounded-full blur-2xl" />
+                    <div className="relative z-10">
+                      <h3 className="text-slate-400 mb-2 font-medium">Total Cars</h3>
+                      <p className="text-4xl font-display font-bold text-white">{analytics.totalCars}</p>
+                      <div className="mt-4 flex items-center gap-2 text-sm text-slate-400">
+                        <CarIcon className="w-4 h-4" />
+                        <span>In fleet</span>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Available Cars Card */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="glass-card p-6 rounded-2xl relative overflow-hidden border border-green-500/20 glow-green"
+                  >
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-green-500/10 rounded-full blur-2xl" />
+                    <div className="relative z-10">
+                      <h3 className="text-slate-400 mb-2 font-medium">Available Cars</h3>
+                      <p className="text-4xl font-display font-bold text-green-400">{analytics.availableCars}</p>
+                      <div className="mt-4 flex items-center gap-2 text-sm text-green-400">
+                        <CheckCircle className="w-4 h-4" />
+                        <span>Ready to rent</span>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Pending Requests Card */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.4 }}
+                    className="glass-card p-6 rounded-2xl relative overflow-hidden border border-yellow-500/20 glow-amber"
+                  >
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-yellow-500/10 rounded-full blur-2xl" />
+                    <div className="relative z-10">
+                      <h3 className="text-slate-400 mb-2 font-medium">Pending Requests</h3>
+                      <p className="text-4xl font-display font-bold text-yellow-400">{analytics.pendingRequests}</p>
+                      <div className="mt-4 flex items-center gap-2 text-sm text-yellow-400">
+                        <Clock className="w-4 h-4" />
+                        <span>Awaiting review</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                </motion.div>
               )}
-            >
-              <tab.icon className="w-4 h-4" />
-              {tab.label}
-            </button>
-          ))}
-        </div>
+            </AnimatePresence>
 
-        {/* Analytics Tab */}
-        {activeTab === 'analytics' && (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-card p-6 rounded-2xl border border-white/10">
-              <h3 className="text-slate-400 mb-2 font-medium">Total Cars</h3>
-              <p className="text-3xl font-bold text-white">{analytics.totalCars}</p>
-            </div>
-            <div className="bg-card p-6 rounded-2xl border border-white/10">
-              <h3 className="text-slate-400 mb-2 font-medium">Available Cars</h3>
-              <p className="text-3xl font-bold text-green-400">{analytics.availableCars}</p>
-            </div>
-            <div className="bg-card p-6 rounded-2xl border border-white/10">
-              <h3 className="text-slate-400 mb-2 font-medium">Pending Requests</h3>
-              <p className="text-3xl font-bold text-yellow-400">{analytics.pendingRequests}</p>
-            </div>
-            <div className="bg-card p-6 rounded-2xl border border-white/10">
-              <h3 className="text-slate-400 mb-2 font-medium">Total Revenue</h3>
-              <p className="text-3xl font-bold text-primary">
-                {new Intl.NumberFormat('en-RW', {
-                  style: 'currency',
-                  currency: 'RWF',
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 0,
-                }).format(analytics.totalRevenue).replace('RWF', 'FRW')}
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Cars Tab */}
-        {activeTab === 'cars' && (
-          <div>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-white">Cars Management</h2>
-              <button
+            {/* Cars Tab */}
+            <AnimatePresence mode="wait">
+              {activeTab === 'cars' && (
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-display font-bold text-white">Cars Management</h2>
+                    <button
                 onClick={() => {
                   setEditingCar(null);
                   setShowCarForm(true);
                 }}
-                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-colors"
-              >
-                <Plus className="w-4 h-4" />
-                Add New Car
-              </button>
-            </div>
+                      className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all duration-300 hover:scale-105 glow-blue"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Add New Car
+                    </button>
+                  </div>
 
             {showCarForm && (
               <CarForm
@@ -213,10 +328,12 @@ const AdminDashboard: React.FC = () => {
                           <td className="px-6 py-4">
                             <span
                               className={cn(
-                                "px-2 py-1 rounded text-xs font-semibold border",
-                                car.availability_status === 'available' ? "bg-green-500/10 text-green-400 border-green-500/20" :
-                                  car.availability_status === 'rented' ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/20" :
-                                    "bg-red-500/10 text-red-400 border-red-500/20"
+                                "px-3 py-1.5 rounded-full text-xs font-semibold border",
+                                car.availability_status === 'available' 
+                                  ? "bg-green-500/10 text-green-400 border-green-500/30 glow-green" :
+                                  car.availability_status === 'rented' 
+                                    ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/30 glow-amber" :
+                                    "bg-red-500/10 text-red-400 border-red-500/30"
                               )}
                             >
                               {car.availability_status}
@@ -246,21 +363,28 @@ const AdminDashboard: React.FC = () => {
                     </tbody>
                   </table>
                 </div>
-              </div>
-            )}
-          </div>
-        )}
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-        {/* Requests Tab */}
-        {activeTab === 'requests' && (
-          <div>
-            <h2 className="text-2xl font-bold text-white mb-6">Requests Management</h2>
-            {loading ? (
-              <div className="flex justify-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-              </div>
-            ) : (
-              <div className="bg-card rounded-2xl border border-white/10 overflow-hidden">
+            {/* Requests Tab */}
+            <AnimatePresence mode="wait">
+              {activeTab === 'requests' && (
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <h2 className="text-2xl font-display font-bold text-white mb-6">Requests Management</h2>
+                  {loading ? (
+                    <div className="flex justify-center py-12">
+                      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+                    </div>
+                  ) : (
+                    <div className="glass-card rounded-2xl overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left">
                     <thead className="bg-white/5 border-b border-white/10 text-slate-300">
@@ -292,11 +416,14 @@ const AdminDashboard: React.FC = () => {
                           <td className="px-6 py-4">
                             <span
                               className={cn(
-                                "px-2 py-1 rounded text-xs font-semibold border flex items-center w-fit gap-1",
-                                request.status === 'approved' ? "bg-green-500/10 text-green-400 border-green-500/20" :
-                                  request.status === 'rejected' ? "bg-red-500/10 text-red-400 border-red-500/20" :
-                                    request.status === 'completed' ? "bg-blue-500/10 text-blue-400 border-blue-500/20" :
-                                      "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
+                                "px-3 py-1.5 rounded-full text-xs font-semibold border flex items-center w-fit gap-1",
+                                request.status === 'approved' 
+                                  ? "bg-green-500/10 text-green-400 border-green-500/30 glow-green" :
+                                  request.status === 'rejected' 
+                                    ? "bg-red-500/10 text-red-400 border-red-500/30" :
+                                    request.status === 'completed' 
+                                      ? "bg-blue-500/10 text-blue-400 border-blue-500/30 glow-blue" :
+                                      "bg-yellow-500/10 text-yellow-400 border-yellow-500/30 glow-amber"
                               )}
                             >
                               {request.status}
@@ -338,10 +465,13 @@ const AdminDashboard: React.FC = () => {
                     </tbody>
                   </table>
                 </div>
-              </div>
-            )}
-          </div>
-        )}
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </main>
+        </div>
       </div>
     </div>
   );
@@ -531,10 +661,24 @@ const CarForm: React.FC<CarFormProps> = ({ car, onClose, onSuccess }) => {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            {/* Car Type Hidden */}
-            <input type="hidden" name="car_type" value={formData.car_type} />
+            <div>
+              <label className="block text-sm font-semibold text-slate-300 mb-2">Car Type</label>
+              <select
+                name="car_type"
+                value={formData.car_type}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+              >
+                <option value="luxury" className="bg-card text-white">Luxury</option>
+                <option value="suv" className="bg-card text-white">SUV</option>
+                <option value="sedan" className="bg-card text-white">Sedan</option>
+                <option value="convertible" className="bg-card text-white">Convertible</option>
+                <option value="van" className="bg-card text-white">Van</option>
+              </select>
+            </div>
 
-            <div className="col-span-2">
+            <div>
               <label className="block text-sm font-semibold text-slate-300 mb-2">Status</label>
               <select
                 name="availability_status"

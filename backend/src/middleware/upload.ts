@@ -46,9 +46,9 @@ if (process.env.CLOUDINARY_URL) {
   });
 }
 
-// Ensure uploads directory exists
+// Ensure uploads directory exists (only in non-serverless environments)
 const uploadDir = path.join(__dirname, '../../uploads');
-if (!fs.existsSync(uploadDir)) {
+if (!process.env.VERCEL && !fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
@@ -115,6 +115,11 @@ export const uploadImage = async (
 };
 
 const saveLocally = async (file: Express.Multer.File): Promise<string> => {
+  // On Vercel, always use Cloudinary (local storage not available)
+  if (process.env.VERCEL) {
+    throw new Error('Local file storage not available on Vercel. Please configure Cloudinary.');
+  }
+
   const filename = `car-${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`;
   const filepath = path.join(uploadDir, filename);
 
