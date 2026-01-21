@@ -17,9 +17,15 @@ const transporter = nodemailer.createTransport({
 // Verify transporter configuration
 transporter.verify((error, success) => {
   if (error) {
-    console.error('Email transporter error:', error);
+    console.error('❌ Email transporter configuration error:', error);
+    console.error('Please check your SMTP environment variables:');
+    console.error('  SMTP_HOST:', process.env.SMTP_HOST || 'NOT SET');
+    console.error('  SMTP_PORT:', process.env.SMTP_PORT || 'NOT SET');
+    console.error('  SMTP_USER:', process.env.SMTP_USER || 'NOT SET');
+    console.error('  SMTP_PASS:', process.env.SMTP_PASS ? '***SET***' : 'NOT SET');
   } else {
-    console.log('Email server is ready to send messages');
+    console.log('✅ Email server is ready to send messages');
+    console.log('📧 Sending from:', process.env.SMTP_USER);
   }
 });
 
@@ -93,7 +99,13 @@ export const sendRequestConfirmationEmail = async (
     `,
   };
 
-  await transporter.sendMail(mailOptions);
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`✅ Request confirmation email sent to: ${userEmail}`);
+  } catch (error: any) {
+    console.error('❌ Failed to send request confirmation email:', error);
+    throw error;
+  }
 };
 
 export const sendAdminNotificationEmail = async (
@@ -101,11 +113,12 @@ export const sendAdminNotificationEmail = async (
   car: any,
   user: any
 ): Promise<void> => {
-  const adminEmail = 'keaneishimwe@gmail.com';
+  // Send to multiple admin emails - primary admin first
+  const adminEmails = ['prospertuop@gmail.com', 'keaneishimwe@gmail.com'];
 
   const mailOptions = {
     from: `"Offisho Transport" <${process.env.SMTP_USER}>`,
-    to: adminEmail,
+    to: adminEmails.join(', '),
     subject: `New ${request.request_type} Request - ${car.name} ${car.model}`,
     html: `
       <!DOCTYPE html>
@@ -153,7 +166,13 @@ export const sendAdminNotificationEmail = async (
     `,
   };
 
-  await transporter.sendMail(mailOptions);
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`✅ Admin notification email sent to: ${adminEmails.join(', ')}`);
+  } catch (error: any) {
+    console.error('❌ Failed to send admin notification email:', error);
+    throw error;
+  }
 };
 
 export const sendStatusUpdateEmail = async (
@@ -227,7 +246,13 @@ export const sendStatusUpdateEmail = async (
     `,
   };
 
-  await transporter.sendMail(mailOptions);
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`✅ Status update email sent to: ${userEmail}`);
+  } catch (error: any) {
+    console.error('❌ Failed to send status update email:', error);
+    throw error;
+  }
 };
 
 export const sendContactEmail = async (
@@ -235,11 +260,16 @@ export const sendContactEmail = async (
   email: string,
   message: string
 ): Promise<void> => {
-  const adminEmail = 'keaneishimwe@gmail.com';
+  // Send to primary admin email
+  const adminEmail = 'prospertuop@gmail.com';
+  
+  // Also send to secondary admin if configured
+  const secondaryAdminEmail = process.env.ADMIN_EMAIL_SECONDARY || 'keaneishimwe@gmail.com';
+  const recipientEmails = [adminEmail, secondaryAdminEmail].filter(Boolean).join(', ');
 
   const mailOptions = {
     from: `"Offisho Transport" <${process.env.SMTP_USER}>`,
-    to: adminEmail,
+    to: recipientEmails,
     replyTo: email,
     subject: `New Contact Message from ${name}`,
     html: `
@@ -281,5 +311,16 @@ export const sendContactEmail = async (
     `,
   };
 
-  await transporter.sendMail(mailOptions);
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`✅ Contact email sent successfully to: ${recipientEmails}`);
+  } catch (error: any) {
+    console.error('❌ Failed to send contact email:', error);
+    console.error('Error details:', {
+      code: error.code,
+      command: error.command,
+      response: error.response,
+    });
+    throw error; // Re-throw to let caller handle it
+  }
 };
