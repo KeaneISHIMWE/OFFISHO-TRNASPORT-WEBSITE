@@ -267,47 +267,72 @@ const Booking: React.FC = () => {
               </div>
             </div>
 
-            {/* With Driver Option */}
+            {/* Driver Preference Toggle */}
             <div>
-              <label className="block text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2">
-                <User className="w-4 h-4 text-primary" />
+              <label className="block text-sm font-semibold text-silver/80 mb-3 flex items-center gap-2">
+                <User className="w-4 h-4 text-purple-electric" />
                 Driver Preference
               </label>
               <div className="flex gap-4">
-                <label className="flex-1 cursor-pointer">
+                {/* With Driver Option */}
+                <label className="flex-1 cursor-pointer touch-target">
                   <input
                     type="radio"
                     name="withDriver"
                     value="yes"
                     checked={formData.withDriver === true}
                     onChange={handleChange}
-                    className="hidden peer"
+                    className="hidden"
                   />
                   <div className={cn(
-                    "px-4 py-3 bg-background border border-white/10 rounded-xl text-white text-center transition-all hover:bg-white/5",
-                    transactionType === 'buy'
-                      ? "peer-checked:border-gold peer-checked:bg-gold/20"
-                      : "peer-checked:border-primary peer-checked:bg-primary/20"
+                    "px-4 py-4 rounded-xl text-center transition-all duration-300 relative overflow-hidden border-2 min-h-[80px] flex flex-col items-center justify-center",
+                    formData.withDriver
+                      ? "bg-purple-electric/20 border-purple-electric text-silver neon-glow shadow-lg shadow-purple-electric/20"
+                      : "bg-purple-card/50 border-purple-electric/20 text-silver/70 hover:bg-purple-card/70 hover:border-purple-electric/40"
                   )}>
-                    With Driver (+10,000 FRW)
+                    <div className="relative z-10 w-full">
+                      <div className="font-semibold mb-1">With Driver</div>
+                      <div className={cn(
+                        "text-xs mt-1",
+                        formData.withDriver ? "text-purple-electric font-medium" : "text-silver/60"
+                      )}>
+                        +10,000 FRW
+                      </div>
+                      {formData.withDriver && (
+                        <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-purple-electric neon-glow animate-pulse"></div>
+                      )}
+                    </div>
                   </div>
                 </label>
-                <label className="flex-1 cursor-pointer">
+
+                {/* Without Driver Option */}
+                <label className="flex-1 cursor-pointer touch-target">
                   <input
                     type="radio"
                     name="withDriver"
                     value="no"
                     checked={formData.withDriver === false}
                     onChange={handleChange}
-                    className="hidden peer"
+                    className="hidden"
                   />
                   <div className={cn(
-                    "px-4 py-3 bg-background border border-white/10 rounded-xl text-white text-center transition-all hover:bg-white/5",
-                    transactionType === 'buy'
-                      ? "peer-checked:border-gold peer-checked:bg-gold/20"
-                      : "peer-checked:border-primary peer-checked:bg-primary/20"
+                    "px-4 py-4 rounded-xl text-center transition-all duration-300 relative overflow-hidden border-2 min-h-[80px] flex flex-col items-center justify-center",
+                    !formData.withDriver
+                      ? "bg-purple-electric/20 border-purple-electric text-silver neon-glow shadow-lg shadow-purple-electric/20"
+                      : "bg-purple-card/50 border-purple-electric/20 text-silver/70 hover:bg-purple-card/70 hover:border-purple-electric/40"
                   )}>
-                    Without Driver (Self Drive)
+                    <div className="relative z-10 w-full">
+                      <div className="font-semibold mb-1">Self Drive</div>
+                      <div className={cn(
+                        "text-xs mt-1",
+                        !formData.withDriver ? "text-purple-electric font-medium" : "text-silver/60"
+                      )}>
+                        No driver
+                      </div>
+                      {!formData.withDriver && (
+                        <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-purple-electric neon-glow animate-pulse"></div>
+                      )}
+                    </div>
                   </div>
                 </label>
               </div>
