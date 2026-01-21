@@ -48,10 +48,10 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
       transition={{ duration: 0.3 }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group glass-card rounded-2xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col h-full"
+      className="group bg-white rounded-2xl overflow-hidden border border-lavender hover:border-purple-electric/50 transition-all duration-300 flex flex-col h-full neumorphism purple-glow-hover"
     >
       {/* Car Image */}
-      <div className="relative h-48 sm:h-56 bg-obsidian overflow-hidden">
+      <div className="relative h-48 sm:h-56 bg-lavender-light overflow-hidden">
         {!imageLoaded && car.image_url && (
           <div className="absolute inset-0 skeleton" />
         )}
@@ -65,14 +65,14 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
             onError={() => setImageLoaded(true)}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-slate-600 bg-obsidian-light">
+          <div className="w-full h-full flex items-center justify-center text-purple-deep/40 bg-lavender-light">
             <CarIcon className="w-12 h-12" />
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/50 to-transparent opacity-80" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent opacity-80" />
 
         {/* Category Badge */}
-        <span className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold shadow-lg bg-primary text-white glow-blue">
+        <span className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold shadow-lg electric-gradient text-white glow-purple-soft">
           {getCategoryLabel()}
         </span>
 
@@ -81,62 +81,62 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 20 }}
           transition={{ duration: 0.3 }}
-          className="absolute inset-0 flex items-center justify-center bg-obsidian/95 backdrop-blur-sm z-10"
+          className="absolute inset-0 flex items-center justify-center bg-white/95 backdrop-blur-sm z-10"
         >
           <div className="text-center space-y-4">
-            <div className="flex items-center justify-center gap-2 text-primary">
+            <div className="flex items-center justify-center gap-2 text-purple-electric">
               <Zap className="w-5 h-5" />
-              <span className="text-xl font-bold">{getHP()}</span>
+              <span className="text-xl font-bold text-purple-deep">{getHP()}</span>
             </div>
-            <div className="flex items-center justify-center gap-2 text-white">
-              <Gauge className="w-5 h-5 text-primary" />
+            <div className="flex items-center justify-center gap-2 text-purple-deep">
+              <Gauge className="w-5 h-5 text-purple-electric" />
               <span className="text-lg">{getTopSpeed()}</span>
             </div>
-            <div className="text-slate-400 text-sm">Year {getYear()}</div>
+            <div className="text-purple-deep/60 text-sm">Year {getYear()}</div>
           </div>
         </motion.div>
       </div>
 
       {/* Car Details */}
-      <div className="p-6 flex flex-col flex-grow">
-        <h3 className="text-xl font-display font-bold mb-4 text-white group-hover:text-primary transition-colors">
-          {car.name} <span className="text-slate-400 font-normal">{car.model}</span>
+      <div className="p-6 flex flex-col flex-grow bg-white">
+        <h3 className="text-xl font-display font-black mb-4 text-purple-deep group-hover:text-purple-electric transition-colors">
+          {car.name} <span className="text-purple-deep/60 font-normal">{car.model}</span>
         </h3>
 
         {/* Specs Icons */}
-        <div className="flex items-center gap-4 text-slate-400 mb-6 text-sm">
+        <div className="flex items-center gap-4 text-purple-deep/60 mb-6 text-sm">
           <div className="flex items-center gap-1.5" title="Seats">
-            <Users className="w-4 h-4 text-primary" />
+            <Users className="w-4 h-4 text-purple-electric" />
             <span>{getSeats()}</span>
           </div>
           <div className="flex items-center gap-1.5" title="Transmission">
-            <Gauge className="w-4 h-4 text-primary" />
+            <Gauge className="w-4 h-4 text-purple-electric" />
             <span>{getTransmission()}</span>
           </div>
           <div className="flex items-center gap-1.5" title="Fuel Type">
-            <Fuel className="w-4 h-4 text-primary" />
+            <Fuel className="w-4 h-4 text-purple-electric" />
             <span>{getFuelType()}</span>
           </div>
         </div>
 
         {/* Price and Book Button */}
-        <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between gap-4">
+        <div className="mt-auto pt-4 border-t border-lavender flex items-center justify-between gap-4">
           <div>
-            <p className="text-lg font-bold text-white">
+            <p className="text-lg font-black electric-gradient bg-clip-text text-transparent">
               {formatPrice(car.rental_price_per_day)}
-              <span className="text-xs font-normal text-slate-500 ml-1">/day</span>
+              <span className="text-xs font-normal text-purple-deep/60 ml-1">/day</span>
             </p>
           </div>
           {car.availability_status === 'available' ? (
             <Link
               to={`/cars/${car.id}?action=rent`}
-              className="px-4 py-2 rounded-lg bg-white/5 hover:bg-primary text-white font-medium transition-all duration-300 border border-white/10 hover:border-transparent flex items-center gap-2 group/btn hover:scale-105"
+              className="touch-target px-4 py-2.5 sm:py-2 rounded-lg electric-gradient hover:opacity-90 active:opacity-80 text-white font-medium transition-all duration-300 flex items-center gap-2 group/btn hover:scale-105 active:scale-95 glow-purple-soft"
             >
               Book
               <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
             </Link>
           ) : (
-            <span className="px-4 py-2 rounded-lg bg-white/5 text-slate-500 font-medium text-sm border border-white/5 cursor-not-allowed">
+            <span className="px-4 py-2.5 sm:py-2 rounded-lg bg-lavender text-purple-deep/40 font-medium text-sm border border-lavender cursor-not-allowed">
               Unavailable
             </span>
           )}

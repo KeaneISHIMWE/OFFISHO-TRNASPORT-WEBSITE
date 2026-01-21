@@ -58,9 +58,9 @@ const Booking: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex pt-20 bg-background">
+    <div className="min-h-screen flex flex-col lg:flex-row pt-20 sm:pt-24 bg-background">
       {/* Left Section - Informational */}
-      <div className="hidden lg:flex lg:w-1/2 bg-surface text-white p-12 flex-col justify-center relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-surface text-white p-8 lg:p-12 flex-col justify-center relative overflow-hidden">
         <div className="absolute inset-0 bg-primary/10 z-0" />
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -103,8 +103,8 @@ const Booking: React.FC = () => {
 
       {/* Right Section - Booking Form */}
       <div className={cn(
-        "w-full lg:w-1/2 glass-card p-8 lg:p-16 flex items-center justify-center border-l border-white/5 transition-all duration-500",
-        transactionType === 'buy' ? "border-l-gold/30" : "border-l-primary/30"
+        "w-full lg:w-1/2 glass-card p-4 sm:p-6 md:p-8 lg:p-16 flex items-center justify-center border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-500",
+        transactionType === 'buy' ? "border-t-gold/30 lg:border-l-gold/30" : "border-t-primary/30 lg:border-l-primary/30"
       )}>
         <motion.div
           initial={{ opacity: 0, x: 20 }}
@@ -112,24 +112,24 @@ const Booking: React.FC = () => {
           transition={{ duration: 0.6 }}
           className="w-full max-w-lg"
         >
-          <div className="mb-8 lg:hidden">
-            <h1 className="text-3xl font-bold text-white mb-2">Book Your Ride</h1>
-            <p className="text-slate-400">Fill in the details below to request a booking.</p>
+          <div className="mb-6 sm:mb-8 lg:hidden">
+            <h1 className="text-2xl sm:text-3xl font-display font-bold text-white mb-2">Book Your Ride</h1>
+            <p className="text-sm sm:text-base text-slate-400">Fill in the details below to request a booking.</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {/* Transaction Type Toggle */}
             <div>
-              <label className="block text-sm font-semibold text-slate-300 mb-3">Transaction Type</label>
-              <div className="flex gap-3 p-1 glass-card rounded-xl">
+              <label className="block text-sm font-semibold text-slate-300 mb-2 sm:mb-3">Transaction Type</label>
+              <div className="flex gap-2 sm:gap-3 p-1 glass-card rounded-xl">
                 <button
                   type="button"
                   onClick={() => setTransactionType('rent')}
                   className={cn(
-                    "flex-1 px-4 py-3 rounded-lg font-semibold transition-all duration-300",
+                    "touch-target flex-1 px-4 py-3 rounded-lg font-semibold transition-all duration-300 active:scale-95",
                     transactionType === 'rent'
                       ? "bg-primary text-white glow-blue shadow-lg"
-                      : "text-slate-400 hover:text-white"
+                      : "text-slate-400 hover:text-white active:bg-white/5"
                   )}
                 >
                   Rent
@@ -138,10 +138,10 @@ const Booking: React.FC = () => {
                   type="button"
                   onClick={() => setTransactionType('buy')}
                   className={cn(
-                    "flex-1 px-4 py-3 rounded-lg font-semibold transition-all duration-300",
+                    "touch-target flex-1 px-4 py-3 rounded-lg font-semibold transition-all duration-300 active:scale-95",
                     transactionType === 'buy'
                       ? "bg-gold text-white glow-gold shadow-lg"
-                      : "text-slate-400 hover:text-white"
+                      : "text-slate-400 hover:text-white active:bg-white/5"
                   )}
                 >
                   Buy
@@ -367,10 +367,10 @@ const Booking: React.FC = () => {
             <button
               type="submit"
               className={cn(
-                "w-full py-4 rounded-xl font-bold text-white transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center gap-2",
+                "touch-target w-full py-3 sm:py-4 rounded-xl font-bold text-white transition-all duration-300 transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 text-sm sm:text-base",
                 transactionType === 'buy'
-                  ? "bg-gold hover:bg-gold-dark shadow-lg shadow-gold/25 glow-gold"
-                  : "bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 glow-blue"
+                  ? "bg-gold hover:bg-gold-dark active:bg-gold-dark shadow-lg shadow-gold/25 glow-gold"
+                  : "bg-primary hover:bg-primary/90 active:bg-primary/80 shadow-lg shadow-primary/25 glow-blue"
               )}
             >
               {transactionType === 'buy' ? 'Submit Purchase Request' : 'Submit Booking Request'}

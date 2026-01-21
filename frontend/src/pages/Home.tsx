@@ -8,31 +8,17 @@ const Home: React.FC = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-        {/* Video Background */}
-        <div className="absolute inset-0 z-0">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover"
-            poster="https://images.unsplash.com/photo-1562519822-991c01825595?q=80&w=2669&auto=format&fit=crop"
-          >
-            <source src="https://videos.pexels.com/video-files/3045163/3045163-hd_1920_1080_30fps.mp4" type="video/mp4" />
-            {/* Fallback image if video fails */}
-            <img
-              src="https://images.unsplash.com/photo-1562519822-991c01825595?q=80&w=2669&auto=format&fit=crop"
-              alt="Luxury Car Background"
-              className="w-full h-full object-cover"
-            />
-          </video>
-          <div className="absolute inset-0 bg-obsidian/95" />
-          <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/50 to-transparent" />
+      <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-center justify-center overflow-hidden px-4 sm:px-6 bg-gradient-to-br from-white via-lavender-light to-white">
+        {/* Subtle Background Pattern */}
+        <div className="absolute inset-0 z-0 opacity-30">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `radial-gradient(circle at 20% 50%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
+                             radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 50%)`
+          }}></div>
         </div>
 
         {/* Content */}
-        <div className="relative z-10 container mx-auto px-4 text-center">
+        <div className="relative z-10 container mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -43,47 +29,47 @@ const Home: React.FC = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
-              className="inline-block px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary font-medium text-sm mb-6 glass-effect"
+              className="inline-block px-3 py-1.5 sm:px-4 rounded-full border border-primary/30 bg-primary/10 text-primary font-medium text-xs sm:text-sm mb-4 sm:mb-6 glass-effect"
             >
               Premium Event Car Rentals
             </motion.span>
 
-            <h1 className="text-5xl md:text-7xl font-display font-bold text-white mb-6 leading-tight tracking-tight">
-              Arrive in <span className="text-gradient-blue">Style</span> at <br /> Every Event
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-display font-bold text-white mb-4 sm:mb-6 leading-tight tracking-tight px-2">
+              Arrive in <span className="text-gradient-blue">Style</span> at <br className="hidden sm:block" /> Every Event
             </h1>
 
-            <p className="text-lg md:text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-slate-300 mb-6 sm:mb-8 md:mb-10 max-w-2xl mx-auto leading-relaxed px-4">
               Experience the ultimate comfort and elegance with our premium fleet of luxury vehicles.
               Perfect for weddings, corporate events, and VIP transport in Rwanda.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 px-4">
               <Link
                 to="/booking"
-                className="w-full sm:w-auto px-8 py-4 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold shadow-lg shadow-primary/25 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/40 flex items-center justify-center gap-2 group"
+                className="touch-target w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-primary hover:bg-primary/90 active:bg-primary/80 text-white rounded-xl font-semibold shadow-lg shadow-primary/25 transition-all duration-300 hover:scale-105 active:scale-95 hover:shadow-xl hover:shadow-primary/40 flex items-center justify-center gap-2 group"
               >
                 Book Your Ride
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 to="/cars"
-                className="w-full sm:w-auto px-8 py-4 glass-card hover:bg-white/5 text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105"
+                className="touch-target w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 glass-card hover:bg-white/5 active:bg-white/10 text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105 active:scale-95"
               >
                 View Our Fleet
               </Link>
             </div>
 
             {/* Trust Badges */}
-            <div className="mt-16 pt-8 border-t border-white/5 grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="mt-12 sm:mt-16 pt-6 sm:pt-8 border-t border-purple-electric/20 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 md:gap-8 px-4">
               {[
                 { label: "Trusted Service", icon: Shield },
                 { label: "Premium Fleet", icon: Car },
                 { label: "24/7 Support", icon: Clock },
                 { label: "Expert Drivers", icon: Star }
               ].map((badge, idx) => (
-                <div key={idx} className="flex flex-col items-center gap-2 text-slate-400">
-                  <badge.icon className="w-6 h-6 text-primary" />
-                  <span className="text-sm font-medium">{badge.label}</span>
+                <div key={idx} className="flex flex-col items-center gap-1.5 sm:gap-2 text-purple-deep/60">
+                  <badge.icon className="w-5 h-5 sm:w-6 sm:h-6 text-purple-electric" />
+                  <span className="text-xs sm:text-sm font-medium text-center">{badge.label}</span>
                 </div>
               ))}
             </div>
@@ -92,14 +78,14 @@ const Home: React.FC = () => {
       </section>
 
       {/* Featured Fleet Preview */}
-      <section className="py-24 bg-background relative">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Our Premium Fleet</h2>
-            <p className="text-slate-400">Select from our exclusive collection of luxury vehicles</p>
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-white relative">
+        <div className="container mx-auto">
+          <div className="text-center mb-8 sm:mb-12 md:mb-16 px-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-black text-purple-deep mb-2 sm:mb-4">Our Premium Fleet</h2>
+            <p className="text-sm sm:text-base text-purple-deep/70">Select from our exclusive collection of luxury vehicles</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 px-4 sm:px-0">
             {[
               {
                 name: "Luxury Sedan",
@@ -136,35 +122,35 @@ const Home: React.FC = () => {
       </section>
 
       {/* Services Section */}
-      <section className="py-24 bg-obsidian-light relative">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-lavender-light relative">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 md:gap-16 items-center px-4">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-6">
-                Why Choose <span className="text-gradient-blue">Offisho?</span>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-black text-purple-deep mb-4 sm:mb-6">
+                Why Choose <span className="text-gradient-purple">Offisho?</span>
               </h2>
-              <p className="text-slate-400 text-lg mb-8 leading-relaxed">
+              <p className="text-purple-deep/70 text-base sm:text-lg mb-6 sm:mb-8 leading-relaxed">
                 We don't just provide transportation; we deliver an experience.
                 Our commitment to excellence ensures your journey is as memorable as your destination.
               </p>
 
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {[
                   { title: "Immaculate Condition", desc: "Every vehicle is detailed to perfection before your ride." },
                   { title: "Professional Chauffeurs", desc: "Experienced, discreet, and punctual drivers." },
                   { title: "Flexible Packages", desc: "Tailored solutions for weddings, corporate, and leisure." }
                 ].map((item, idx) => (
-                  <div key={idx} className="flex gap-4">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
-                      <CheckCircle2 className="w-6 h-6" />
+                  <div key={idx} className="flex gap-3 sm:gap-4">
+                    <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-lavender text-purple-electric flex items-center justify-center touch-target neumorphism">
+                      <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6" />
                     </div>
                     <div>
-                      <h3 className="text-white font-bold text-lg mb-1">{item.title}</h3>
-                      <p className="text-slate-400">{item.desc}</p>
+                      <h3 className="text-purple-deep font-black text-base sm:text-lg mb-1">{item.title}</h3>
+                      <p className="text-purple-deep/60 text-sm sm:text-base">{item.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -184,16 +170,16 @@ const Home: React.FC = () => {
                 className="relative rounded-3xl shadow-2xl border border-white/10"
               />
               {/* Floating Card */}
-              <div className="absolute -bottom-6 -left-6 glass-card p-6 rounded-2xl shadow-xl max-w-xs hidden md:block">
+              <div className="absolute -bottom-6 -left-6 bg-white border border-lavender p-6 rounded-2xl shadow-xl max-w-xs hidden md:block neumorphism">
                 <div className="flex items-center gap-4">
                   <div className="flex -space-x-3">
                     {[1, 2, 3].map(i => (
-                      <div key={i} className="w-10 h-10 rounded-full border-2 border-card bg-slate-700 block" />
+                      <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-purple-electric/20 block" />
                     ))}
                   </div>
                   <div>
-                    <p className="text-white font-bold">500+ Happy Clients</p>
-                    <p className="text-slate-400 text-xs">Rated 5.0/5 Stars</p>
+                    <p className="text-purple-deep font-black">500+ Happy Clients</p>
+                    <p className="text-purple-deep/60 text-xs">Rated 5.0/5 Stars</p>
                   </div>
                 </div>
               </div>
@@ -203,18 +189,17 @@ const Home: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-primary/5" />
-        <div className="container mx-auto px-4 relative z-10 text-center">
-          <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-6">Ready to Experience Luxury?</h2>
-          <p className="text-slate-400 max-w-2xl mx-auto mb-10 text-lg">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 relative overflow-hidden bg-gradient-to-br from-lavender-light via-white to-lavender-light">
+        <div className="container mx-auto relative z-10 text-center px-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-black text-purple-deep mb-4 sm:mb-6">Ready to Experience Luxury?</h2>
+          <p className="text-purple-deep/70 max-w-2xl mx-auto mb-6 sm:mb-8 md:mb-10 text-sm sm:text-base md:text-lg">
             Book your dream car today and elevate your next event. Seamless booking, instant confirmation.
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-6">
-            <Link to="/booking" className="px-8 py-4 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold shadow-lg shadow-primary/25 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/40">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 md:gap-6">
+            <Link to="/booking" className="touch-target px-6 sm:px-8 py-3 sm:py-4 electric-gradient hover:opacity-90 active:opacity-80 text-white rounded-xl font-bold shadow-lg glow-purple-soft transition-all duration-300 hover:scale-105 active:scale-95 hover:shadow-xl">
               Book Now
             </Link>
-            <Link to="/contact" className="px-8 py-4 glass-card hover:bg-white/5 text-white rounded-xl font-bold transition-all duration-300 hover:scale-105">
+            <Link to="/contact" className="touch-target px-6 sm:px-8 py-3 sm:py-4 bg-white border-2 border-purple-electric hover:bg-lavender text-purple-electric rounded-xl font-bold transition-all duration-300 hover:scale-105 active:scale-95 neumorphism">
               Contact Support
             </Link>
           </div>
@@ -247,7 +232,7 @@ const FleetCard: React.FC<FleetCardProps> = ({ car, idx }) => {
       transition={{ delay: idx * 0.1 }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group relative rounded-2xl overflow-hidden glass-card border border-white/5 hover:border-primary/50 transition-all duration-500"
+      className="group relative rounded-2xl overflow-hidden bg-white border border-lavender hover:border-purple-electric/50 transition-all duration-500 neumorphism purple-glow-hover"
     >
       <div className="aspect-[4/3] overflow-hidden relative">
         {car.image ? (
@@ -261,34 +246,34 @@ const FleetCard: React.FC<FleetCardProps> = ({ car, idx }) => {
             <Car className="w-16 h-16 text-slate-600" />
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/50 to-transparent opacity-90" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent opacity-90" />
         
         {/* Specs Overlay on Hover */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 20 }}
           transition={{ duration: 0.3 }}
-          className="absolute inset-0 flex items-center justify-center bg-obsidian/95 backdrop-blur-sm"
+          className="absolute inset-0 flex items-center justify-center bg-white/95 backdrop-blur-sm"
         >
           <div className="text-center space-y-4">
-            <div className="flex items-center justify-center gap-2 text-primary">
+            <div className="flex items-center justify-center gap-2 text-purple-electric">
               <Zap className="w-5 h-5" />
-              <span className="text-xl font-bold">{car.specs.hp}</span>
+              <span className="text-xl font-bold text-purple-deep">{car.specs.hp}</span>
             </div>
-            <div className="flex items-center justify-center gap-2 text-white">
-              <Gauge className="w-5 h-5 text-primary" />
+            <div className="flex items-center justify-center gap-2 text-purple-deep">
+              <Gauge className="w-5 h-5 text-purple-electric" />
               <span className="text-lg">{car.specs.topSpeed}</span>
             </div>
-            <div className="text-slate-400 text-sm">Year {car.specs.year}</div>
+            <div className="text-purple-deep/60 text-sm">Year {car.specs.year}</div>
           </div>
         </motion.div>
       </div>
       <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
-        <span className="px-3 py-1 text-xs font-medium bg-primary text-white rounded-full mb-3 inline-block glow-blue">
+        <span className="px-3 py-1 text-xs font-medium electric-gradient text-white rounded-full mb-3 inline-block glow-purple-soft">
           {car.tag}
         </span>
-        <h3 className="text-xl font-display font-bold text-white mb-1">{car.name}</h3>
-        <p className="text-primary font-medium">{car.price} <span className="text-slate-400 text-sm">/ day</span></p>
+        <h3 className="text-xl font-display font-black text-purple-deep mb-1">{car.name}</h3>
+        <p className="electric-gradient bg-clip-text text-transparent font-bold">{car.price} <span className="text-purple-deep/60 text-sm font-normal">/ day</span></p>
       </div>
     </motion.div>
   );

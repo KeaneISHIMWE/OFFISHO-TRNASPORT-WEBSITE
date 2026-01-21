@@ -50,39 +50,39 @@ const Cars: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-24 pb-12">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-background pt-20 sm:pt-24 pb-8 sm:pb-12">
+      <div className="container mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="text-center mb-8 sm:mb-12 px-4"
         >
-          <span className="inline-block px-3 py-1 text-xs font-semibold tracking-wider text-primary uppercase bg-primary/10 rounded-full mb-4">
+          <span className="inline-block px-3 py-1 text-xs font-semibold tracking-wider text-primary uppercase bg-primary/10 rounded-full mb-3 sm:mb-4">
             Our Fleet
           </span>
-          <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold text-white mb-3 sm:mb-4">
             Choose Your Perfect Ride
           </h1>
-          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+          <p className="text-slate-400 text-sm sm:text-base md:text-lg max-w-2xl mx-auto">
             From elegant sedans to luxurious limousines, find the vehicle that suits your style.
           </p>
         </motion.div>
 
         {/* Mobile Filter Toggle */}
-        <div className="lg:hidden mb-6">
+        <div className="lg:hidden mb-4 sm:mb-6 px-4">
           <button
             onClick={() => setShowMobileFilters(!showMobileFilters)}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-card border border-white/10 rounded-xl text-white font-medium"
+            className="touch-target w-full flex items-center justify-center gap-2 px-4 py-3 bg-card border border-white/10 rounded-xl text-white font-medium active:bg-white/5 transition-colors"
           >
             <Filter className="w-5 h-5" />
             {showMobileFilters ? 'Hide Filters' : 'Show Filters'}
           </button>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8 px-4 sm:px-0">
           {/* Filters Sidebar */}
           <aside className={cn(
-            "lg:w-72 bg-card p-6 rounded-2xl border border-white/5 h-fit lg:sticky lg:top-24 transition-all duration-300",
+            "lg:w-72 glass-card p-4 sm:p-6 rounded-2xl h-fit lg:sticky lg:top-24 transition-all duration-300",
             showMobileFilters ? "block" : "hidden lg:block"
           )}>
             <div className="flex items-center justify-between mb-6">
@@ -180,7 +180,7 @@ const Cars: React.FC = () => {
                   eventType: '',
                 })
               }
-              className="w-full py-3 rounded-xl font-semibold bg-white/5 hover:bg-white/10 text-white transition-colors border border-white/10"
+              className="touch-target w-full py-3 rounded-xl font-semibold bg-white/5 hover:bg-white/10 active:bg-white/15 text-white transition-colors border border-white/10"
             >
               Clear All Filters
             </button>
@@ -205,7 +205,7 @@ const Cars: React.FC = () => {
                     Showing <span className="font-bold text-white">{cars.length}</span> {cars.length === 1 ? 'car' : 'cars'}
                   </p>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                   {cars.map((car) => (
                     <CarCard key={car.id} car={car} />
                   ))}

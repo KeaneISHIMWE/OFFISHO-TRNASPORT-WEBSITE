@@ -4,27 +4,27 @@ import { Facebook, Instagram, Twitter, Linkedin, MapPin, Phone, Mail } from 'luc
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-background text-white mt-auto relative overflow-hidden border-t border-white/5">
+    <footer className="bg-white text-purple-deep mt-auto relative overflow-hidden border-t border-lavender">
 
       {/* Footer Content */}
-      <div className="container mx-auto px-4 lg:px-8 py-16 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+      <div className="container mx-auto py-8 sm:py-12 md:py-16 relative z-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 md:gap-12 mb-8 sm:mb-10 md:mb-12">
           {/* Company Information */}
-          <div className="space-y-6">
-            <Link to="/" className="flex items-center gap-2 group">
-              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-primary font-bold text-xl">OT</span>
+          <div className="space-y-4 sm:space-y-6">
+            <Link to="/" className="flex items-center gap-2 group touch-target">
+              <div className="w-10 h-10 bg-lavender rounded-xl flex items-center justify-center shadow-lg neumorphism">
+                <span className="text-purple-electric font-bold text-lg sm:text-xl">OT</span>
               </div>
-              <span className="text-xl font-bold font-sans tracking-tight">
-                Offisho<span className="text-primary">Transport</span>
+              <span className="text-lg sm:text-xl font-display font-black tracking-tight">
+                Offisho<span className="text-gradient-purple">Transport</span>
               </span>
             </Link>
-            <p className="text-slate-400 text-sm leading-relaxed">
+            <p className="text-purple-deep/70 text-xs sm:text-sm leading-relaxed">
               Your premium choice for luxury event transportation in Rwanda.
               Making every journey an experience to remember with elegance and style.
             </p>
             {/* Social Media Icons */}
-            <div className="flex gap-4">
+            <div className="flex gap-3 sm:gap-4">
               {[
                 { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
                 { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
@@ -36,7 +36,7 @@ const Footer: React.FC = () => {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-slate-400 hover:bg-primary hover:text-white transition-all duration-300"
+                  className="touch-target w-10 h-10 rounded-full bg-lavender flex items-center justify-center text-purple-deep/60 hover:bg-purple-electric hover:text-white active:bg-purple-electric/80 transition-all duration-300 neumorphism"
                   aria-label={social.label}
                 >
                   <social.icon className="w-5 h-5" />
@@ -47,54 +47,54 @@ const Footer: React.FC = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-bold mb-6">Quick Links</h3>
-            <ul className="space-y-4 text-slate-400">
-              <li><Link to="/" className="hover:text-primary transition-colors">Home</Link></li>
-              <li><Link to="/cars" className="hover:text-primary transition-colors">Our Fleet</Link></li>
-              <li><Link to="/about" className="hover:text-primary transition-colors">About Us</Link></li>
-              <li><Link to="/booking" className="hover:text-primary transition-colors">Book Now</Link></li>
+            <h3 className="text-base sm:text-lg font-display font-black mb-4 sm:mb-6 text-purple-deep">Quick Links</h3>
+            <ul className="space-y-3 sm:space-y-4 text-purple-deep/70">
+              <li><Link to="/" className="touch-target block py-1 hover:text-purple-electric active:text-purple-electric/80 transition-colors">Home</Link></li>
+              <li><Link to="/cars" className="touch-target block py-1 hover:text-purple-electric active:text-purple-electric/80 transition-colors">Our Fleet</Link></li>
+              <li><Link to="/about" className="touch-target block py-1 hover:text-purple-electric active:text-purple-electric/80 transition-colors">About Us</Link></li>
+              <li><Link to="/booking" className="touch-target block py-1 hover:text-purple-electric active:text-purple-electric/80 transition-colors">Book Now</Link></li>
             </ul>
           </div>
 
           {/* Our Services */}
           <div>
-            <h3 className="text-lg font-bold mb-6">Our Services</h3>
-            <ul className="space-y-4 text-slate-400">
-              <li><Link to="/cars" className="hover:text-primary transition-colors">Wedding Transportation</Link></li>
-              <li><Link to="/cars" className="hover:text-primary transition-colors">Corporate Events</Link></li>
-              <li><Link to="/cars" className="hover:text-primary transition-colors">Airport Transfers</Link></li>
-              <li><Link to="/cars" className="hover:text-primary transition-colors">VIP Services</Link></li>
+            <h3 className="text-base sm:text-lg font-display font-black mb-4 sm:mb-6 text-purple-deep">Our Services</h3>
+            <ul className="space-y-3 sm:space-y-4 text-purple-deep/70">
+              <li><Link to="/cars" className="touch-target block py-1 hover:text-purple-electric active:text-purple-electric/80 transition-colors">Wedding Transportation</Link></li>
+              <li><Link to="/cars" className="touch-target block py-1 hover:text-purple-electric active:text-purple-electric/80 transition-colors">Corporate Events</Link></li>
+              <li><Link to="/cars" className="touch-target block py-1 hover:text-purple-electric active:text-purple-electric/80 transition-colors">Airport Transfers</Link></li>
+              <li><Link to="/cars" className="touch-target block py-1 hover:text-purple-electric active:text-purple-electric/80 transition-colors">VIP Services</Link></li>
             </ul>
           </div>
 
           {/* Contact Us */}
           <div>
-            <h3 className="text-lg font-bold mb-6">Contact Us</h3>
-            <ul className="space-y-4 text-slate-400">
-              <li className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-primary mt-1" />
-                <span>Musanze, Rwanda</span>
+            <h3 className="text-base sm:text-lg font-display font-black mb-4 sm:mb-6 text-purple-deep">Contact Us</h3>
+            <ul className="space-y-3 sm:space-y-4 text-purple-deep/70">
+              <li className="flex items-start gap-2 sm:gap-3">
+                <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-purple-electric mt-1 flex-shrink-0" />
+                <span className="text-xs sm:text-sm">Musanze, Rwanda</span>
               </li>
-              <li className="flex items-start gap-3">
-                <Phone className="w-5 h-5 text-primary mt-1" />
-                <span>+250 785 344 214</span>
+              <li className="flex items-start gap-2 sm:gap-3">
+                <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-purple-electric mt-1 flex-shrink-0" />
+                <a href="tel:0785344214" className="touch-target text-xs sm:text-sm hover:text-purple-electric transition-colors">0 785 344 214</a>
               </li>
-              <li className="flex items-start gap-3">
-                <Mail className="w-5 h-5 text-primary mt-1" />
-                <span>offishotransport@gmail.com</span>
+              <li className="flex items-start gap-2 sm:gap-3">
+                <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-purple-electric mt-1 flex-shrink-0" />
+                <a href="mailto:prospertuop@gmail.com" className="touch-target text-xs sm:text-sm hover:text-purple-electric transition-colors break-all">prospertuop@gmail.com</a>
               </li>
             </ul>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-white/10 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-slate-500 text-sm">
+        <div className="border-t border-lavender pt-6 sm:pt-8 mt-6 sm:mt-8 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
+          <p className="text-purple-deep/60 text-xs sm:text-sm text-center sm:text-left">
             © 2026 Offisho Transport. All rights reserved.
           </p>
-          <div className="flex gap-8 text-sm text-slate-500">
-            <Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
-            <Link to="/terms" className="hover:text-primary transition-colors">Terms of Service</Link>
+          <div className="flex flex-wrap gap-4 sm:gap-6 md:gap-8 text-xs sm:text-sm text-purple-deep/60 justify-center sm:justify-end">
+            <Link to="/privacy" className="touch-target hover:text-purple-electric active:text-purple-electric/80 transition-colors">Privacy Policy</Link>
+            <Link to="/terms" className="touch-target hover:text-purple-electric active:text-purple-electric/80 transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>

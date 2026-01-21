@@ -78,14 +78,14 @@ const AdminDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-obsidian pt-24 pb-12">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex gap-8">
+    <div className="min-h-screen bg-obsidian pt-20 sm:pt-24 pb-8 sm:pb-12">
+      <div className="container mx-auto">
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8">
           {/* Side Navigation */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="glass-card rounded-2xl p-6 sticky top-24">
-              <h1 className="text-2xl font-display font-bold text-white mb-6 flex items-center gap-2">
-                <LayoutDashboard className="w-6 h-6 text-primary" />
+            <div className="glass-card rounded-2xl p-4 sm:p-6 sticky top-20 sm:top-24">
+              <h1 className="text-xl sm:text-2xl font-display font-bold text-white mb-4 sm:mb-6 flex items-center gap-2">
+                <LayoutDashboard className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                 Dashboard
               </h1>
               <nav className="space-y-2">
@@ -98,10 +98,10 @@ const AdminDashboard: React.FC = () => {
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as any)}
                     className={cn(
-                      "w-full px-4 py-3 font-semibold capitalize flex items-center gap-3 transition-all duration-300 rounded-xl",
+                      "touch-target w-full px-4 py-3 font-semibold capitalize flex items-center gap-3 transition-all duration-300 rounded-xl",
                       activeTab === tab.id
                         ? "bg-primary/20 text-primary border border-primary/30 glow-blue"
-                        : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
+                        : "text-slate-400 hover:text-white hover:bg-white/5 active:bg-white/10 border border-transparent"
                     )}
                   >
                     <tab.icon className="w-5 h-5" />
@@ -115,7 +115,7 @@ const AdminDashboard: React.FC = () => {
           {/* Main Content */}
           <main className="flex-1 min-w-0">
             {/* Mobile Tabs */}
-            <div className="lg:hidden mb-8 flex space-x-2 border-b border-white/10">
+            <div className="lg:hidden mb-6 sm:mb-8 flex space-x-1 sm:space-x-2 border-b border-white/10 overflow-x-auto px-4">
               {[
                 { id: 'cars', label: 'Cars', icon: CarIcon },
                 { id: 'requests', label: 'Requests', icon: FileText },
@@ -125,14 +125,14 @@ const AdminDashboard: React.FC = () => {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
                   className={cn(
-                    "px-4 py-3 font-semibold capitalize flex items-center gap-2 transition-all relative top-[1px]",
+                    "touch-target px-3 sm:px-4 py-3 font-semibold capitalize flex items-center gap-2 transition-all relative top-[1px] whitespace-nowrap",
                     activeTab === tab.id
                       ? "border-b-2 border-primary text-primary"
-                      : "text-slate-400 hover:text-white border-b-2 border-transparent"
+                      : "text-slate-400 hover:text-white active:text-white border-b-2 border-transparent"
                   )}
                 >
                   <tab.icon className="w-4 h-4" />
-                  {tab.label}
+                  <span className="text-sm sm:text-base">{tab.label}</span>
                 </button>
               ))}
             </div>
@@ -145,7 +145,7 @@ const AdminDashboard: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}
-                  className="grid grid-cols-1 md:grid-cols-3 gap-6"
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-4 sm:px-0"
                 >
                   {/* Large Revenue Card */}
                   <motion.div
@@ -261,7 +261,7 @@ const AdminDashboard: React.FC = () => {
                   setEditingCar(null);
                   setShowCarForm(true);
                 }}
-                      className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all duration-300 hover:scale-105 glow-blue"
+                      className="touch-target bg-primary hover:bg-primary/90 active:bg-primary/80 text-white px-4 py-2.5 sm:py-2 rounded-xl flex items-center gap-2 transition-all duration-300 hover:scale-105 active:scale-95 glow-blue text-sm sm:text-base"
                     >
                       <Plus className="w-4 h-4" />
                       Add New Car

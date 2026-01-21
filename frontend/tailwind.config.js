@@ -8,8 +8,18 @@ module.exports = {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: {
+        DEFAULT: "1rem",
+        sm: "1.5rem",
+        lg: "2rem",
+        xl: "2rem",
+        "2xl": "2rem",
+      },
       screens: {
+        sm: "640px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1280px",
         "2xl": "1400px",
       },
     },
@@ -48,15 +58,20 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        obsidian: {
-          DEFAULT: '#050505',
-          light: '#0a0a0a',
-          lighter: '#151515',
+        white: {
+          DEFAULT: '#FFFFFF',
+          gloss: '#FAFAFA',
         },
-        gold: {
-          DEFAULT: '#F59E0B',
-          light: '#FCD34D',
-          dark: '#D97706',
+        purple: {
+          electric: '#7C3AED',
+          deep: '#2E1065',
+          violet: '#6D28D9',
+          bright: '#8B5CF6',
+        },
+        lavender: {
+          DEFAULT: '#F3E8FF',
+          light: '#FAF5FF',
+          soft: '#F9FAFB',
         },
       },
       borderRadius: {
