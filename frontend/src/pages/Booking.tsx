@@ -203,20 +203,22 @@ const Booking: React.FC = () => {
                 <CarIcon className="w-4 h-4 text-purple-electric" />
                 Select Vehicle
               </label>
-              <select
-                name="vehicle"
-                value={formData.vehicle}
-                onChange={handleChange}
-                className="w-full px-4 py-3 bg-purple-card border border-purple-electric/30 rounded-xl text-silver focus:outline-none focus:border-purple-electric focus:ring-1 focus:ring-purple-electric transition-all neon-border focus:neon-glow [&>option]:bg-purple-card"
-                required
-              >
-                <option value="">Choose a car</option>
-                {cars.map((car) => (
-                  <option key={car.id} value={car.id}>
-                    {car.name} {car.model}
-                  </option>
-                ))}
-              </select>
+              <div className="nebula-select-container">
+                <select
+                  name="vehicle"
+                  value={formData.vehicle}
+                  onChange={handleChange}
+                  className="nebula-select"
+                  required
+                >
+                  <option value="">Choose a car</option>
+                  {cars.map((car) => (
+                    <option key={car.id} value={car.id}>
+                      {car.name} {car.model}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             {/* Event Type & Date Row */}
@@ -227,22 +229,24 @@ const Booking: React.FC = () => {
                   <Calendar className="w-4 h-4 text-purple-electric" />
                   Event Type
                 </label>
-                <select
-                  name="eventType"
-                  value={formData.eventType}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 bg-purple-card border border-purple-electric/30 rounded-xl text-silver focus:outline-none focus:border-purple-electric focus:ring-1 focus:ring-purple-electric transition-all neon-border focus:neon-glow [&>option]:bg-purple-card"
-                  required
-                >
-                  <option value="">Select event type</option>
-                  <option value="wedding">Wedding</option>
-                  <option value="corporate">Corporate Event</option>
-                  <option value="tour">Tour</option>
-                  <option value="party">Party</option>
-                  <option value="graduation">Prom & Graduation</option>
-                  <option value="birthday">Birthday Celebration</option>
-                  <option value="vip">VIP Service</option>
-                </select>
+                <div className="nebula-select-container">
+                  <select
+                    name="eventType"
+                    value={formData.eventType}
+                    onChange={handleChange}
+                    className="nebula-select"
+                    required
+                  >
+                    <option value="">Select event type</option>
+                    <option value="wedding">Wedding</option>
+                    <option value="corporate">Corporate Event</option>
+                    <option value="tour">Tour</option>
+                    <option value="party">Party</option>
+                    <option value="graduation">Prom & Graduation</option>
+                    <option value="birthday">Birthday Celebration</option>
+                    <option value="vip">VIP Service</option>
+                  </select>
+                </div>
               </div>
 
               {/* Event Date */}

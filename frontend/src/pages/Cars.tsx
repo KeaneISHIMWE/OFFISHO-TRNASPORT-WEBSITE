@@ -115,18 +115,20 @@ const Cars: React.FC = () => {
             {/* Car Type */}
             <div className="mb-6">
               <label className="block text-sm font-semibold text-slate-300 mb-2">Car Type</label>
-              <select
-                value={filters.type}
-                onChange={(e) => handleFilterChange('type', e.target.value)}
-                className="w-full px-4 py-2.5 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50"
-              >
-                <option value="">All Types</option>
-                <option value="luxury">Luxury</option>
-                <option value="suv">SUV</option>
-                <option value="sedan">Sedan</option>
-                <option value="convertible">Convertible</option>
-                <option value="van">Van</option>
-              </select>
+              <div className="nebula-select-container">
+                <select
+                  value={filters.type}
+                  onChange={(e) => handleFilterChange('type', e.target.value)}
+                  className="nebula-select"
+                >
+                  <option value="">All Types</option>
+                  <option value="luxury">Luxury</option>
+                  <option value="suv">SUV</option>
+                  <option value="sedan">Sedan</option>
+                  <option value="convertible">Convertible</option>
+                  <option value="van">Van</option>
+                </select>
+              </div>
             </div>
 
             {/* Price Range */}
@@ -155,17 +157,19 @@ const Cars: React.FC = () => {
             {/* Event Type */}
             <div className="mb-8">
               <label className="block text-sm font-semibold text-slate-300 mb-2">Event Type</label>
-              <select
-                value={filters.eventType}
-                onChange={(e) => handleFilterChange('eventType', e.target.value)}
-                className="w-full px-4 py-2.5 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50"
-              >
-                <option value="">All Events</option>
-                <option value="wedding">Wedding</option>
-                <option value="corporate">Corporate</option>
-                <option value="tour">Tour</option>
-                <option value="party">Party</option>
-              </select>
+              <div className="nebula-select-container">
+                <select
+                  value={filters.eventType}
+                  onChange={(e) => handleFilterChange('eventType', e.target.value)}
+                  className="nebula-select"
+                >
+                  <option value="">All Events</option>
+                  <option value="wedding">Wedding</option>
+                  <option value="corporate">Corporate</option>
+                  <option value="tour">Tour</option>
+                  <option value="party">Party</option>
+                </select>
+              </div>
             </div>
 
             {/* Clear Filters */}

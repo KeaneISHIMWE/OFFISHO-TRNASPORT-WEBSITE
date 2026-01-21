@@ -669,35 +669,39 @@ const CarForm: React.FC<CarFormProps> = ({ car, onClose, onSuccess }) => {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold text-slate-300 mb-2">Car Type</label>
-              <select
-                name="car_type"
-                value={formData.car_type}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-              >
-                <option value="luxury" className="bg-card text-white">Luxury</option>
-                <option value="suv" className="bg-card text-white">SUV</option>
-                <option value="sedan" className="bg-card text-white">Sedan</option>
-                <option value="convertible" className="bg-card text-white">Convertible</option>
-                <option value="van" className="bg-card text-white">Van</option>
-              </select>
+              <div className="nebula-select-container">
+                <select
+                  name="car_type"
+                  value={formData.car_type}
+                  onChange={handleChange}
+                  required
+                  className="nebula-select"
+                >
+                  <option value="luxury">Luxury</option>
+                  <option value="suv">SUV</option>
+                  <option value="sedan">Sedan</option>
+                  <option value="convertible">Convertible</option>
+                  <option value="van">Van</option>
+                </select>
+              </div>
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-slate-300 mb-2">Status</label>
-              <select
-                name="availability_status"
-                value={formData.availability_status}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-              >
-                <option value="available" className="bg-card text-white">Available</option>
-                <option value="rented" className="bg-card text-white">Rented</option>
-                <option value="sold" className="bg-card text-white">Sold</option>
-                <option value="maintenance" className="bg-card text-white">Maintenance</option>
-              </select>
+              <div className="nebula-select-container">
+                <select
+                  name="availability_status"
+                  value={formData.availability_status}
+                  onChange={handleChange}
+                  required
+                  className="nebula-select"
+                >
+                  <option value="available">Available</option>
+                  <option value="rented">Rented</option>
+                  <option value="sold">Sold</option>
+                  <option value="maintenance">Maintenance</option>
+                </select>
+              </div>
             </div>
           </div>
 
