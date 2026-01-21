@@ -115,7 +115,7 @@ const AdminDashboard: React.FC = () => {
           {/* Main Content */}
           <main className="flex-1 min-w-0">
             {/* Mobile Tabs */}
-            <div className="lg:hidden mb-6 sm:mb-8 flex space-x-1 sm:space-x-2 border-b border-white/10 overflow-x-auto px-4">
+            <div className="lg:hidden mb-6 sm:mb-8 flex space-x-1 sm:space-x-2 border-b border-purple-electric/30 overflow-x-auto px-4">
               {[
                 { id: 'cars', label: 'Cars', icon: CarIcon },
                 { id: 'requests', label: 'Requests', icon: FileText },
@@ -127,8 +127,8 @@ const AdminDashboard: React.FC = () => {
                   className={cn(
                     "touch-target px-3 sm:px-4 py-3 font-semibold capitalize flex items-center gap-2 transition-all relative top-[1px] whitespace-nowrap",
                     activeTab === tab.id
-                      ? "border-b-2 border-primary text-primary"
-                      : "text-slate-400 hover:text-white active:text-white border-b-2 border-transparent"
+                      ? "border-b-2 border-purple-electric text-purple-electric neon-glow"
+                      : "text-silver/60 hover:text-silver active:text-silver border-b-2 border-transparent"
                   )}
                 >
                   <tab.icon className="w-4 h-4" />
@@ -152,20 +152,20 @@ const AdminDashboard: React.FC = () => {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.1 }}
-                    className="md:col-span-2 glass-card p-8 rounded-2xl relative overflow-hidden"
+                    className="md:col-span-2 bento-tile p-8 relative overflow-hidden"
                   >
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl" />
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-purple-electric/20 rounded-full blur-3xl aurora-glow" />
                     <div className="relative z-10">
                       <div className="flex items-center justify-between mb-6">
-                        <h3 className="text-slate-400 font-medium flex items-center gap-2">
-                          <TrendingUp className="w-5 h-5 text-primary" />
+                        <h3 className="text-silver/70 font-medium flex items-center gap-2">
+                          <TrendingUp className="w-5 h-5 text-purple-electric neon-glow" />
                           Total Revenue
                         </h3>
-                        <span className="text-xs text-green-400 bg-green-500/10 px-2 py-1 rounded-full border border-green-500/20">
+                        <span className="text-xs text-purple-glow bg-purple-electric/20 px-2 py-1 rounded-full border border-purple-electric/30 neon-border">
                           +12.5%
                         </span>
                       </div>
-                      <p className="text-4xl md:text-5xl font-display font-bold text-white mb-4">
+                      <p className="text-4xl md:text-5xl font-display font-bold text-purple-electric mb-4 neon-glow">
                         {new Intl.NumberFormat('en-RW', {
                           style: 'currency',
                           currency: 'RWF',
@@ -181,7 +181,7 @@ const AdminDashboard: React.FC = () => {
                             initial={{ height: 0 }}
                             animate={{ height: `${height}%` }}
                             transition={{ delay: 0.2 + idx * 0.05, duration: 0.5 }}
-                            className="flex-1 bg-gradient-to-t from-primary to-primary/50 rounded-t"
+                            className="flex-1 electric-gradient rounded-t"
                           />
                         ))}
                       </div>
@@ -193,14 +193,14 @@ const AdminDashboard: React.FC = () => {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.2 }}
-                    className="glass-card p-6 rounded-2xl relative overflow-hidden"
+                    className="bento-tile p-6 relative overflow-hidden"
                   >
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 rounded-full blur-2xl" />
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-purple-electric/15 rounded-full blur-2xl" />
                     <div className="relative z-10">
-                      <h3 className="text-slate-400 mb-2 font-medium">Total Cars</h3>
-                      <p className="text-4xl font-display font-bold text-white">{analytics.totalCars}</p>
-                      <div className="mt-4 flex items-center gap-2 text-sm text-slate-400">
-                        <CarIcon className="w-4 h-4" />
+                      <h3 className="text-silver/70 mb-2 font-medium">Total Cars</h3>
+                      <p className="text-4xl font-display font-bold text-purple-electric neon-glow">{analytics.totalCars}</p>
+                      <div className="mt-4 flex items-center gap-2 text-sm text-silver/60">
+                        <CarIcon className="w-4 h-4 text-purple-electric" />
                         <span>In fleet</span>
                       </div>
                     </div>
@@ -211,14 +211,14 @@ const AdminDashboard: React.FC = () => {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.3 }}
-                    className="glass-card p-6 rounded-2xl relative overflow-hidden border border-green-500/20 glow-green"
+                    className="bento-tile p-6 relative overflow-hidden border border-purple-electric/40 neon-border"
                   >
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-green-500/10 rounded-full blur-2xl" />
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-purple-electric/20 rounded-full blur-2xl aurora-glow" />
                     <div className="relative z-10">
-                      <h3 className="text-slate-400 mb-2 font-medium">Available Cars</h3>
-                      <p className="text-4xl font-display font-bold text-green-400">{analytics.availableCars}</p>
-                      <div className="mt-4 flex items-center gap-2 text-sm text-green-400">
-                        <CheckCircle className="w-4 h-4" />
+                      <h3 className="text-silver/70 mb-2 font-medium">Available Cars</h3>
+                      <p className="text-4xl font-display font-bold text-purple-electric neon-glow">{analytics.availableCars}</p>
+                      <div className="mt-4 flex items-center gap-2 text-sm text-purple-electric">
+                        <CheckCircle className="w-4 h-4 neon-glow" />
                         <span>Ready to rent</span>
                       </div>
                     </div>
@@ -229,14 +229,14 @@ const AdminDashboard: React.FC = () => {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.4 }}
-                    className="glass-card p-6 rounded-2xl relative overflow-hidden border border-yellow-500/20 glow-amber"
+                    className="bento-tile p-6 relative overflow-hidden border border-purple-glow/30 neon-border"
                   >
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-yellow-500/10 rounded-full blur-2xl" />
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-purple-glow/15 rounded-full blur-2xl" />
                     <div className="relative z-10">
-                      <h3 className="text-slate-400 mb-2 font-medium">Pending Requests</h3>
-                      <p className="text-4xl font-display font-bold text-yellow-400">{analytics.pendingRequests}</p>
-                      <div className="mt-4 flex items-center gap-2 text-sm text-yellow-400">
-                        <Clock className="w-4 h-4" />
+                      <h3 className="text-silver/70 mb-2 font-medium">Pending Requests</h3>
+                      <p className="text-4xl font-display font-bold text-purple-glow neon-glow">{analytics.pendingRequests}</p>
+                      <div className="mt-4 flex items-center gap-2 text-sm text-purple-glow">
+                        <Clock className="w-4 h-4 neon-glow" />
                         <span>Awaiting review</span>
                       </div>
                     </div>
@@ -285,13 +285,13 @@ const AdminDashboard: React.FC = () => {
 
             {loading ? (
               <div className="flex justify-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-electric neon-glow"></div>
               </div>
             ) : (
-              <div className="bg-card rounded-2xl border border-white/10 overflow-hidden">
+              <div className="glass-card rounded-2xl overflow-hidden neon-border">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left">
-                    <thead className="bg-white/5 border-b border-white/10 text-slate-300">
+                    <thead className="bg-purple-card border-b border-purple-electric/20 text-silver/70">
                       <tr>
                         <th className="px-6 py-4 font-semibold">Image</th>
                         <th className="px-6 py-4 font-semibold">Name</th>
@@ -300,24 +300,27 @@ const AdminDashboard: React.FC = () => {
                         <th className="px-6 py-4 font-semibold">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/10">
-                      {cars.map((car) => (
-                        <tr key={car.id} className="hover:bg-white/5 transition-colors">
+                    <tbody className="divide-y divide-purple-electric/10">
+                      {cars.map((car, idx) => (
+                        <tr key={car.id} className={cn(
+                          "hover:bg-purple-card/50 transition-colors",
+                          idx % 2 === 0 ? "bg-purple-card/30" : "bg-purple-midnight"
+                        )}>
                           <td className="px-6 py-4">
                             {car.image_url ? (
                               <img
                                 src={car.image_url}
                                 alt={car.name}
-                                className="w-16 h-12 object-cover rounded-lg"
+                                className="w-16 h-12 object-cover rounded-lg neon-border"
                               />
                             ) : (
-                              <div className="w-16 h-12 bg-slate-800 rounded-lg flex items-center justify-center">
-                                <CarIcon className="w-6 h-6 text-slate-600" />
+                              <div className="w-16 h-12 bg-purple-card rounded-lg flex items-center justify-center neon-border">
+                                <CarIcon className="w-6 h-6 text-purple-electric/50" />
                               </div>
                             )}
                           </td>
-                          <td className="px-6 py-4 font-medium text-white">{car.name}</td>
-                          <td className="px-6 py-4 text-white font-mono">
+                          <td className="px-6 py-4 font-medium text-silver">{car.name}</td>
+                          <td className="px-6 py-4 text-purple-electric font-mono font-bold">
                             {new Intl.NumberFormat('en-RW', {
                               style: 'currency',
                               currency: 'RWF',
@@ -330,10 +333,10 @@ const AdminDashboard: React.FC = () => {
                               className={cn(
                                 "px-3 py-1.5 rounded-full text-xs font-semibold border",
                                 car.availability_status === 'available' 
-                                  ? "bg-green-500/10 text-green-400 border-green-500/30 glow-green" :
+                                  ? "bg-purple-electric/20 text-purple-electric border-purple-electric/50 neon-glow" :
                                   car.availability_status === 'rented' 
-                                    ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/30 glow-amber" :
-                                    "bg-red-500/10 text-red-400 border-red-500/30"
+                                    ? "bg-purple-glow/20 text-purple-glow border-purple-glow/50 neon-glow" :
+                                    "bg-red-500/20 text-red-400 border-red-500/30"
                               )}
                             >
                               {car.availability_status}
@@ -341,21 +344,21 @@ const AdminDashboard: React.FC = () => {
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
-                              <button
-                                onClick={() => {
-                                  setEditingCar(car);
-                                  setShowCarForm(true);
-                                }}
-                                className="text-primary hover:text-primary/80 transition-colors"
-                              >
-                                <Edit className="w-4 h-4" />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteCar(car.id)}
-                                className="text-red-400 hover:text-red-300 transition-colors"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
+                                <button
+                                  onClick={() => {
+                                    setEditingCar(car);
+                                    setShowCarForm(true);
+                                  }}
+                                  className="text-purple-electric hover:text-purple-glow transition-colors neon-glow"
+                                >
+                                  <Edit className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteCar(car.id)}
+                                  className="text-red-400 hover:text-red-300 transition-colors"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
                             </div>
                           </td>
                         </tr>
@@ -363,8 +366,8 @@ const AdminDashboard: React.FC = () => {
                     </tbody>
                   </table>
                 </div>
-                    </div>
-                  )}
+              </div>
+            )}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -378,64 +381,67 @@ const AdminDashboard: React.FC = () => {
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <h2 className="text-2xl font-display font-bold text-white mb-6">Requests Management</h2>
+                  <h2 className="text-2xl font-display font-bold text-silver mb-6">Requests Management</h2>
                   {loading ? (
                     <div className="flex justify-center py-12">
-                      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+                      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-electric neon-glow"></div>
                     </div>
                   ) : (
-                    <div className="glass-card rounded-2xl overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left">
-                    <thead className="bg-white/5 border-b border-white/10 text-slate-300">
-                      <tr>
-                        <th className="px-6 py-4 font-semibold">Customer</th>
-                        <th className="px-6 py-4 font-semibold">Car</th>
-                        <th className="px-6 py-4 font-semibold">Type</th>
-                        <th className="px-6 py-4 font-semibold">Amount</th>
-                        <th className="px-6 py-4 font-semibold">Status</th>
-                        <th className="px-6 py-4 font-semibold">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-white/10">
-                      {requests.map((request) => (
-                        <tr key={request.id} className="hover:bg-white/5 transition-colors">
-                          <td className="px-6 py-4 text-white">{request.user_name || 'N/A'}</td>
-                          <td className="px-6 py-4 text-slate-300">
-                            {request.car_name} {request.car_model}
-                          </td>
-                          <td className="px-6 py-4 text-slate-300 capitalize">{request.request_type}</td>
-                          <td className="px-6 py-4 text-white font-mono">
-                            {new Intl.NumberFormat('en-RW', {
-                              style: 'currency',
-                              currency: 'RWF',
-                              minimumFractionDigits: 0,
-                              maximumFractionDigits: 0,
-                            }).format(request.total_amount).replace('RWF', 'FRW')}
-                          </td>
-                          <td className="px-6 py-4">
-                            <span
-                              className={cn(
-                                "px-3 py-1.5 rounded-full text-xs font-semibold border flex items-center w-fit gap-1",
-                                request.status === 'approved' 
-                                  ? "bg-green-500/10 text-green-400 border-green-500/30 glow-green" :
-                                  request.status === 'rejected' 
-                                    ? "bg-red-500/10 text-red-400 border-red-500/30" :
-                                    request.status === 'completed' 
-                                      ? "bg-blue-500/10 text-blue-400 border-blue-500/30 glow-blue" :
-                                      "bg-yellow-500/10 text-yellow-400 border-yellow-500/30 glow-amber"
-                              )}
-                            >
-                              {request.status}
-                            </span>
-                          </td>
+                    <div className="glass-card rounded-2xl overflow-hidden neon-border">
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left">
+                          <thead className="bg-purple-card border-b border-purple-electric/20 text-silver/70">
+                            <tr>
+                              <th className="px-6 py-4 font-semibold">Customer</th>
+                              <th className="px-6 py-4 font-semibold">Car</th>
+                              <th className="px-6 py-4 font-semibold">Type</th>
+                              <th className="px-6 py-4 font-semibold">Amount</th>
+                              <th className="px-6 py-4 font-semibold">Status</th>
+                              <th className="px-6 py-4 font-semibold">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-purple-electric/10">
+                            {requests.map((request, idx) => (
+                              <tr key={request.id} className={cn(
+                                "hover:bg-purple-card/50 transition-colors",
+                                idx % 2 === 0 ? "bg-purple-card/30" : "bg-purple-midnight"
+                              )}>
+                                <td className="px-6 py-4 text-silver">{request.user_name || 'N/A'}</td>
+                                <td className="px-6 py-4 text-silver/70">
+                                  {request.car_name} {request.car_model}
+                                </td>
+                                <td className="px-6 py-4 text-silver/70 capitalize">{request.request_type}</td>
+                                <td className="px-6 py-4 text-purple-electric font-mono font-bold">
+                                  {new Intl.NumberFormat('en-RW', {
+                                    style: 'currency',
+                                    currency: 'RWF',
+                                    minimumFractionDigits: 0,
+                                    maximumFractionDigits: 0,
+                                  }).format(request.total_amount).replace('RWF', 'FRW')}
+                                </td>
+                                <td className="px-6 py-4">
+                                  <span
+                                    className={cn(
+                                      "px-3 py-1.5 rounded-full text-xs font-semibold border flex items-center w-fit gap-1",
+                                      request.status === 'approved' 
+                                        ? "bg-purple-electric/20 text-purple-electric border-purple-electric/50 neon-glow" :
+                                        request.status === 'rejected' 
+                                          ? "bg-red-500/20 text-red-400 border-red-500/30" :
+                                        request.status === 'completed' 
+                                          ? "bg-purple-glow/20 text-purple-glow border-purple-glow/50 neon-glow" :
+                                          "bg-purple-glow/20 text-purple-glow border-purple-glow/50 neon-glow"
+                                    )}
+                                  >
+                                    {request.status}
+                                  </span>
+                                </td>
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
                               {request.status === 'pending' && (
                                 <>
                                   <button
                                     onClick={() => handleUpdateRequestStatus(request.id, 'approved')}
-                                    className="text-green-400 hover:text-green-300 transition-colors"
+                                    className="text-purple-electric hover:text-purple-glow transition-colors neon-glow"
                                     title="Approve"
                                   >
                                     <CheckCircle className="w-5 h-5" />
@@ -452,7 +458,7 @@ const AdminDashboard: React.FC = () => {
                               {request.status === 'approved' && (
                                 <button
                                   onClick={() => handleUpdateRequestStatus(request.id, 'completed')}
-                                  className="text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-1 text-sm font-medium"
+                                  className="text-purple-glow hover:text-purple-electric transition-colors flex items-center gap-1 text-sm font-medium neon-glow"
                                 >
                                   <Clock className="w-4 h-4" />
                                   Complete

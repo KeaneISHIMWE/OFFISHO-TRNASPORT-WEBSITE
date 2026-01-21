@@ -58,20 +58,16 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        white: {
-          DEFAULT: '#FFFFFF',
-          gloss: '#FAFAFA',
-        },
         purple: {
-          electric: '#7C3AED',
-          deep: '#2E1065',
-          violet: '#6D28D9',
-          bright: '#8B5CF6',
+          midnight: '#0A0118',
+          card: '#160B2E',
+          electric: '#9D50FF',
+          glow: '#D1A3FF',
+          dark: '#6E00FF',
         },
-        lavender: {
-          DEFAULT: '#F3E8FF',
-          light: '#FAF5FF',
-          soft: '#F9FAFB',
+        silver: {
+          DEFAULT: '#F3F3F3',
+          light: '#FFFFFF',
         },
       },
       borderRadius: {
@@ -81,7 +77,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Montserrat', 'sans-serif'],
+        display: ['Playfair Display', 'serif'],
       },
       animation: {
         'fadeIn': 'fadeIn 0.6s ease-out',

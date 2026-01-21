@@ -2,123 +2,125 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    /* High-Gloss White #FFFFFF */
-    --foreground: 270 91% 20%;
-    /* Deep Violet #2E1065 */
+    --background: 270 100% 5%;
+    /* Base Background: #0A0118 - Deep midnight purple */
+    --foreground: 0 0% 95%;
+    /* Silver-White #F3F3F3 */
 
-    --card: 0 0% 100%;
-    /* Pure White */
-    --card-foreground: 270 91% 20%;
+    --card: 270 60% 12%;
+    /* Card Surfaces: #160B2E */
+    --card-foreground: 0 0% 95%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 270 91% 20%;
+    --popover: 270 60% 12%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 271 81% 56%;
-    /* Electric Purple #7C3AED */
+    --primary: 270 100% 66%;
+    /* Accent: #9D50FF - Electric Purple */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 270 100% 95%;
-    /* Soft Lavender #F3E8FF */
-    --secondary-foreground: 270 91% 20%;
+    --secondary: 270 60% 12%;
+    /* Card Surfaces */
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 270 100% 97%;
-    --muted-foreground: 270 20% 50%;
+    --muted: 270 50% 15%;
+    --muted-foreground: 0 0% 70%;
 
-    --accent: 271 81% 56%;
-    /* Electric Purple */
+    --accent: 270 100% 66%;
+    /* Electric Purple #9D50FF */
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62.8% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 270 100% 90%;
-    --input: 270 100% 95%;
-    --ring: 271 81% 56%;
+    --border: 270 100% 20%;
+    --input: 270 60% 12%;
+    --ring: 270 100% 66%;
 
-    --radius: 1rem;
+    --radius: 1.5rem;
   }
 
   body {
-    background-color: #FFFFFF;
-    color: #2E1065;
+    background-color: #0A0118;
+    color: #F3F3F3;
     font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 900;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
     letter-spacing: -0.02em;
-    color: #2E1065;
+    color: #F3F3F3;
   }
 }
 
 @layer utilities {
   .glass-effect {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(22, 11, 46, 0.6);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(124, 58, 237, 0.1);
-    box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
+    border: 1px solid rgba(157, 80, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(157, 80, 255, 0.15);
   }
 
   .glass-card {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(22, 11, 46, 0.7);
     backdrop-filter: blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(243, 232, 255, 0.8);
-    box-shadow: 0 4px 24px 0 rgba(124, 58, 237, 0.08);
-  }
-
-  .neumorphism {
-    background: #FFFFFF;
-    box-shadow: 
-      8px 8px 16px rgba(124, 58, 237, 0.1),
-      -8px -8px 16px rgba(255, 255, 255, 1);
-  }
-
-  .neumorphism-inset {
-    background: #FFFFFF;
-    box-shadow: 
-      inset 4px 4px 8px rgba(124, 58, 237, 0.1),
-      inset -4px -4px 8px rgba(255, 255, 255, 1);
-  }
-
-  .text-gradient {
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    background-image: linear-gradient(135deg, #7C3AED 0%, #EC4899 100%);
-  }
-
-  .text-gradient-purple {
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    background-image: linear-gradient(135deg, #7C3AED 0%, #EC4899 100%);
-  }
-
-  .glow-purple {
-    box-shadow: 0 0 20px rgba(124, 58, 237, 0.3), 0 0 40px rgba(124, 58, 237, 0.15);
-  }
-
-  .glow-purple-soft {
-    box-shadow: 0 0 15px rgba(124, 58, 237, 0.2), 0 0 30px rgba(124, 58, 237, 0.1);
-  }
-
-  .glow-violet {
-    box-shadow: 0 0 15px rgba(46, 16, 101, 0.3), 0 0 30px rgba(46, 16, 101, 0.15);
+    border: 1px solid rgba(157, 80, 255, 0.15);
+    box-shadow: 0 4px 24px 0 rgba(157, 80, 255, 0.1);
   }
 
   .electric-gradient {
-    background: linear-gradient(135deg, #7C3AED 0%, #EC4899 100%);
+    background: linear-gradient(135deg, #9D50FF 0%, #6E00FF 100%);
   }
 
-  .purple-glow-hover:hover {
-    box-shadow: 0 0 25px rgba(124, 58, 237, 0.4), 0 0 50px rgba(124, 58, 237, 0.2);
-    transition: box-shadow 0.3s ease;
+  .electric-gradient-text {
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(135deg, #9D50FF 0%, #D1A3FF 100%);
+  }
+
+  .neon-glow {
+    box-shadow: 
+      0 0 10px rgba(157, 80, 255, 0.5),
+      0 0 20px rgba(157, 80, 255, 0.3),
+      0 0 30px rgba(157, 80, 255, 0.2);
+  }
+
+  .neon-border {
+    border: 1px solid rgba(157, 80, 255, 0.3);
+    box-shadow: 
+      0 0 5px rgba(157, 80, 255, 0.5),
+      inset 0 0 5px rgba(157, 80, 255, 0.1);
+  }
+
+  .neon-border-hover:hover {
+    border-color: #9D50FF;
+    box-shadow: 
+      0 0 10px rgba(157, 80, 255, 0.8),
+      0 0 20px rgba(157, 80, 255, 0.4),
+      inset 0 0 10px rgba(157, 80, 255, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .aurora-glow {
+    box-shadow: 0 0 30px rgba(209, 163, 255, 0.3), 0 0 60px rgba(209, 163, 255, 0.15);
+  }
+
+  .bento-tile {
+    background: #160B2E;
+    border-radius: 24px;
+    border: 1px solid rgba(157, 80, 255, 0.2);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.4),
+      0 0 20px rgba(157, 80, 255, 0.1);
+  }
+
+  .global-illumination {
+    background: radial-gradient(circle at center, rgba(157, 80, 255, 0.2) 0%, transparent 70%);
   }
 
   .skeleton {

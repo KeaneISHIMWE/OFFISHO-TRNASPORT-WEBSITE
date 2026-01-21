@@ -39,57 +39,57 @@ const Navbar: React.FC = () => {
 
   return (
     <nav
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'glass-effect border-b border-purple-electric/20 shadow-lg py-3 sm:py-4' : 'bg-white/95 backdrop-blur-md py-4 sm:py-6'
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'glass-effect border-b border-purple-electric/30 neon-glow py-3 sm:py-4' : 'bg-purple-midnight/95 backdrop-blur-md py-4 sm:py-6'
         }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 sm:gap-3 group touch-target">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 relative neumorphism">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 relative">
               <img 
                 src="/logo.png" 
                 alt="Logo" 
-                className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 object-contain" 
-                style={{ filter: 'drop-shadow(0 0 8px rgba(124, 58, 237, 0.4))' }}
+                className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 object-contain brightness-0 invert" 
+                style={{ filter: 'drop-shadow(0 0 8px rgba(157, 80, 255, 0.6))' }}
                 onError={(e) => {
                   const parent = e.currentTarget.parentElement!;
-                  parent.innerHTML = '<span class="text-purple-electric font-bold text-lg sm:text-xl font-display">OT</span>';
+                  parent.innerHTML = '<span class="text-purple-electric font-bold text-lg sm:text-xl font-display neon-glow px-2 py-1 rounded">OT</span>';
                 }} 
               />
             </div>
-            <div className="flex flex-col hidden xs:flex">
-              <span className="text-lg sm:text-xl md:text-2xl font-bold font-display text-purple-deep tracking-tight">
-                <span className="hidden sm:inline">Offisho</span><span className="text-gradient-purple">Transport</span>
+            <div className="flex flex-col">
+              <span className="text-lg sm:text-xl md:text-2xl font-bold font-display text-silver tracking-tight">
+                Offisho <span className="electric-gradient-text">Transport</span>
               </span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-8">
-            <Link to="/" className="text-purple-deep hover:text-purple-electric font-medium transition-colors relative group">
+            <Link to="/" className="text-silver hover:text-purple-electric font-medium transition-colors relative group">
               Home
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-electric to-pink-500 group-hover:w-full transition-all duration-300"></span>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 electric-gradient group-hover:w-full transition-all duration-300"></span>
             </Link>
-            <Link to="/cars" className="text-purple-deep hover:text-purple-electric font-medium transition-colors relative group">
+            <Link to="/cars" className="text-silver hover:text-purple-electric font-medium transition-colors relative group">
               Cars
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-electric to-pink-500 group-hover:w-full transition-all duration-300"></span>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 electric-gradient group-hover:w-full transition-all duration-300"></span>
             </Link>
-            <Link to="/about" className="text-purple-deep hover:text-purple-electric font-medium transition-colors relative group">
+            <Link to="/about" className="text-silver hover:text-purple-electric font-medium transition-colors relative group">
               About Us
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-electric to-pink-500 group-hover:w-full transition-all duration-300"></span>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 electric-gradient group-hover:w-full transition-all duration-300"></span>
             </Link>
-            <Link to="/contact" className="text-purple-deep hover:text-purple-electric font-medium transition-colors relative group">
+            <Link to="/contact" className="text-silver hover:text-purple-electric font-medium transition-colors relative group">
               Contact
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-electric to-pink-500 group-hover:w-full transition-all duration-300"></span>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 electric-gradient group-hover:w-full transition-all duration-300"></span>
             </Link>
 
-            <div className="h-6 w-px bg-purple-electric/20 mx-2"></div>
+            <div className="h-6 w-px bg-purple-electric/30 mx-2"></div>
 
             {/* Search Trigger */}
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="touch-target text-purple-deep hover:text-purple-electric transition-colors p-2"
+              className="touch-target text-silver hover:text-purple-electric transition-colors p-2"
             >
               <Search className="w-5 h-5" />
             </button>
@@ -97,28 +97,28 @@ const Navbar: React.FC = () => {
             {/* Auth section */}
             {isAuthenticated ? (
               <div className="relative group">
-                <button className="touch-target flex items-center gap-2 pl-2 pr-3 sm:pr-4 py-2 rounded-full bg-lavender hover:bg-lavender-light active:bg-lavender border border-purple-electric/20 transition-all neumorphism">
-                  <div className="w-8 h-8 rounded-full electric-gradient flex items-center justify-center text-white font-bold text-sm">
+                <button className="touch-target flex items-center gap-2 pl-2 pr-3 sm:pr-4 py-2 rounded-full bg-purple-card hover:bg-purple-card/80 active:bg-purple-card border border-purple-electric/30 transition-all neon-border">
+                  <div className="w-8 h-8 rounded-full electric-gradient flex items-center justify-center text-white font-bold text-sm neon-glow">
                     {user?.name.charAt(0).toUpperCase()}
                   </div>
-                  <span className="text-sm font-medium text-purple-deep hidden sm:inline">{user?.name.split(' ')[0]}</span>
+                  <span className="text-sm font-medium text-silver hidden sm:inline">{user?.name.split(' ')[0]}</span>
                   <ChevronDown className="w-4 h-4 text-purple-electric" />
                 </button>
 
                 {/* Dropdown */}
-                <div className="absolute right-0 mt-2 w-56 glass-card rounded-xl shadow-xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right border border-lavender">
+                <div className="absolute right-0 mt-2 w-56 glass-card rounded-xl shadow-xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right neon-border">
                   <div className="p-2 space-y-1">
                     {isAdmin && (
-                      <Link to="/admin" className="flex items-center gap-2 px-3 py-2 text-sm text-purple-deep hover:bg-lavender hover:text-purple-electric rounded-lg transition-colors">
+                      <Link to="/admin" className="flex items-center gap-2 px-3 py-2 text-sm text-silver hover:bg-purple-card hover:text-purple-electric rounded-lg transition-colors">
                         <Shield className="w-4 h-4" />
                         Admin Portal
                       </Link>
                     )}
-                    <Link to="/profile" className="flex items-center gap-2 px-3 py-2 text-sm text-purple-deep hover:bg-lavender hover:text-purple-electric rounded-lg transition-colors">
+                    <Link to="/profile" className="flex items-center gap-2 px-3 py-2 text-sm text-silver hover:bg-purple-card hover:text-purple-electric rounded-lg transition-colors">
                       <User className="w-4 h-4" />
                       My Profile
                     </Link>
-                    <button onClick={handleLogout} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                    <button onClick={handleLogout} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
                       <LogOut className="w-4 h-4" />
                       Logout
                     </button>
@@ -127,10 +127,10 @@ const Navbar: React.FC = () => {
               </div>
             ) : (
               <div className="flex items-center gap-2 sm:gap-4">
-                <Link to="/login" className="touch-target text-purple-deep hover:text-purple-electric font-medium transition-colors px-3 sm:px-4 py-2">Login</Link>
+                <Link to="/login" className="touch-target text-silver hover:text-purple-electric font-medium transition-colors px-3 sm:px-4 py-2">Login</Link>
                 <Link
                   to="/booking"
-                  className="touch-target px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg electric-gradient hover:opacity-90 active:opacity-80 text-white font-semibold shadow-lg glow-purple-soft transition-all hover:scale-105 active:scale-95 text-sm sm:text-base"
+                  className="touch-target px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg electric-gradient hover:opacity-90 active:opacity-80 text-white font-semibold shadow-lg neon-glow transition-all hover:scale-105 active:scale-95 text-sm sm:text-base"
                 >
                   Book Now
                 </Link>
@@ -140,7 +140,7 @@ const Navbar: React.FC = () => {
 
           {/* Mobile Menu Toggle */}
           <button
-            className="lg:hidden touch-target text-purple-deep hover:bg-lavender active:bg-lavender-light rounded-lg transition-colors p-2"
+            className="lg:hidden touch-target text-silver hover:bg-purple-card active:bg-purple-card/80 rounded-lg transition-colors p-2"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -184,7 +184,7 @@ const Navbar: React.FC = () => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden glass-effect border-t border-purple-electric/20 overflow-hidden bg-white/95"
+              className="lg:hidden glass-effect border-t border-purple-electric/30 overflow-hidden bg-purple-midnight/95"
             >
               <div className="p-4 space-y-4">
                 <form onSubmit={handleSearch} className="relative">
@@ -199,10 +199,10 @@ const Navbar: React.FC = () => {
                 </form>
 
                 <div className="space-y-1">
-                  <Link to="/" onClick={() => setIsMenuOpen(false)} className="touch-target block px-4 py-3 rounded-lg hover:bg-lavender active:bg-lavender-light text-purple-deep font-medium transition-colors">Home</Link>
-                  <Link to="/cars" onClick={() => setIsMenuOpen(false)} className="touch-target block px-4 py-3 rounded-lg hover:bg-lavender active:bg-lavender-light text-purple-deep font-medium transition-colors">Cars</Link>
-                  <Link to="/about" onClick={() => setIsMenuOpen(false)} className="touch-target block px-4 py-3 rounded-lg hover:bg-lavender active:bg-lavender-light text-purple-deep font-medium transition-colors">About Us</Link>
-                  <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="touch-target block px-4 py-3 rounded-lg hover:bg-lavender active:bg-lavender-light text-purple-deep font-medium transition-colors">Contact</Link>
+                  <Link to="/" onClick={() => setIsMenuOpen(false)} className="touch-target block px-4 py-3 rounded-lg hover:bg-purple-card active:bg-purple-card/80 text-silver font-medium transition-colors">Home</Link>
+                  <Link to="/cars" onClick={() => setIsMenuOpen(false)} className="touch-target block px-4 py-3 rounded-lg hover:bg-purple-card active:bg-purple-card/80 text-silver font-medium transition-colors">Cars</Link>
+                  <Link to="/about" onClick={() => setIsMenuOpen(false)} className="touch-target block px-4 py-3 rounded-lg hover:bg-purple-card active:bg-purple-card/80 text-silver font-medium transition-colors">About Us</Link>
+                  <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="touch-target block px-4 py-3 rounded-lg hover:bg-purple-card active:bg-purple-card/80 text-silver font-medium transition-colors">Contact</Link>
                 </div>
 
                 <div className="pt-4 border-t border-white/10">
