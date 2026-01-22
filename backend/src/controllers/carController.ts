@@ -8,6 +8,34 @@ export const getCars = async (req: Request, res: Response): Promise<void> => {
   try {
     const { type, minPrice, maxPrice, availability, search, eventType } = req.query;
 
+    // Test database connection first
+    try {
+      const connection = await pool.getConnection();
+      await connection.ping();
+      connection.release();
+    } catch (dbError: any) {
+      console.error('Database connection error in getCars:', dbError);
+      console.error('Error code:', dbError.code);
+      console.error('Error message:', dbError.message);
+      
+      let errorMessage = 'Database connection failed';
+      if (dbError.code === 'ECONNREFUSED') {
+        errorMessage = 'Cannot connect to database server. Please check if the database is running.';
+      } else if (dbError.code === 'ER_ACCESS_DENIED_ERROR') {
+        errorMessage = 'Database authentication failed. Check your credentials.';
+      } else if (dbError.code === 'ER_BAD_DB_ERROR') {
+        errorMessage = 'Database does not exist. Please run the schema.';
+      } else if (dbError.code === 'ENOTFOUND' || dbError.code === 'ETIMEDOUT') {
+        errorMessage = 'Cannot reach database server. Check your network and DB_HOST.';
+      }
+      
+      res.status(500).json({ 
+        error: errorMessage,
+        details: process.env.NODE_ENV === 'development' ? `${dbError.code}: ${dbError.message}` : undefined
+      });
+      return;
+    }
+
     let query = 'SELECT * FROM cars WHERE 1=1';
     const params: any[] = [];
 
@@ -54,9 +82,23 @@ export const getCars = async (req: Request, res: Response): Promise<void> => {
     }));
 
     res.json({ cars: formattedCars });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Get cars error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('Error code:', error.code);
+    console.error('Error message:', error.message);
+    
+    // Provide specific error messages
+    let errorMessage = 'Failed to fetch cars';
+    if (error.code === 'ER_NO_SUCH_TABLE') {
+      errorMessage = 'Cars table does not exist. Please run the database schema.';
+    } else if (error.code?.startsWith('ER_')) {
+      errorMessage = `Database error: ${error.code}`;
+    }
+    
+    res.status(500).json({ 
+      error: errorMessage,
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
 
