@@ -39,7 +39,32 @@ const Login: React.FC = () => {
         navigate('/');
       }
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Login failed. Please try again.');
+      let errorMessage = 'Login failed. Please try again.';
+      
+      if (err.response?.data?.error) {
+        errorMessage = err.response.data.error;
+        // Add details if available (for development or database errors)
+        if (err.response.data.details) {
+          if (process.env.NODE_ENV === 'development') {
+            errorMessage += ` (${err.response.data.details})`;
+          } else if (err.response.data.error.includes('Database')) {
+            // Show details for database errors even in production for debugging
+            errorMessage += `. ${err.response.data.details}`;
+          }
+        }
+      } else if (err.message) {
+        errorMessage = err.message;
+      } else if (err.response?.status === 0 || err.code === 'ERR_NETWORK') {
+        errorMessage = 'Cannot connect to server. Please check if the backend is running.';
+      }
+      
+      setError(errorMessage);
+      console.error('Login error:', {
+        message: err.message,
+        response: err.response?.data,
+        code: err.code,
+        status: err.response?.status
+      });
     } finally {
       setLoading(false);
     }
@@ -65,10 +90,18 @@ const Login: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-red-500/10 border-l-4 border-red-500 text-red-500 px-4 py-3 rounded-r-lg mb-6 flex items-center"
+            className="bg-red-500/10 border-l-4 border-red-500 text-red-400 px-4 py-3 rounded-xl mb-6 flex items-start"
+            style={{ borderRadius: '12px' }}
           >
-            <AlertCircle className="w-5 h-5 mr-2" />
-            {error}
+            <AlertCircle className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0 text-red-500" />
+            <div className="flex-1">
+              <p className="text-red-400 font-medium">{error}</p>
+              {error.includes('Database connection') && (
+                <p className="text-red-400/70 text-sm mt-1">
+                  Please check your database configuration. See QUICK_DATABASE_SETUP.md for help.
+                </p>
+              )}
+            </div>
           </motion.div>
         )}
 

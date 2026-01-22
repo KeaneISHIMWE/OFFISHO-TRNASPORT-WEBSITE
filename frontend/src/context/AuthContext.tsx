@@ -65,11 +65,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = async (email: string, password: string): Promise<User> => {
-    const response: AuthResponse = await authAPI.login(email, password);
-    localStorage.setItem('token', response.token);
-    localStorage.setItem('user', JSON.stringify(response.user));
-    setUser(response.user);
-    return response.user;
+    try {
+      const response: AuthResponse = await authAPI.login(email, password);
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('user', JSON.stringify(response.user));
+      setUser(response.user);
+      return response.user;
+    } catch (error: any) {
+      // Re-throw with better error message
+      const errorMessage = error.response?.data?.error || error.message || 'Login failed';
+      const errorDetails = error.response?.data?.details;
+      
+      if (errorDetails && process.env.NODE_ENV === 'development') {
+        throw new Error(`${errorMessage}: ${errorDetails}`);
+      }
+      throw error;
+    }
   };
 
   const register = async (name: string, email: string, password: string): Promise<void> => {

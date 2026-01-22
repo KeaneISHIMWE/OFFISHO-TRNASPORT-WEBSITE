@@ -9,7 +9,10 @@
     "start": "node dist/server.js",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "create-admin": "ts-node scripts/createAdmin.ts",
+    "force-update-admin": "ts-node scripts/forceUpdateAdmin.ts",
+    "update-admin-email": "ts-node scripts/updateAdminEmail.ts"
   },
   "keywords": [],
   "author": "",

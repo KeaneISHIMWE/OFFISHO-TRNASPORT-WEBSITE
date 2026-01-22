@@ -78,11 +78,58 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
 
+    // Validate input
+    if (!email || !password) {
+      res.status(400).json({ error: 'Email and password are required' });
+      return;
+    }
+
+    // Test database connection first
+    let connection;
+    try {
+      connection = await pool.getConnection();
+      await connection.ping();
+      connection.release();
+    } catch (dbError: any) {
+      console.error('Database connection error:', dbError);
+      console.error('Error code:', dbError.code);
+      console.error('Error message:', dbError.message);
+      console.error('SQL State:', dbError.sqlState);
+      
+      // Provide more specific error messages
+      let errorMessage = 'Database connection failed';
+      if (dbError.code === 'ECONNREFUSED') {
+        errorMessage = 'Cannot connect to database server. Please check if the database is running and the host/port are correct.';
+      } else if (dbError.code === 'ER_ACCESS_DENIED_ERROR' || dbError.code === 'ER_NOT_SUPPORTED_AUTH_MODE') {
+        errorMessage = 'Database authentication failed. Please check your username and password.';
+      } else if (dbError.code === 'ER_BAD_DB_ERROR') {
+        errorMessage = 'Database does not exist. Please create the database first.';
+      } else if (dbError.code === 'ENOTFOUND' || dbError.code === 'ETIMEDOUT') {
+        errorMessage = 'Cannot reach database server. Please check your network connection and database host.';
+      }
+      
+      res.status(500).json({ 
+        error: errorMessage,
+        details: process.env.NODE_ENV === 'development' ? `${dbError.code}: ${dbError.message}` : undefined
+      });
+      return;
+    }
+
     // Find user
-    const [users] = await pool.execute(
-      'SELECT id, name, email, password_hash, role FROM users WHERE email = ?',
-      [email]
-    ) as any[];
+    let users: any[];
+    try {
+      [users] = await pool.execute(
+        'SELECT id, name, email, password_hash, role FROM users WHERE email = ?',
+        [email]
+      ) as any[];
+    } catch (dbError: any) {
+      console.error('Database query error:', dbError);
+      res.status(500).json({ 
+        error: 'Database query failed',
+        details: process.env.NODE_ENV === 'development' ? dbError.message : undefined
+      });
+      return;
+    }
 
     const user = users[0];
 
@@ -92,7 +139,14 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     // Verify password
-    const isValidPassword = await bcrypt.compare(password, user.password_hash);
+    let isValidPassword: boolean;
+    try {
+      isValidPassword = await bcrypt.compare(password, user.password_hash);
+    } catch (bcryptError: any) {
+      console.error('Password comparison error:', bcryptError);
+      res.status(500).json({ error: 'Authentication error' });
+      return;
+    }
 
     if (!isValidPassword) {
       res.status(401).json({ error: 'Invalid email or password' });
@@ -100,27 +154,40 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     // Generate JWT token
-    const tokenPayload: JwtPayload = {
-      userId: user.id,
-      email: user.email,
-      role: user.role,
-    };
-
-    const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
-
-    res.json({
-      message: 'Login successful',
-      token,
-      user: {
-        id: user.id,
-        name: user.name,
+    try {
+      const tokenPayload: JwtPayload = {
+        userId: user.id,
         email: user.email,
         role: user.role,
-      },
-    });
-  } catch (error) {
+      };
+
+      const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+
+      res.json({
+        message: 'Login successful',
+        token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+      });
+    } catch (jwtError: any) {
+      console.error('JWT signing error:', jwtError);
+      res.status(500).json({ 
+        error: 'Token generation failed',
+        details: process.env.NODE_ENV === 'development' ? jwtError.message : undefined
+      });
+      return;
+    }
+  } catch (error: any) {
     console.error('Login error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('Error stack:', error.stack);
+    res.status(500).json({ 
+      error: 'Internal server error',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
 
