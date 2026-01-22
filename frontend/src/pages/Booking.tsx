@@ -57,67 +57,175 @@ const Booking: React.FC = () => {
     navigate('/cars', { state: { message: 'Booking request submitted successfully!' } });
   };
 
+  // Parallax scroll effect state
+  const [scrollY, setScrollY] = useState(0);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Lazy load background image
+  const [bgImageLoaded, setBgImageLoaded] = useState(false);
+  const [bgImageError, setBgImageError] = useState(false);
+  // Using a more reliable Unsplash URL with better car visibility
+  const bgImageUrl = process.env.REACT_APP_HERO_CAR_IMAGE || 
+    'https://images.unsplash.com/photo-1617531653332-bd46c24f2068?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80';
+
+  React.useEffect(() => {
+    const img = new Image();
+    img.src = bgImageUrl;
+    img.onload = () => {
+      setBgImageLoaded(true);
+      setBgImageError(false);
+    };
+    img.onerror = () => {
+      setBgImageError(true);
+      setBgImageLoaded(false);
+      console.error('Failed to load hero background image:', bgImageUrl);
+    };
+  }, [bgImageUrl]);
+
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row pt-20 sm:pt-24 bg-purple-midnight">
-      {/* Left Section - Informational */}
-      <div className="hidden lg:flex lg:w-1/2 bg-purple-card text-silver p-8 lg:p-12 flex-col justify-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-purple-electric/10 z-0 global-illumination opacity-30" />
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6 }}
-          className="relative z-10 max-w-lg mx-auto"
+    <div className="min-h-screen pt-20 sm:pt-24 relative overflow-hidden">
+      {/* Hero Section with Car Background */}
+      <section className="relative min-h-screen flex items-center">
+        {/* Background Image with Parallax */}
+        <div 
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: bgImageLoaded && !bgImageError ? `url(${bgImageUrl})` : 'none',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center center',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed',
+            transform: `translateY(${scrollY * 0.5}px)`,
+            transition: bgImageLoaded ? 'opacity 0.5s ease-in, transform 0.1s ease-out' : 'none',
+            opacity: bgImageLoaded ? 1 : 0,
+            minHeight: '100vh',
+          }}
         >
-          <span className="text-purple-electric font-semibold tracking-wider text-sm uppercase mb-4 block neon-glow">
-            Book Your Ride
-          </span>
-          <h1 className="text-4xl md:text-5xl font-display font-bold mb-6 text-silver leading-tight">
-            Ready to Make Your Event <span className="electric-gradient-text">Unforgettable?</span>
-          </h1>
-          <p className="text-lg mb-10 text-silver/80 leading-relaxed">
-            Fill out the form and our team will get back to you within 24 hours with availability and a personalized quote.
-          </p>
-          <div className="space-y-6">
-            {[
-              'Professional and courteous drivers',
-              'Flexible pickup and drop-off locations',
-              '24/7 customer support',
-              'Competitive pricing with no hidden fees',
-            ].map((feature, index) => (
-              <motion.div
-                key={feature}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 + index * 0.1 }}
-                className="flex items-center gap-4"
-              >
-                <div className="w-8 h-8 rounded-full bg-purple-electric/20 flex items-center justify-center text-purple-electric neon-border">
-                  <Check className="w-5 h-5 neon-glow" />
+          {/* Loading placeholder */}
+          {!bgImageLoaded && !bgImageError && (
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-midnight via-purple-card to-purple-midnight animate-pulse" />
+          )}
+          {/* Fallback if image fails to load */}
+          {bgImageError && (
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-midnight via-purple-card to-purple-midnight">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center text-silver/50">
+                  <CarIcon className="w-24 h-24 mx-auto mb-4 opacity-30" />
+                  <p className="text-sm">Car image unavailable</p>
                 </div>
-                <span className="text-silver/90">{feature}</span>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </div>
+              </div>
+            </div>
+          )}
+        </div>
 
-      {/* Right Section - Booking Form */}
-      <div className={cn(
-        "w-full lg:w-1/2 glass-card p-4 sm:p-6 md:p-8 lg:p-16 flex items-center justify-center border-t lg:border-t-0 lg:border-l border-purple-electric/30 transition-all duration-500 neon-border",
-        transactionType === 'buy' ? "border-t-purple-glow/30 lg:border-l-purple-glow/30" : "border-t-purple-electric/30 lg:border-l-purple-electric/30"
-      )}>
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6 }}
-          className="w-full max-w-lg"
-        >
-          <div className="mb-6 sm:mb-8 lg:hidden">
-            <h1 className="text-2xl sm:text-3xl font-display font-bold text-silver mb-2">Book Your Ride</h1>
-            <p className="text-sm sm:text-base text-silver/70">Fill in the details below to request a booking.</p>
-          </div>
+        {/* Radial Gradient Overlay (Scrim) - Reduced opacity to show car */}
+        <div 
+          className="absolute inset-0 z-10 hidden lg:block"
+          style={{
+            background: `
+              radial-gradient(ellipse at left center, rgba(10, 1, 24, 0.6) 0%, rgba(10, 1, 24, 0.3) 40%, transparent 70%),
+              radial-gradient(ellipse at right center, rgba(157, 80, 255, 0.1) 0%, rgba(110, 0, 255, 0.05) 50%, transparent 80%)
+            `,
+          }}
+        />
 
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+        {/* Additional Scrim for Text Readability - Reduced opacity */}
+        <div 
+          className="absolute inset-0 z-10 hidden lg:block"
+          style={{
+            background: 'linear-gradient(to right, rgba(10, 1, 24, 0.5) 0%, rgba(10, 1, 24, 0.2) 50%, transparent 100%)',
+          }}
+        />
+
+        {/* Mobile: Lighter gradient overlay to show car */}
+        <div className="absolute inset-0 z-10 lg:hidden bg-gradient-to-b from-purple-midnight/80 via-purple-midnight/70 to-purple-midnight/80" />
+
+        {/* Content Container */}
+        <div className="relative z-20 container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[80vh]">
+            {/* Left Section - Text Content */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="text-center lg:text-left"
+            >
+              <motion.span
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 }}
+                className="inline-block px-4 py-2 rounded-full border border-purple-electric/30 bg-purple-card/50 text-purple-electric font-medium text-sm mb-6 glass-effect neon-border"
+              >
+                Book Your Ride
+              </motion.span>
+
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold mb-6 text-silver leading-tight">
+                Ready to Make Your Event <span className="electric-gradient-text">Unforgettable?</span>
+              </h1>
+
+              <p className="text-lg md:text-xl mb-8 text-silver/90 leading-relaxed max-w-xl mx-auto lg:mx-0">
+                Fill out the form and our team will get back to you within 24 hours with availability and a personalized quote.
+              </p>
+
+              {/* Feature List */}
+              <div className="space-y-4 mb-8">
+                {[
+                  'Professional and courteous drivers',
+                  'Flexible pickup and drop-off locations',
+                  '24/7 customer support',
+                  'Competitive pricing with no hidden fees',
+                ].map((feature, index) => (
+                  <motion.div
+                    key={feature}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 + index * 0.1 }}
+                    className="flex items-center gap-3 justify-center lg:justify-start"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-purple-electric/20 flex items-center justify-center text-purple-electric neon-border flex-shrink-0">
+                      <Check className="w-5 h-5 neon-glow" />
+                    </div>
+                    <span className="text-silver/90 text-base">{feature}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Right Section - Glassmorphic Booking Form */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+              className="relative"
+            >
+              <div 
+                className={cn(
+                  "w-full glass-effect p-6 sm:p-8 md:p-10 lg:p-12 rounded-2xl border transition-all duration-500",
+                  transactionType === 'buy' 
+                    ? "border-purple-glow/30 shadow-[0_8px_32px_0_rgba(157,80,255,0.25)]" 
+                    : "border-purple-electric/30 shadow-[0_8px_32px_0_rgba(157,80,255,0.2)]"
+                )}
+                style={{
+                  backdropFilter: 'blur(20px) saturate(180%)',
+                  WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                  backgroundColor: 'rgba(22, 11, 46, 0.6)',
+                  borderWidth: '1px',
+                }}
+              >
+                <div className="w-full max-w-lg mx-auto">
+                  <div className="mb-6 sm:mb-8">
+                    <h2 className="text-2xl sm:text-3xl font-display font-bold text-silver mb-2">Book Your Ride</h2>
+                    <p className="text-sm sm:text-base text-silver/70">Fill in the details below to request a booking.</p>
+                  </div>
+
+                  <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {/* Transaction Type Toggle */}
             <div>
               <label className="block text-sm font-semibold text-silver/80 mb-2 sm:mb-3">Transaction Type</label>
@@ -362,9 +470,13 @@ const Booking: React.FC = () => {
               {transactionType === 'buy' ? 'Submit Purchase Request' : 'Submit Booking Request'}
               <ArrowRight className="w-5 h-5" />
             </button>
-          </form>
-        </motion.div>
-      </div>
+                  </form>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

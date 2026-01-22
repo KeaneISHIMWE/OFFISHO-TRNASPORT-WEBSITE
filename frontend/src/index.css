@@ -138,6 +138,10 @@
     }
   }
 
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+
   /* Touch-friendly buttons - minimum 44x44px */
   .touch-target {
     min-height: 44px;

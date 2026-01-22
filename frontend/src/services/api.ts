@@ -1,14 +1,16 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import { AuthResponse, Car, Request, User, ApiError } from '../types';
+import { retryWithBackoff } from '../utils/retry';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
-// Create axios instance
+// Create axios instance with timeout
 const api: AxiosInstance = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 10000, // 10 second timeout
 });
 
 // Request interceptor to add JWT token
@@ -29,6 +31,13 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error: AxiosError<ApiError>) => {
+    // Enhance error messages for network issues
+    if (error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT') {
+      error.message = 'Request timeout. The server is taking too long to respond.';
+    } else if (error.code === 'ERR_NETWORK' || !error.response) {
+      error.message = 'Cannot reach server. Please check your network connection and ensure the backend is running.';
+    }
+    
     if (error.response?.status === 401) {
       // Unauthorized - clear token and redirect to login
       localStorage.removeItem('token');
@@ -39,21 +48,43 @@ api.interceptors.response.use(
   }
 );
 
-// Auth API
+// Health check endpoint
+export const healthCheck = async (): Promise<{ status: string }> => {
+  try {
+    const response = await api.get<{ status: string }>('/health');
+    return response.data;
+  } catch (error) {
+    // If /health doesn't exist, try root endpoint
+    try {
+      const response = await api.get<{ status: string }>('/');
+      return { status: 'ok' };
+    } catch {
+      throw error;
+    }
+  }
+};
+
+// Auth API with retry logic
 export const authAPI = {
   register: async (name: string, email: string, password: string): Promise<AuthResponse> => {
-    const response = await api.post<AuthResponse>('/auth/register', { name, email, password });
-    return response.data;
+    return retryWithBackoff(async () => {
+      const response = await api.post<AuthResponse>('/auth/register', { name, email, password });
+      return response.data;
+    });
   },
 
   login: async (email: string, password: string): Promise<AuthResponse> => {
-    const response = await api.post<AuthResponse>('/auth/login', { email, password });
-    return response.data;
+    return retryWithBackoff(async () => {
+      const response = await api.post<AuthResponse>('/auth/login', { email, password });
+      return response.data;
+    });
   },
 
   getMe: async (): Promise<{ user: User }> => {
-    const response = await api.get<{ user: User }>('/auth/me');
-    return response.data;
+    return retryWithBackoff(async () => {
+      const response = await api.get<{ user: User }>('/auth/me');
+      return response.data;
+    });
   },
 };
 
