@@ -71,21 +71,49 @@ const Booking: React.FC = () => {
   // Lazy load background image
   const [bgImageLoaded, setBgImageLoaded] = useState(false);
   const [bgImageError, setBgImageError] = useState(false);
-  // Using a more reliable Unsplash URL with better car visibility
-  const bgImageUrl = process.env.REACT_APP_HERO_CAR_IMAGE || 
-    'https://images.unsplash.com/photo-1617531653332-bd46c24f2068?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80';
+  // Using multiple fallback URLs for reliability - dark luxury car
+  const bgImageUrls = [
+    process.env.REACT_APP_HERO_CAR_IMAGE,
+    'https://images.unsplash.com/photo-1617531653332-bd46c24f2068?w=1920&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1920&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1617531653332-bd46c24f2068?ixlib=rb-4.0.3&w=1920&q=80',
+  ].filter(Boolean);
+  
+  const bgImageUrl = bgImageUrls[0] || '';
 
   React.useEffect(() => {
+    if (!bgImageUrl) {
+      console.warn('No background image URL provided');
+      return;
+    }
+
     const img = new Image();
+    img.crossOrigin = 'anonymous'; // Handle CORS if needed
     img.src = bgImageUrl;
+    
+    // Log for debugging
+    console.log('🖼️ Loading hero background image:', bgImageUrl);
+    
     img.onload = () => {
+      console.log('✅ Hero background image loaded successfully');
       setBgImageLoaded(true);
       setBgImageError(false);
     };
-    img.onerror = () => {
+    img.onerror = (error) => {
+      console.error('❌ Failed to load hero background image:', bgImageUrl, error);
       setBgImageError(true);
       setBgImageLoaded(false);
-      console.error('Failed to load hero background image:', bgImageUrl);
+    };
+
+    // Timeout fallback - if image takes too long, show error
+    const timeout = setTimeout(() => {
+      if (!bgImageLoaded) {
+        console.warn('⏱️ Image loading timeout');
+      }
+    }, 10000);
+
+    return () => {
+      clearTimeout(timeout);
     };
   }, [bgImageUrl]);
 
@@ -97,17 +125,25 @@ const Booking: React.FC = () => {
         <div 
           className="absolute inset-0 z-0"
           style={{
-            backgroundImage: bgImageLoaded && !bgImageError ? `url(${bgImageUrl})` : 'none',
+            backgroundImage: bgImageLoaded && !bgImageError && bgImageUrl ? `url("${bgImageUrl}")` : 'none',
             backgroundSize: 'cover',
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',
-            backgroundAttachment: 'fixed',
             transform: `translateY(${scrollY * 0.5}px)`,
-            transition: bgImageLoaded ? 'opacity 0.5s ease-in, transform 0.1s ease-out' : 'none',
+            transition: bgImageLoaded ? 'opacity 0.8s ease-in, transform 0.1s ease-out' : 'none',
             opacity: bgImageLoaded ? 1 : 0,
             minHeight: '100vh',
+            width: '100%',
+            height: '100%',
+            zIndex: 0,
           }}
         >
+          {/* Debug: Show image status */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="absolute top-4 left-4 z-50 bg-black/70 text-white text-xs p-2 rounded">
+              Image: {bgImageLoaded ? '✅ Loaded' : bgImageError ? '❌ Error' : '⏳ Loading...'}
+            </div>
+          )}
           {/* Loading placeholder */}
           {!bgImageLoaded && !bgImageError && (
             <div className="absolute inset-0 bg-gradient-to-br from-purple-midnight via-purple-card to-purple-midnight animate-pulse" />
@@ -119,33 +155,34 @@ const Booking: React.FC = () => {
                 <div className="text-center text-silver/50">
                   <CarIcon className="w-24 h-24 mx-auto mb-4 opacity-30" />
                   <p className="text-sm">Car image unavailable</p>
+                  <p className="text-xs mt-2">Check console for details</p>
                 </div>
               </div>
             </div>
           )}
         </div>
 
-        {/* Radial Gradient Overlay (Scrim) - Reduced opacity to show car */}
+        {/* Radial Gradient Overlay (Scrim) - Very light to show car clearly */}
         <div 
           className="absolute inset-0 z-10 hidden lg:block"
           style={{
             background: `
-              radial-gradient(ellipse at left center, rgba(10, 1, 24, 0.6) 0%, rgba(10, 1, 24, 0.3) 40%, transparent 70%),
-              radial-gradient(ellipse at right center, rgba(157, 80, 255, 0.1) 0%, rgba(110, 0, 255, 0.05) 50%, transparent 80%)
+              radial-gradient(ellipse at left center, rgba(10, 1, 24, 0.4) 0%, rgba(10, 1, 24, 0.2) 40%, transparent 70%),
+              radial-gradient(ellipse at right center, rgba(157, 80, 255, 0.08) 0%, rgba(110, 0, 255, 0.03) 50%, transparent 80%)
             `,
           }}
         />
 
-        {/* Additional Scrim for Text Readability - Reduced opacity */}
+        {/* Additional Scrim for Text Readability - Very light */}
         <div 
           className="absolute inset-0 z-10 hidden lg:block"
           style={{
-            background: 'linear-gradient(to right, rgba(10, 1, 24, 0.5) 0%, rgba(10, 1, 24, 0.2) 50%, transparent 100%)',
+            background: 'linear-gradient(to right, rgba(10, 1, 24, 0.35) 0%, rgba(10, 1, 24, 0.15) 50%, transparent 100%)',
           }}
         />
 
         {/* Mobile: Lighter gradient overlay to show car */}
-        <div className="absolute inset-0 z-10 lg:hidden bg-gradient-to-b from-purple-midnight/80 via-purple-midnight/70 to-purple-midnight/80" />
+        <div className="absolute inset-0 z-10 lg:hidden bg-gradient-to-b from-purple-midnight/70 via-purple-midnight/60 to-purple-midnight/70" />
 
         {/* Content Container */}
         <div className="relative z-20 container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
