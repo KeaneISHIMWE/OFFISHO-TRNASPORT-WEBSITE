@@ -81,12 +81,12 @@ Environment: ✅ Production ✅ Preview ✅ Development
 
 ### Cloudinary Variables (Already have these!):
 ```
-Name: CLOUDINARY_CLOUD_NAME
+Name: =lkjskfdtcufr7mcdtcufr7mc
 Value: dtcufr7mc
 Environment: ✅ Production ✅ Preview ✅ Development
 
 Name: CLOUDINARY_API_KEY
-Value: 574829165463277
+Value: `574829165463277`
 Environment: ✅ Production ✅ Preview ✅ Development
 
 Name: CLOUDINARY_API_SECRET
@@ -97,7 +97,7 @@ Environment: ✅ Production ✅ Preview ✅ Development
 ### Email Variables (Gmail):
 ```
 Name: EMAIL_HOST
-Value: smtp.gmail.com
+Value: EMAIL_HOSTEMAIL_HOST
 Environment: ✅ Production ✅ Preview ✅ Development
 
 Name: EMAIL_PORT
@@ -146,15 +146,7 @@ Environment: ✅ Production ✅ Preview ✅ Development
 
 ---
 
-## 🎯 Step 4: Run Database Schema (5 minutes)
-
-After setting environment variables, you need to create the database tables:
-
-### Method 1: Using MySQL Command Line
-```bash
-mysql -h [your-host] -u [your-username] -p [your-database] < database/schema.sql
-```
-
+## 🎯 cd 
 ### Method 2: Using MySQL Workbench or DBeaver
 1. Connect to your database using credentials from Step 2
 2. Open file: `database/schema.sql`
