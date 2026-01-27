@@ -74,12 +74,53 @@ export const getCars = async (req: Request, res: Response): Promise<void> => {
 
     const [cars] = await pool.execute(query, params) as any[];
 
-    // Parse JSON fields
-    const formattedCars = cars.map((car: any) => ({
-      ...car,
-      event_suitability: car.event_suitability ? JSON.parse(car.event_suitability) : [],
-      specs: car.specs ? JSON.parse(car.specs) : {},
-    }));
+    // Parse JSON fields with error handling for malformed data
+    const formattedCars = cars.map((car: any) => {
+      let eventSuitability = [];
+      let specs = {};
+
+      // Safely parse event_suitability
+      if (car.event_suitability) {
+        try {
+          if (typeof car.event_suitability === 'string') {
+            // Try to parse as JSON
+            const parsed = JSON.parse(car.event_suitability);
+            eventSuitability = Array.isArray(parsed) ? parsed : [];
+          } else if (Array.isArray(car.event_suitability)) {
+            eventSuitability = car.event_suitability;
+          }
+        } catch (parseError) {
+          // If parsing fails, treat as comma-separated string or empty array
+          console.warn(`Failed to parse event_suitability for car ${car.id}:`, parseError);
+          if (typeof car.event_suitability === 'string') {
+            const items = car.event_suitability.split(',').map((e: string) => e.trim()).filter((e: string) => e);
+            eventSuitability = items;
+          } else {
+            eventSuitability = [];
+          }
+        }
+      }
+
+      // Safely parse specs
+      if (car.specs) {
+        try {
+          if (typeof car.specs === 'string') {
+            specs = JSON.parse(car.specs);
+          } else if (typeof car.specs === 'object') {
+            specs = car.specs;
+          }
+        } catch (parseError) {
+          console.warn(`Failed to parse specs for car ${car.id}:`, parseError);
+          specs = {};
+        }
+      }
+
+      return {
+        ...car,
+        event_suitability: eventSuitability,
+        specs: specs,
+      };
+    });
 
     res.json({ cars: formattedCars });
   } catch (error: any) {
@@ -213,11 +254,41 @@ export const createCar = async (req: Request, res: Response): Promise<void> => {
 
     const car = cars[0];
 
-    // Parse JSON fields
+    // Parse JSON fields with error handling
+    let eventSuitability = [];
+    let specs = {};
+
+    if (car.event_suitability) {
+      try {
+        if (typeof car.event_suitability === 'string') {
+          const parsed = JSON.parse(car.event_suitability);
+          eventSuitability = Array.isArray(parsed) ? parsed : [];
+        } else if (Array.isArray(car.event_suitability)) {
+          eventSuitability = car.event_suitability;
+        }
+      } catch (parseError) {
+        console.warn(`Failed to parse event_suitability for newly created car ${car.id}:`, parseError);
+        eventSuitability = [];
+      }
+    }
+
+    if (car.specs) {
+      try {
+        if (typeof car.specs === 'string') {
+          specs = JSON.parse(car.specs);
+        } else if (typeof car.specs === 'object') {
+          specs = car.specs;
+        }
+      } catch (parseError) {
+        console.warn(`Failed to parse specs for newly created car ${car.id}:`, parseError);
+        specs = {};
+      }
+    }
+
     const formattedCar = {
       ...car,
-      event_suitability: car.event_suitability ? JSON.parse(car.event_suitability) : [],
-      specs: car.specs ? JSON.parse(car.specs) : {},
+      event_suitability: eventSuitability,
+      specs: specs,
     };
 
     res.status(201).json({ car: formattedCar });
@@ -353,11 +424,44 @@ export const updateCar = async (req: Request, res: Response): Promise<void> => {
 
     const car = cars[0];
 
-    // Parse JSON fields
+    // Parse JSON fields with error handling
+    let eventSuitability = [];
+    let specs = {};
+
+    if (car.event_suitability) {
+      try {
+        if (typeof car.event_suitability === 'string') {
+          const parsed = JSON.parse(car.event_suitability);
+          eventSuitability = Array.isArray(parsed) ? parsed : [];
+        } else if (Array.isArray(car.event_suitability)) {
+          eventSuitability = car.event_suitability;
+        }
+      } catch (parseError) {
+        console.warn(`Failed to parse event_suitability for updated car ${car.id}:`, parseError);
+        if (typeof car.event_suitability === 'string') {
+          const items = car.event_suitability.split(',').map((e: string) => e.trim()).filter((e: string) => e);
+          eventSuitability = items;
+        }
+      }
+    }
+
+    if (car.specs) {
+      try {
+        if (typeof car.specs === 'string') {
+          specs = JSON.parse(car.specs);
+        } else if (typeof car.specs === 'object') {
+          specs = car.specs;
+        }
+      } catch (parseError) {
+        console.warn(`Failed to parse specs for updated car ${car.id}:`, parseError);
+        specs = {};
+      }
+    }
+
     const formattedCar = {
       ...car,
-      event_suitability: car.event_suitability ? JSON.parse(car.event_suitability) : [],
-      specs: car.specs ? JSON.parse(car.specs) : {},
+      event_suitability: eventSuitability,
+      specs: specs,
     };
 
     res.json({ car: formattedCar });
