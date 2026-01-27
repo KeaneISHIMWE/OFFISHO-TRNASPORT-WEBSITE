@@ -534,15 +534,14 @@ const CarForm: React.FC<CarFormProps> = ({ car, onClose, onSuccess }) => {
       }
       formDataToSend.append('car_type', formData.car_type);
       formDataToSend.append('availability_status', formData.availability_status);
-      formDataToSend.append(
-        'event_suitability',
-        JSON.stringify(
-          formData.event_suitability
-            .split(',')
-            .map((e) => e.trim())
-            .filter((e) => e)
-        )
-      );
+      // Process event_suitability: split comma-separated string into array, then stringify
+      const eventSuitabilityArray = formData.event_suitability
+        .split(',')
+        .map((e) => e.trim())
+        .filter((e) => e);
+      
+      // Send as JSON stringified array
+      formDataToSend.append('event_suitability', JSON.stringify(eventSuitabilityArray));
 
       if (imageFile) {
         formDataToSend.append('image', imageFile);

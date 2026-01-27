@@ -160,9 +160,23 @@ export const createCar = async (req: Request, res: Response): Promise<void> => {
       }
     }
 
-    const eventSuitabilityJson = Array.isArray(event_suitability)
-      ? JSON.stringify(event_suitability)
-      : event_suitability || '[]';
+    // Handle event_suitability - it might be a string (JSON stringified array) or already an array
+    let eventSuitabilityJson: string;
+    if (Array.isArray(event_suitability)) {
+      eventSuitabilityJson = JSON.stringify(event_suitability);
+    } else if (typeof event_suitability === 'string') {
+      // If it's a string, try to parse it as JSON first
+      try {
+        const parsed = JSON.parse(event_suitability);
+        eventSuitabilityJson = Array.isArray(parsed) ? JSON.stringify(parsed) : '[]';
+      } catch (parseError) {
+        // If parsing fails, treat it as a comma-separated string and convert to array
+        const items = event_suitability.split(',').map((e: string) => e.trim()).filter((e: string) => e);
+        eventSuitabilityJson = JSON.stringify(items);
+      }
+    } else {
+      eventSuitabilityJson = '[]';
+    }
 
     const specsJson = specs ? JSON.stringify(specs) : '{}';
 
@@ -292,9 +306,22 @@ export const updateCar = async (req: Request, res: Response): Promise<void> => {
     }
     if (event_suitability !== undefined) {
       updates.push('event_suitability = ?');
-      const eventSuitabilityJson = Array.isArray(event_suitability)
-        ? JSON.stringify(event_suitability)
-        : JSON.stringify(event_suitability);
+      let eventSuitabilityJson: string;
+      if (Array.isArray(event_suitability)) {
+        eventSuitabilityJson = JSON.stringify(event_suitability);
+      } else if (typeof event_suitability === 'string') {
+        // If it's a string, try to parse it as JSON first
+        try {
+          const parsed = JSON.parse(event_suitability);
+          eventSuitabilityJson = Array.isArray(parsed) ? JSON.stringify(parsed) : '[]';
+        } catch (parseError) {
+          // If parsing fails, treat it as a comma-separated string and convert to array
+          const items = event_suitability.split(',').map((e: string) => e.trim()).filter((e: string) => e);
+          eventSuitabilityJson = JSON.stringify(items);
+        }
+      } else {
+        eventSuitabilityJson = '[]';
+      }
       params.push(eventSuitabilityJson);
     }
     if (availability_status !== undefined) {
