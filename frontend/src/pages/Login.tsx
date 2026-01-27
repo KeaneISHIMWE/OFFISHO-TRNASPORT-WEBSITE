@@ -17,13 +17,14 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 const Login: React.FC = () => {
-  const { login } = useAuth();
+  const { login, isAuthenticated, isAdmin, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [checkingConnection, setCheckingConnection] = useState<boolean>(false);
   const { status: serverStatus, checkServerStatus } = useServerStatus();
 
+  // IMPORTANT: All hooks must be called before any conditional returns
   const {
     register,
     handleSubmit,
@@ -31,6 +32,26 @@ const Login: React.FC = () => {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   });
+
+  // Redirect if already authenticated
+  React.useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      if (isAdmin) {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate('/', { replace: true });
+      }
+    }
+  }, [authLoading, isAuthenticated, isAdmin, navigate]);
+
+  // Show loading while checking auth status
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background pt-20 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   const handleCheckConnection = async () => {
     setCheckingConnection(true);
@@ -51,10 +72,28 @@ const Login: React.FC = () => {
       setLoading(true);
       setError('');
       const user = await login(data.email, data.password);
-      if (user.role === 'admin') {
-        navigate('/admin');
+      
+      // Wait a bit longer to ensure React state has updated
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      // Double-check user role before navigation
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        console.log('Navigating after login. User role:', parsedUser.role);
+        
+        if (parsedUser.role === 'admin') {
+          navigate('/admin', { replace: true });
+        } else {
+          navigate('/', { replace: true });
+        }
       } else {
-        navigate('/');
+        // Fallback to user object from login response
+        if (user.role === 'admin') {
+          navigate('/admin', { replace: true });
+        } else {
+          navigate('/', { replace: true });
+        }
       }
     } catch (err: any) {
       let errorMessage = 'Login failed. Please try again.';

@@ -48,6 +48,12 @@ module.exports = {
       'process.env.REACT_APP_API_URL': JSON.stringify(
         process.env.REACT_APP_API_URL || 'http://localhost:5000/api'
       ),
+      'process.env.REACT_APP_HERO_CAR_IMAGE': JSON.stringify(
+        process.env.REACT_APP_HERO_CAR_IMAGE || ''
+      ),
+      'process.env.NODE_ENV': JSON.stringify(
+        process.env.NODE_ENV || 'development'
+      ),
     }),
   ],
   devServer: {

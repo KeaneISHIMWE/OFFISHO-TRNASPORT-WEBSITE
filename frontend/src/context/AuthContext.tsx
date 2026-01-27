@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { User, AuthResponse } from '../types';
 import { authAPI } from '../services/api';
 
@@ -67,9 +68,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string): Promise<User> => {
     try {
       const response: AuthResponse = await authAPI.login(email, password);
+      console.log('Login successful. User:', response.user);
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
       setUser(response.user);
+      // Ensure state is updated before returning
+      await new Promise(resolve => setTimeout(resolve, 50));
       return response.user;
     } catch (error: any) {
       // Re-throw with better error message
@@ -119,8 +123,37 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
   requireAdmin = false,
 }) => {
-  const { isAuthenticated, isAdmin, loading } = useAuth();
+  const { isAuthenticated, isAdmin, loading, user } = useAuth();
+  const navigate = useNavigate();
 
+  // Check localStorage as fallback (for immediate checks after login)
+  const token = localStorage.getItem('token');
+  const storedUserStr = localStorage.getItem('user');
+  const storedUser = storedUserStr ? JSON.parse(storedUserStr) : null;
+  const hasToken = !!token;
+  const storedIsAdmin = storedUser?.role === 'admin';
+
+  useEffect(() => {
+    // Debug logging
+    console.log('ProtectedRoute check:', { 
+      loading, 
+      isAuthenticated, 
+      isAdmin, 
+      userRole: user?.role, 
+      requireAdmin,
+      hasToken,
+      storedUserRole: storedUser?.role
+    });
+    
+    // Only redirect if we're done loading and definitely not authenticated
+    // Check both state and localStorage
+    if (!loading && !isAuthenticated && !hasToken) {
+      console.log('Redirecting to login - not authenticated');
+      navigate('/login', { replace: true });
+    }
+  }, [loading, isAuthenticated, isAdmin, user, requireAdmin, navigate, hasToken, storedUser]);
+
+  // Show loading spinner while checking auth
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -129,17 +162,22 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     );
   }
 
-  if (!isAuthenticated) {
-    window.location.href = '/login';
+  // If not authenticated (check both state and localStorage), return null (redirect will happen in useEffect)
+  if (!isAuthenticated && !hasToken) {
     return null;
   }
 
-  if (requireAdmin && !isAdmin) {
+  // Check admin requirement (use state first, fallback to localStorage)
+  const effectiveIsAdmin = isAdmin || storedIsAdmin;
+  const effectiveUserRole = user?.role || storedUser?.role;
+
+  if (requireAdmin && !effectiveIsAdmin) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-navy-blue mb-4">Access Denied</h1>
           <p className="text-gray-600">You need admin privileges to access this page.</p>
+          <p className="text-sm text-gray-500 mt-2">Your role: {effectiveUserRole || 'unknown'}</p>
         </div>
       </div>
     );
