@@ -13,6 +13,7 @@ const CarDetails: React.FC = () => {
   const [car, setCar] = useState<Car | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [showBookingForm, setShowBookingForm] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -26,10 +27,30 @@ const CarDetails: React.FC = () => {
   const loadCar = async () => {
     try {
       setLoading(true);
+      setError(null);
       const response = await carsAPI.getCarById(id!);
       setCar(response.car);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading car:', error);
+      
+      // Handle different error types
+      if (error.response) {
+        // Server responded with an error status
+        if (error.response.status === 404) {
+          setError('Car not found');
+        } else if (error.response.status === 500) {
+          const errorMessage = error.response.data?.error || 'Server error occurred';
+          setError(`Server error: ${errorMessage}`);
+        } else {
+          setError(error.response.data?.error || 'Failed to load car details');
+        }
+      } else if (error.request) {
+        // Request was made but no response received
+        setError('Cannot connect to server. Please check your connection.');
+      } else {
+        // Something else happened
+        setError('An unexpected error occurred');
+      }
     } finally {
       setLoading(false);
     }
@@ -52,12 +73,23 @@ const CarDetails: React.FC = () => {
     );
   }
 
-  if (!car) {
+  if (!car && !loading) {
     return (
-      <div className="min-h-screen bg-background pt-24 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Car not found</h1>
-          <Link to="/cars" className="text-primary hover:underline flex items-center justify-center gap-2">
+      <div className="min-h-screen bg-purple-midnight pt-24 flex items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
+          <h1 className="text-2xl font-bold text-white mb-2">
+            {error || 'Car not found'}
+          </h1>
+          {error && error.includes('Server error') && (
+            <p className="text-silver/70 text-sm mb-4">
+              There was an issue loading the car details. Please try again later.
+            </p>
+          )}
+          <Link 
+            to="/cars" 
+            className="inline-flex items-center gap-2 text-purple-electric hover:text-purple-glow transition-colors font-medium"
+          >
             <ArrowLeft className="w-4 h-4" />
             Back to Cars
           </Link>
