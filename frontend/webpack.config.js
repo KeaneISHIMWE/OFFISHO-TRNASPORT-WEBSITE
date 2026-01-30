@@ -62,9 +62,7 @@ module.exports = (env, argv) => {
         'process.env.REACT_APP_HERO_CAR_IMAGE': JSON.stringify(
           process.env.REACT_APP_HERO_CAR_IMAGE || ''
         ),
-        'process.env.NODE_ENV': JSON.stringify(
-          process.env.NODE_ENV || 'development'
-        ),
+        // NODE_ENV is automatically set by webpack based on mode, don't override
       }),
     ],
     devServer: {
@@ -107,6 +105,11 @@ module.exports = (env, argv) => {
     },
     stats: {
       errorDetails: true,
+    },
+    performance: {
+      hints: isProduction ? 'warning' : false,
+      maxEntrypointSize: 1000000, // 1MB
+      maxAssetSize: 1000000, // 1MB
     },
   };
 };
