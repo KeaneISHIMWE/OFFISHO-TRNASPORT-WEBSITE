@@ -11,7 +11,7 @@ import contactRoutes from './routes/contact';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = parseInt(process.env.PORT || '5000', 10);
 
 // Middleware
 app.use(helmet({
@@ -102,11 +102,15 @@ app.use((req: express.Request, res: express.Response) => {
   });
 });
 
-// Only start server if not in test environment and not on Vercel
-if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
+// Start server if not in test environment
+// On Railway, we always want to start the server
+// On Vercel, the serverless function handles requests
+if (process.env.NODE_ENV !== 'test') {
+  if (!process.env.VERCEL) {
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  }
 }
 
 export default app;

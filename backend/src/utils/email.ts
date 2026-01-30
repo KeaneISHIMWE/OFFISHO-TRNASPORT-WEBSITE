@@ -121,15 +121,18 @@ export const sendAdminNotificationEmail = async (
   
   // More robust check for phone number
   try {
-    if (user && user.phone_number !== null && user.phone_number !== undefined) {
-      const phoneStr = String(user.phone_number).trim();
-      if (phoneStr !== '' && phoneStr !== 'null' && phoneStr !== 'undefined' && phoneStr.length > 0) {
-        phoneDisplay = phoneStr;
+    if (user && user.phone_number != null) {
+      const phoneValue = user.phone_number;
+      if (typeof phoneValue === 'string' || typeof phoneValue === 'number') {
+        const phoneStr = String(phoneValue).trim();
+        if (phoneStr && phoneStr.length > 0 && phoneStr !== 'null' && phoneStr !== 'undefined') {
+          phoneDisplay = phoneStr;
+        }
       }
     }
   } catch (error) {
     // If phone number processing fails, use default
-    console.error('Error processing phone number:', error);
+    // Silently fail to prevent deployment issues
   }
 
   const mailOptions = {
