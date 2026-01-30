@@ -9,3 +9,4 @@ declare module '../backend/src/server' {
   const app: (req: ExpressRequest, res: ExpressResponse) => void | Promise<void>;
   export default app;
 }
+
