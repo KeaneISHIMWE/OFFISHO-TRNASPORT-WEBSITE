@@ -33,15 +33,33 @@ const parseCarData = (req: any, res: any, next: any) => {
         req.body.event_suitability = items;
       }
     }
-    if (req.body.specs && typeof req.body.specs === 'string') {
-      if (req.body.specs.trim().startsWith('[') || req.body.specs.trim().startsWith('{')) {
-        try {
-          req.body.specs = JSON.parse(req.body.specs);
-        } catch (parseError) {
-          // If parsing fails, leave as is or set to empty object
+    if (req.body.specs !== undefined && req.body.specs !== null) {
+      if (typeof req.body.specs === 'string') {
+        const trimmedSpecs = req.body.specs.trim();
+        if (trimmedSpecs === '') {
+          // Empty string should default to empty object
+          req.body.specs = {};
+        } else if (trimmedSpecs.startsWith('[') || trimmedSpecs.startsWith('{')) {
+          try {
+            req.body.specs = JSON.parse(trimmedSpecs);
+          } catch (parseError) {
+            // If parsing fails, set to empty object
+            req.body.specs = {};
+          }
+        } else {
+          // Not a JSON string, set to empty object
           req.body.specs = {};
         }
+      } else if (typeof req.body.specs === 'object') {
+        // Already an object, keep it as is
+        req.body.specs = req.body.specs;
+      } else {
+        // Invalid type, default to empty object
+        req.body.specs = {};
       }
+    } else {
+      // specs is undefined or null, default to empty object
+      req.body.specs = {};
     }
     next();
   } catch (error) {

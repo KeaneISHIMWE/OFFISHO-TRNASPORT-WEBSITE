@@ -5,13 +5,18 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion } from 'framer-motion';
-import { UserPlus, User, Mail, Lock, AlertCircle } from 'lucide-react';
+import { UserPlus, User, Mail, Lock, AlertCircle, Phone } from 'lucide-react';
 
 const registerSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   confirmPassword: z.string(),
+  phone_number: z.string()
+    .regex(/^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}$/, 'Invalid phone number format')
+    .max(20, 'Phone number must be less than 20 characters')
+    .optional()
+    .or(z.literal('')),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ['confirmPassword'],
@@ -37,7 +42,7 @@ const Register: React.FC = () => {
     try {
       setLoading(true);
       setError('');
-      await registerUser(data.name, data.email, data.password);
+      await registerUser(data.name, data.email, data.password, data.phone_number || undefined);
       navigate('/');
     } catch (err: any) {
       setError(err.response?.data?.error || 'Registration failed. Please try again.');
@@ -114,6 +119,28 @@ const Register: React.FC = () => {
               <p className="text-red-500 text-sm mt-1 flex items-center">
                 <AlertCircle className="w-4 h-4 mr-1" />
                 {errors.email.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label htmlFor="phone_number" className="block text-sm font-semibold text-slate-300 mb-2">
+              Phone Number <span className="text-slate-500 text-xs font-normal">(Optional)</span>
+            </label>
+            <div className="relative">
+              <input
+                type="tel"
+                id="phone_number"
+                {...register('phone_number')}
+                placeholder="+250 785 344 214"
+                className="w-full pl-10 pr-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+              />
+              <Phone className="absolute left-3 top-3.5 w-5 h-5 text-slate-500" />
+            </div>
+            {errors.phone_number && (
+              <p className="text-red-500 text-sm mt-1 flex items-center">
+                <AlertCircle className="w-4 h-4 mr-1" />
+                {errors.phone_number.message}
               </p>
             )}
           </div>

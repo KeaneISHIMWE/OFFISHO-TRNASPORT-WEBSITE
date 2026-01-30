@@ -66,9 +66,14 @@ export const healthCheck = async (): Promise<{ status: string }> => {
 
 // Auth API with retry logic
 export const authAPI = {
-  register: async (name: string, email: string, password: string): Promise<AuthResponse> => {
+  register: async (name: string, email: string, password: string, phone_number?: string): Promise<AuthResponse> => {
     return retryWithBackoff(async () => {
-      const response = await api.post<AuthResponse>('/auth/register', { name, email, password });
+      const response = await api.post<AuthResponse>('/auth/register', { 
+        name, 
+        email, 
+        password, 
+        phone_number: phone_number || undefined 
+      });
       return response.data;
     });
   },

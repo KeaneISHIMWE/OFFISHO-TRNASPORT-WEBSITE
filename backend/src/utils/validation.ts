@@ -4,6 +4,11 @@ export const registerSchema = Joi.object({
   name: Joi.string().min(2).max(255).required(),
   email: Joi.string().email().required(),
   password: Joi.string().min(6).required(),
+  phone_number: Joi.string()
+    .pattern(/^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}$/)
+    .max(20)
+    .allow('', null)
+    .optional(),
 });
 
 export const loginSchema = Joi.object({

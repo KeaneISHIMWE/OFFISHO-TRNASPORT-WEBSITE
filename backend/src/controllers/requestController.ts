@@ -182,9 +182,9 @@ export const createRequest = async (req: Request, res: Response): Promise<void> 
       return;
     }
 
-    // Get user details for email
+    // Get user details for email (including phone_number)
     const [users] = await pool.execute(
-      'SELECT * FROM users WHERE id = ?',
+      'SELECT id, name, email, phone_number, role FROM users WHERE id = ?',
       [req.user.userId]
     ) as any[];
 
@@ -293,7 +293,7 @@ export const updateRequestStatus = async (
     const car = cars[0];
 
     const [users] = await pool.execute(
-      'SELECT * FROM users WHERE id = ?',
+      'SELECT id, name, email, phone_number, role FROM users WHERE id = ?',
       [request.user_id]
     ) as any[];
 

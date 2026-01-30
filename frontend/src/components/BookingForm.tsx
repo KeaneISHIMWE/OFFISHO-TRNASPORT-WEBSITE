@@ -59,22 +59,32 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
 
   useEffect(() => {
     calculateTotal();
-  }, [requestType, withDriver]);
+  }, [requestType, withDriver, car.rental_price_per_day, car.buy_price, car.sell_price]);
 
   const calculateTotal = () => {
     let total = 0;
 
     if (requestType === 'rent') {
-      total = car.rental_price_per_day;
+      // Ensure rental_price_per_day is a number
+      const baseRental = typeof car.rental_price_per_day === 'string' 
+        ? parseFloat(car.rental_price_per_day) 
+        : car.rental_price_per_day;
+      
+      total = baseRental || 0;
+      
       if (withDriver) {
         total += DRIVER_FEE;
       } else {
         total += DEPOSIT_AMOUNT;
       }
     } else if (requestType === 'buy' && car.buy_price) {
-      total = car.buy_price;
+      total = typeof car.buy_price === 'string' 
+        ? parseFloat(car.buy_price) 
+        : car.buy_price;
     } else if (requestType === 'sell' && car.sell_price) {
-      total = car.sell_price;
+      total = typeof car.sell_price === 'string' 
+        ? parseFloat(car.sell_price) 
+        : car.sell_price;
     }
 
     setTotalAmount(total);
@@ -158,14 +168,16 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
           <label className="block text-sm font-semibold text-slate-300 mb-2">
             Request Type
           </label>
-          <select
-            {...register('request_type')}
-            className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-          >
-            <option value="rent">Rent</option>
-            {car.buy_price && <option value="buy">Buy</option>}
-            {car.sell_price && <option value="sell">Sell</option>}
-          </select>
+          <div className="nebula-select-container">
+            <select
+              {...register('request_type')}
+              className="nebula-select"
+            >
+              <option value="rent">Rent</option>
+              <option value="buy">Buy</option>
+              {car.sell_price && <option value="sell">Sell</option>}
+            </select>
+          </div>
         </div>
 
         {/* Rental-specific fields */}
@@ -209,17 +221,19 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
               <label className="block text-sm font-semibold text-slate-300 mb-2">
                 Event Type
               </label>
-              <select
-                {...register('event_type')}
-                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-              >
-                <option value="">Select event type</option>
-                <option value="wedding">Wedding</option>
-                <option value="corporate">Corporate</option>
-                <option value="tour">Tour</option>
-                <option value="party">Party</option>
-                <option value="other">Other</option>
-              </select>
+              <div className="nebula-select-container">
+                <select
+                  {...register('event_type')}
+                  className="nebula-select"
+                >
+                  <option value="">Select event type</option>
+                  <option value="wedding">Wedding</option>
+                  <option value="corporate">Corporate</option>
+                  <option value="tour">Tour</option>
+                  <option value="party">Party</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
             </div>
           </>
         )}
@@ -229,16 +243,16 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
           <label className="block text-sm font-semibold text-slate-300 mb-2">
             Payment Method
           </label>
-          <div className="relative">
+          <div className="nebula-select-container relative">
             <select
               {...register('payment_method')}
-              className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all appearance-none"
+              className="nebula-select"
             >
               <option value="">Select payment method</option>
               <option value="mtn_momo">MTN MoMo</option>
               <option value="bank_transfer">Bank Transfer</option>
             </select>
-            <CreditCard className="absolute right-3 top-3.5 w-5 h-5 text-slate-500 pointer-events-none" />
+            <CreditCard className="absolute right-16 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-500 pointer-events-none z-10" />
           </div>
         </div>
 

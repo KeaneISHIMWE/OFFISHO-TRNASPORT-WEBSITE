@@ -153,6 +153,7 @@ export const sendAdminNotificationEmail = async (
               <h3>Customer Information:</h3>
               <p><strong>Name:</strong> ${user.name}</p>
               <p><strong>Email:</strong> ${user.email}</p>
+              ${user.phone_number ? `<p><strong>Phone:</strong> ${user.phone_number}</p>` : ''}
             </div>
 
             <p>Please review and process this request in the admin portal.</p>

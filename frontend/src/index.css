@@ -223,22 +223,33 @@
 }
 
 .nebula-select option {
-  background-color: #1C2637;
-  color: #F3F3F3;
-  padding: 16px;
-  border-radius: 0;
-  font-size: 1rem;
+  background-color: #1C2637 !important;
+  background: #1C2637 !important;
+  color: #FFFFFF !important;
+  padding: 16px !important;
+  border-radius: 0 !important;
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  border: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
 }
 
-.nebula-select option:checked {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(59, 130, 246, 0.15) 100%);
-  color: #3B82F6;
-  font-weight: 500;
+.nebula-select option:checked,
+.nebula-select option[selected] {
+  background-color: rgba(59, 130, 246, 0.6) !important;
+  background: rgba(59, 130, 246, 0.6) !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
 }
 
-.nebula-select option:hover {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(59, 130, 246, 0.1) 100%);
-  color: #60A5FA;
+.nebula-select option:hover,
+.nebula-select option:focus {
+  background-color: rgba(59, 130, 246, 0.5) !important;
+  background: rgba(59, 130, 246, 0.5) !important;
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
 }
 
 /* Firefox specific */
@@ -315,4 +326,66 @@
 .nebula-select-container select {
   position: relative;
   z-index: 2;
+}
+
+/* Global select option styling for all dropdowns - Enhanced for maximum visibility */
+select option {
+  background-color: #1C2637 !important;
+  background: #1C2637 !important;
+  color: #FFFFFF !important;
+  padding: 12px 16px !important;
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  border: none !important;
+}
+
+select option:checked,
+select option[selected] {
+  background-color: rgba(59, 130, 246, 0.5) !important;
+  background: rgba(59, 130, 246, 0.5) !important;
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+}
+
+select option:hover,
+select option:focus {
+  background-color: rgba(59, 130, 246, 0.4) !important;
+  background: rgba(59, 130, 246, 0.4) !important;
+  color: #FFFFFF !important;
+  font-weight: 500 !important;
+}
+
+/* Ensure select elements have proper text color */
+select {
+  color: #F3F3F3 !important;
+  background-color: rgba(28, 38, 55, 0.9) !important;
+}
+
+select:focus {
+  color: #FFFFFF !important;
+}
+
+/* Additional browser-specific fixes */
+select::-ms-expand {
+  display: none;
+}
+
+/* Chrome/Safari/Edge specific */
+select option {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Firefox specific option styling */
+@-moz-document url-prefix() {
+  select option {
+    background-color: #1C2637 !important;
+    color: #FFFFFF !important;
+  }
+  
+  select option:checked {
+    background-color: rgba(59, 130, 246, 0.5) !important;
+    color: #FFFFFF !important;
+  }
 }

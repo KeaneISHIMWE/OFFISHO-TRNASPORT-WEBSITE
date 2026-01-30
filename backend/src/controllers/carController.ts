@@ -300,7 +300,9 @@ export const createCar = async (req: Request, res: Response): Promise<void> => {
       eventSuitabilityJson = '[]';
     }
 
-    const specsJson = specs ? JSON.stringify(specs) : '{}';
+    // Ensure specs is always a valid object
+    const specsObj = specs && typeof specs === 'object' ? specs : {};
+    const specsJson = JSON.stringify(specsObj);
 
     // Generate UUID for car
     const carId = uuidv4();
@@ -482,7 +484,9 @@ export const updateCar = async (req: Request, res: Response): Promise<void> => {
     }
     if (specs !== undefined) {
       updates.push('specs = ?');
-      params.push(JSON.stringify(specs));
+      // Ensure specs is always a valid object
+      const specsObj = specs && typeof specs === 'object' ? specs : {};
+      params.push(JSON.stringify(specsObj));
     }
 
     if (updates.length === 0) {

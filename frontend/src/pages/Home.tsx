@@ -214,7 +214,7 @@ const Home: React.FC = () => {
 
       {/* CTA Section */}
       <section className="py-12 sm:py-16 md:py-20 lg:py-24 relative overflow-hidden bg-purple-midnight">
-        <div className="absolute inset-0 global-illumination opacity-30"></div>
+        <div className="absolute inset-0 global-illumination opacity-30" />
         <div className="container mx-auto relative z-10 text-center px-4">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold text-silver mb-4 sm:mb-6">Ready to Experience Luxury?</h2>
           <p className="text-silver/80 max-w-2xl mx-auto mb-6 sm:mb-8 md:mb-10 text-sm sm:text-base md:text-lg">

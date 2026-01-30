@@ -10,7 +10,7 @@ const JWT_EXPIRES_IN = '24h';
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, phone_number } = req.body;
 
     // Check if user already exists
     const [existingUsers] = await pool.execute(
@@ -30,15 +30,15 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     // Generate UUID for user
     const userId = uuidv4();
 
-    // Insert user
+    // Insert user (phone_number can be null for existing users compatibility)
     await pool.execute(
-      'INSERT INTO users (id, name, email, password_hash, role) VALUES (?, ?, ?, ?, ?)',
-      [userId, name, email, passwordHash, 'user']
+      'INSERT INTO users (id, name, email, phone_number, password_hash, role) VALUES (?, ?, ?, ?, ?, ?)',
+      [userId, name, email, phone_number || null, passwordHash, 'user']
     );
 
     // Get created user
     const [users] = await pool.execute(
-      'SELECT id, name, email, role FROM users WHERE id = ?',
+      'SELECT id, name, email, phone_number, role FROM users WHERE id = ?',
       [userId]
     ) as any[];
 
@@ -65,6 +65,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         id: user.id,
         name: user.name,
         email: user.email,
+        phone_number: user.phone_number || null,
         role: user.role,
       },
     });
@@ -199,7 +200,7 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
     }
 
     const [users] = await pool.execute(
-      'SELECT id, name, email, role, created_at, updated_at FROM users WHERE id = ?',
+      'SELECT id, name, email, phone_number, role, created_at, updated_at FROM users WHERE id = ?',
       [req.user.userId]
     ) as any[];
 
@@ -215,6 +216,7 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
         id: user.id,
         name: user.name,
         email: user.email,
+        phone_number: user.phone_number || null,
         role: user.role,
         created_at: new Date(user.created_at).toISOString(),
         updated_at: new Date(user.updated_at).toISOString(),
