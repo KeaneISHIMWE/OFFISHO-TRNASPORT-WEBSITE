@@ -5,9 +5,40 @@ import { Car, UserCheck, Clock, Shield, Calendar, Award, Heart } from 'lucide-re
 
 const AboutUs: React.FC = () => {
   return (
-    <div className="min-h-screen bg-background pt-24 pb-12">
+    <div className="min-h-screen bg-background pt-24 pb-12 relative overflow-hidden">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1768024175218-5878b8880eab?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`,
+          backgroundAttachment: 'fixed',
+        }}
+      />
+      
+      {/* Dark Overlay for Text Readability */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-purple-midnight/85 via-purple-midnight/75 to-purple-midnight/90"></div>
+      
+      {/* Radial Gradient Overlays for Better Text Contrast */}
+      <div className="absolute inset-0 z-0 opacity-60">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `radial-gradient(ellipse at center, rgba(10, 1, 24, 0.4) 0%, rgba(10, 1, 24, 0.2) 50%, transparent 70%),
+                           radial-gradient(ellipse at 80% 20%, rgba(157, 80, 255, 0.15) 0%, transparent 50%)`
+        }}></div>
+      </div>
+      
+      {/* Global Illumination Effect */}
+      <div className="absolute inset-0 z-0 global-illumination opacity-30"></div>
+      
+      {/* Aurora Glow Background */}
+      <div className="absolute inset-0 z-0 opacity-30">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `radial-gradient(circle at 20% 50%, rgba(157, 80, 255, 0.2) 0%, transparent 50%),
+                           radial-gradient(circle at 80% 80%, rgba(209, 163, 255, 0.15) 0%, transparent 50%)`
+        }}></div>
+      </div>
+
       {/* Hero Section */}
-      <section className="py-12 md:py-20">
+      <section className="py-12 md:py-20 relative z-10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <span className="inline-block px-3 py-1 text-xs font-semibold tracking-wider text-purple-electric uppercase bg-purple-electric/10 rounded-full mb-4 neon-border">
@@ -33,7 +64,7 @@ const AboutUs: React.FC = () => {
       </section>
 
       {/* Statistics Section */}
-      <section className="py-12 md:py-20 bg-purple-card border-y border-purple-electric/20 relative overflow-hidden">
+      <section className="py-12 md:py-20 bg-purple-card/80 backdrop-blur-sm border-y border-purple-electric/20 relative overflow-hidden z-10">
         <div className="absolute inset-0 bg-purple-electric/5 pointer-events-none" />
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
@@ -67,7 +98,7 @@ const AboutUs: React.FC = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-12 md:py-20 bg-purple-midnight">
+      <section className="py-12 md:py-20 bg-purple-midnight/80 backdrop-blur-sm relative z-10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
             {[

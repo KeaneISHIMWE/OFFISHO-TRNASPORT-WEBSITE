@@ -22,16 +22,6 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
     }).format(price).replace('RWF', 'FRW');
   };
 
-  const getCategoryLabel = () => {
-    switch (car.car_type) {
-      case 'luxury':
-      case 'sedan': return 'Luxury Sedan';
-      case 'suv': return 'Premium SUV';
-      case 'convertible': return 'Ultra Luxury';
-      default: return car.car_type.charAt(0).toUpperCase() + car.car_type.slice(1);
-    }
-  };
-
   const getSeats = () => car.specs?.seats || (car.car_type === 'suv' ? 5 : 4);
   const getFuelType = () => car.specs?.fuel_type || 'Petrol';
   const getTransmission = () => car.specs?.transmission || 'Auto';
@@ -73,11 +63,6 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
         
         {/* Global Illumination behind image */}
         <div className="absolute inset-0 global-illumination opacity-40"></div>
-
-        {/* Category Badge */}
-        <span className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold shadow-lg electric-gradient text-white neon-glow">
-          {getCategoryLabel()}
-        </span>
 
         {/* Specs Overlay on Hover */}
         <motion.div
