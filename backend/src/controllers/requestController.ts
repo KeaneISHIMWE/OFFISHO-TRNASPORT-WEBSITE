@@ -190,6 +190,28 @@ export const createRequest = async (req: Request, res: Response): Promise<void> 
 
     const user = users[0];
 
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    // Ensure phone_number is properly set (handle MySQL NULL)
+    if (user.phone_number === null || user.phone_number === undefined) {
+      user.phone_number = null;
+    }
+
+    // Debug: Log user data being sent to email
+    console.log('📧 User data for email:', {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      phone_number: user.phone_number,
+      phone_number_type: typeof user.phone_number,
+      phone_number_is_null: user.phone_number === null,
+      phone_number_is_undefined: user.phone_number === undefined,
+      phone_number_raw: JSON.stringify(user.phone_number)
+    });
+
     // Send confirmation email to user
     try {
       await sendRequestConfirmationEmail(user.email, user.name, newRequest, car);

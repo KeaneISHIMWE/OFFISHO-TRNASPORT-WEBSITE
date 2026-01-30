@@ -116,6 +116,30 @@ export const sendAdminNotificationEmail = async (
   // Send to multiple admin emails - primary admin first
   const adminEmails = ['prospertuop@gmail.com', 'keaneishimwe@gmail.com'];
 
+  // Debug: Log user phone number
+  console.log('📧 Email - User phone_number:', {
+    phone_number: user.phone_number,
+    type: typeof user.phone_number,
+    is_null: user.phone_number === null,
+    is_undefined: user.phone_number === undefined,
+    is_empty: user.phone_number === '',
+    truthy: !!user.phone_number
+  });
+
+  // Determine phone number display value - handle null, undefined, and empty strings
+  let phoneDisplay = '<span style="color: #999; font-style: italic;">Not provided</span>';
+  
+  // More robust check for phone number
+  if (user && user.phone_number !== null && user.phone_number !== undefined) {
+    const phoneStr = String(user.phone_number).trim();
+    if (phoneStr !== '' && phoneStr !== 'null' && phoneStr !== 'undefined' && phoneStr.length > 0) {
+      phoneDisplay = phoneStr;
+    }
+  }
+  
+  // Additional debug log
+  console.log('📧 Final phoneDisplay value:', phoneDisplay);
+
   const mailOptions = {
     from: `"Offisho Transport" <${process.env.SMTP_USER}>`,
     to: adminEmails.join(', '),
@@ -131,6 +155,11 @@ export const sendAdminNotificationEmail = async (
           .content { padding: 20px; background-color: #f9f9f9; }
           .details { background-color: #FFFFFF; padding: 15px; margin: 10px 0; border-left: 4px solid #87CEEB; }
           .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+          .contact-info { margin: 8px 0; line-height: 1.8; }
+          .contact-label { font-weight: bold; color: #333; margin-right: 8px; }
+          .contact-value { color: #0066cc; }
+          a { color: #0066cc; text-decoration: none; }
+          a:hover { text-decoration: underline; }
         </style>
       </head>
       <body>
@@ -151,9 +180,9 @@ export const sendAdminNotificationEmail = async (
 
             <div class="details">
               <h3>Customer Information:</h3>
-              <p><strong>Name:</strong> ${user.name}</p>
-              <p><strong>Email:</strong> ${user.email}</p>
-              ${user.phone_number ? `<p><strong>Phone:</strong> ${user.phone_number}</p>` : ''}
+              <p class="contact-info"><span class="contact-label">Name:</span> ${user.name || 'N/A'}</p>
+              <p class="contact-info"><span class="contact-label">Email:</span> <a href="mailto:${user.email}">${user.email || 'N/A'}</a></p>
+              <p class="contact-info"><span class="contact-label">Phone:</span> ${phoneDisplay}</p>
             </div>
 
             <p>Please review and process this request in the admin portal.</p>
