@@ -148,30 +148,6 @@ const Login: React.FC = () => {
           <p className="text-slate-400">Sign in to your account</p>
         </div>
 
-        {/* Server Status Indicator */}
-        <div className="mb-4 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm">
-            {serverStatus === 'checking' && (
-              <>
-                <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse" />
-                <span className="text-slate-400">Checking server...</span>
-              </>
-            )}
-            {serverStatus === 'online' && (
-              <>
-                <div className="w-2 h-2 rounded-full bg-green-500" />
-                <span className="text-green-400">Server online</span>
-              </>
-            )}
-            {serverStatus === 'offline' && (
-              <>
-                <div className="w-2 h-2 rounded-full bg-red-500" />
-                <span className="text-red-400">Server offline</span>
-              </>
-            )}
-          </div>
-        </div>
-
         {error && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}

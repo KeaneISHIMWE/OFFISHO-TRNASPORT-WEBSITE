@@ -22,12 +22,21 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
     }).format(price).replace('RWF', 'FRW');
   };
 
-  const getSeats = () => car.specs?.seats || (car.car_type === 'suv' ? 5 : 4);
-  const getFuelType = () => car.specs?.fuel_type || 'Petrol';
-  const getTransmission = () => car.specs?.transmission || 'Auto';
-  const getHP = () => car.specs?.hp || 'N/A';
-  const getTopSpeed = () => car.specs?.top_speed || 'N/A';
-  const getYear = () => car.specs?.year || new Date().getFullYear();
+  const getSeats = () => {
+    const seats = car.specs?.seats;
+    return seats !== null && seats !== undefined && seats !== '' ? seats : 'N/A';
+  };
+  const getFuelType = () => {
+    const fuelType = car.specs?.fuel_type;
+    return fuelType && fuelType.trim() !== '' ? fuelType : 'N/A';
+  };
+  const getTransmission = () => {
+    const transmission = car.specs?.transmission;
+    return transmission && transmission.trim() !== '' ? transmission : 'N/A';
+  };
+  const getHP = () => car.specs?.hp ?? 'N/A';
+  const getTopSpeed = () => car.specs?.top_speed ?? 'N/A';
+  const getYear = () => car.specs?.year ?? new Date().getFullYear();
 
   return (
     <motion.div

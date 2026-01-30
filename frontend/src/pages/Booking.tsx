@@ -138,12 +138,6 @@ const Booking: React.FC = () => {
             zIndex: 0,
           }}
         >
-          {/* Debug: Show image status */}
-          {process.env.NODE_ENV === 'development' && (
-            <div className="absolute top-4 left-4 z-50 bg-black/70 text-white text-xs p-2 rounded">
-              Image: {bgImageLoaded ? '✅ Loaded' : bgImageError ? '❌ Error' : '⏳ Loading...'}
-            </div>
-          )}
           {/* Loading placeholder */}
           {!bgImageLoaded && !bgImageError && (
             <div className="absolute inset-0 bg-gradient-to-br from-purple-midnight via-purple-card to-purple-midnight animate-pulse" />

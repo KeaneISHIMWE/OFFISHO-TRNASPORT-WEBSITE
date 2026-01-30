@@ -504,6 +504,9 @@ const CarForm: React.FC<CarFormProps> = ({ car, onClose, onSuccess }) => {
     car_type: car?.car_type || 'sedan',
     availability_status: car?.availability_status || 'available',
     event_suitability: car?.event_suitability?.join(', ') || '',
+    seats: car?.specs?.seats?.toString() || '',
+    transmission: car?.specs?.transmission || '',
+    fuel_type: car?.specs?.fuel_type || '',
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -545,6 +548,23 @@ const CarForm: React.FC<CarFormProps> = ({ car, onClose, onSuccess }) => {
       
       // Send as JSON stringified array
       formDataToSend.append('event_suitability', JSON.stringify(eventSuitabilityArray));
+
+      // Process specs: merge with existing specs if editing, or create new specs object
+      const specs: Record<string, any> = car?.specs ? { ...car.specs } : {};
+      
+      // Update specs with form values (only if provided)
+      if (formData.seats && formData.seats.trim() !== '') {
+        specs.seats = parseInt(formData.seats, 10);
+      }
+      if (formData.transmission && formData.transmission.trim() !== '') {
+        specs.transmission = formData.transmission;
+      }
+      if (formData.fuel_type && formData.fuel_type.trim() !== '') {
+        specs.fuel_type = formData.fuel_type;
+      }
+      
+      // Send specs as JSON stringified object (even if empty, to ensure it's saved)
+      formDataToSend.append('specs', JSON.stringify(specs));
 
       if (imageFile) {
         formDataToSend.append('image', imageFile);
@@ -719,6 +739,63 @@ const CarForm: React.FC<CarFormProps> = ({ car, onClose, onSuccess }) => {
               placeholder="wedding, corporate, tour"
               className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
             />
+          </div>
+
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-semibold text-slate-300 mb-2">
+                Seating Capacity
+              </label>
+              <input
+                type="number"
+                name="seats"
+                value={formData.seats}
+                onChange={handleChange}
+                min="1"
+                max="20"
+                placeholder="4"
+                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-300 mb-2">
+                Transmission
+              </label>
+              <div className="nebula-select-container">
+                <select
+                  name="transmission"
+                  value={formData.transmission}
+                  onChange={handleChange}
+                  className="nebula-select"
+                >
+                  <option value="">Select Transmission</option>
+                  <option value="Auto">Auto</option>
+                  <option value="Manual">Manual</option>
+                  <option value="CVT">CVT</option>
+                  <option value="Semi-Auto">Semi-Auto</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-300 mb-2">
+                Fuel Type
+              </label>
+              <div className="nebula-select-container">
+                <select
+                  name="fuel_type"
+                  value={formData.fuel_type}
+                  onChange={handleChange}
+                  className="nebula-select"
+                >
+                  <option value="">Select Fuel Type</option>
+                  <option value="Petrol">Petrol</option>
+                  <option value="Diesel">Diesel</option>
+                  <option value="Electric">Electric</option>
+                  <option value="Hybrid">Hybrid</option>
+                  <option value="Plug-in Hybrid">Plug-in Hybrid</option>
+                </select>
+              </div>
+            </div>
           </div>
 
           <div>
