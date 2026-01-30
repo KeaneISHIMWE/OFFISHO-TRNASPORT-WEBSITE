@@ -52,3 +52,20 @@ declare module 'nodemailer' {
 declare module 'mysql2/promise' {
   export = any;
 }
+
+// Fix for Express.Multer namespace errors
+declare namespace Express {
+  namespace Multer {
+    interface File {
+      fieldname: string;
+      originalname: string;
+      encoding: string;
+      mimetype: string;
+      size: number;
+      destination: string;
+      filename: string;
+      path: string;
+      buffer: Buffer;
+    }
+  }
+}
