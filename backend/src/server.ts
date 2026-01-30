@@ -11,7 +11,8 @@ import contactRoutes from './routes/contact';
 dotenv.config();
 
 const app = express();
-const PORT = parseInt(process.env.PORT || '5000', 10);
+// Ensure PORT is always a number for Railway compatibility
+const PORT = Number(process.env.PORT) || 5000;
 
 // Middleware
 app.use(helmet({
