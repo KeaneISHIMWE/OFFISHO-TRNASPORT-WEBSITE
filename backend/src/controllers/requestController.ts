@@ -200,18 +200,6 @@ export const createRequest = async (req: Request, res: Response): Promise<void> 
       user.phone_number = null;
     }
 
-    // Debug: Log user data being sent to email
-    console.log('📧 User data for email:', {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      phone_number: user.phone_number,
-      phone_number_type: typeof user.phone_number,
-      phone_number_is_null: user.phone_number === null,
-      phone_number_is_undefined: user.phone_number === undefined,
-      phone_number_raw: JSON.stringify(user.phone_number)
-    });
-
     // Send confirmation email to user
     try {
       await sendRequestConfirmationEmail(user.email, user.name, newRequest, car);

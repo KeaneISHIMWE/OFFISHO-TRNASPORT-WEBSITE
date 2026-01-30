@@ -116,29 +116,21 @@ export const sendAdminNotificationEmail = async (
   // Send to multiple admin emails - primary admin first
   const adminEmails = ['prospertuop@gmail.com', 'keaneishimwe@gmail.com'];
 
-  // Debug: Log user phone number
-  console.log('📧 Email - User phone_number:', {
-    phone_number: user.phone_number,
-    type: typeof user.phone_number,
-    is_null: user.phone_number === null,
-    is_undefined: user.phone_number === undefined,
-    is_empty: user.phone_number === '',
-    truthy: !!user.phone_number
-  });
-
   // Determine phone number display value - handle null, undefined, and empty strings
   let phoneDisplay = '<span style="color: #999; font-style: italic;">Not provided</span>';
   
   // More robust check for phone number
-  if (user && user.phone_number !== null && user.phone_number !== undefined) {
-    const phoneStr = String(user.phone_number).trim();
-    if (phoneStr !== '' && phoneStr !== 'null' && phoneStr !== 'undefined' && phoneStr.length > 0) {
-      phoneDisplay = phoneStr;
+  try {
+    if (user && user.phone_number !== null && user.phone_number !== undefined) {
+      const phoneStr = String(user.phone_number).trim();
+      if (phoneStr !== '' && phoneStr !== 'null' && phoneStr !== 'undefined' && phoneStr.length > 0) {
+        phoneDisplay = phoneStr;
+      }
     }
+  } catch (error) {
+    // If phone number processing fails, use default
+    console.error('Error processing phone number:', error);
   }
-  
-  // Additional debug log
-  console.log('📧 Final phoneDisplay value:', phoneDisplay);
 
   const mailOptions = {
     from: `"Offisho Transport" <${process.env.SMTP_USER}>`,

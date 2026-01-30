@@ -222,6 +222,11 @@
   background-color: rgba(28, 38, 55, 1);
 }
 
+.nebula-select {
+  background-color: rgba(28, 38, 55, 0.9) !important;
+  color: #FFFFFF !important;
+}
+
 .nebula-select option {
   background-color: #1C2637 !important;
   background: #1C2637 !important;
@@ -237,19 +242,38 @@
 }
 
 .nebula-select option:checked,
-.nebula-select option[selected] {
-  background-color: rgba(59, 130, 246, 0.6) !important;
-  background: rgba(59, 130, 246, 0.6) !important;
+.nebula-select option[selected],
+.nebula-select option:focus {
+  background-color: rgba(59, 130, 246, 0.7) !important;
+  background: rgba(59, 130, 246, 0.7) !important;
   color: #FFFFFF !important;
   font-weight: 700 !important;
 }
 
-.nebula-select option:hover,
-.nebula-select option:focus {
-  background-color: rgba(59, 130, 246, 0.5) !important;
-  background: rgba(59, 130, 246, 0.5) !important;
+.nebula-select option:hover {
+  background-color: rgba(59, 130, 246, 0.6) !important;
+  background: rgba(59, 130, 246, 0.6) !important;
   color: #FFFFFF !important;
   font-weight: 600 !important;
+}
+
+/* Additional Firefox fix for nebula-select */
+@-moz-document url-prefix() {
+  .nebula-select option {
+    background-color: #1C2637 !important;
+    color: #FFFFFF !important;
+  }
+  
+  .nebula-select option:checked,
+  .nebula-select option:focus {
+    background-color: rgba(59, 130, 246, 0.7) !important;
+    color: #FFFFFF !important;
+  }
+  
+  .nebula-select option:hover {
+    background-color: rgba(59, 130, 246, 0.6) !important;
+    color: #FFFFFF !important;
+  }
 }
 
 /* Firefox specific */
@@ -329,6 +353,12 @@
 }
 
 /* Global select option styling for all dropdowns - Enhanced for maximum visibility */
+/* Force dark background and white text for all dropdown options */
+select {
+  background-color: rgba(28, 38, 55, 0.9) !important;
+  color: #FFFFFF !important;
+}
+
 select option {
   background-color: #1C2637 !important;
   background: #1C2637 !important;
@@ -337,22 +367,51 @@ select option {
   font-size: 1rem !important;
   font-weight: 400 !important;
   border: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
 }
 
+/* Ensure selected option is visible */
 select option:checked,
-select option[selected] {
+select option[selected],
+select option:focus {
+  background-color: rgba(59, 130, 246, 0.6) !important;
+  background: rgba(59, 130, 246, 0.6) !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+}
+
+/* Hover state for better visibility */
+select option:hover {
   background-color: rgba(59, 130, 246, 0.5) !important;
   background: rgba(59, 130, 246, 0.5) !important;
   color: #FFFFFF !important;
   font-weight: 600 !important;
 }
 
-select option:hover,
-select option:focus {
-  background-color: rgba(59, 130, 246, 0.4) !important;
-  background: rgba(59, 130, 246, 0.4) !important;
-  color: #FFFFFF !important;
-  font-weight: 500 !important;
+/* Force dark background for select dropdown list (Chrome/Safari) */
+select::-ms-expand {
+  display: none;
+}
+
+/* Firefox specific fixes */
+@-moz-document url-prefix() {
+  select option {
+    background-color: #1C2637 !important;
+    color: #FFFFFF !important;
+  }
+  
+  select option:checked,
+  select option:focus {
+    background-color: rgba(59, 130, 246, 0.6) !important;
+    color: #FFFFFF !important;
+  }
+  
+  select option:hover {
+    background-color: rgba(59, 130, 246, 0.5) !important;
+    color: #FFFFFF !important;
+  }
 }
 
 /* Ensure select elements have proper text color */
