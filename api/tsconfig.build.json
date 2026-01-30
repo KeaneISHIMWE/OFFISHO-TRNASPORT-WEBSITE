@@ -1,0 +1,13 @@
+﻿{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "exclude": [
+    "../backend",
+    "../frontend",
+    "../node_modules",
+    "node_modules"
+  ]
+}
