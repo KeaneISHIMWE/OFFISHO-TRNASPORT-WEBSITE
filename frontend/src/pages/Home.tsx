@@ -9,13 +9,34 @@ const Home: React.FC = () => {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-center justify-center overflow-hidden px-4 sm:px-6 bg-purple-midnight">
-        {/* Global Illumination Effect */}
-        <div className="absolute inset-0 z-0 global-illumination"></div>
-        {/* Aurora Glow Background */}
-        <div className="absolute inset-0 z-0 opacity-40">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url('https://images.unsplash.com/photo-1768024175218-5878b8880eab?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`,
+            backgroundAttachment: 'fixed',
+          }}
+        />
+        
+        {/* Dark Overlay for Text Readability */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-b from-purple-midnight/85 via-purple-midnight/75 to-purple-midnight/90"></div>
+        
+        {/* Radial Gradient Overlays for Better Text Contrast */}
+        <div className="absolute inset-0 z-0 opacity-60">
           <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 20% 50%, rgba(157, 80, 255, 0.3) 0%, transparent 50%),
-                             radial-gradient(circle at 80% 80%, rgba(209, 163, 255, 0.2) 0%, transparent 50%)`
+            backgroundImage: `radial-gradient(ellipse at center, rgba(10, 1, 24, 0.4) 0%, rgba(10, 1, 24, 0.2) 50%, transparent 70%),
+                             radial-gradient(ellipse at 80% 20%, rgba(157, 80, 255, 0.15) 0%, transparent 50%)`
+          }}></div>
+        </div>
+        
+        {/* Global Illumination Effect */}
+        <div className="absolute inset-0 z-0 global-illumination opacity-30"></div>
+        
+        {/* Aurora Glow Background */}
+        <div className="absolute inset-0 z-0 opacity-30">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `radial-gradient(circle at 20% 50%, rgba(157, 80, 255, 0.2) 0%, transparent 50%),
+                             radial-gradient(circle at 80% 80%, rgba(209, 163, 255, 0.15) 0%, transparent 50%)`
           }}></div>
         </div>
 
@@ -42,7 +63,7 @@ const Home: React.FC = () => {
 
             <p className="text-base sm:text-lg md:text-xl text-silver/80 mb-6 sm:mb-8 md:mb-10 max-w-2xl mx-auto leading-relaxed px-4">
               Experience the ultimate comfort and elegance with our premium fleet of luxury vehicles.
-              Perfect for weddings, corporate events, and VIP transport in Rwanda.
+              
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 px-4">
@@ -92,21 +113,22 @@ const Home: React.FC = () => {
               {
                 name: "Luxury Sedan",
                 image: "https://images.unsplash.com/photo-1550355291-bbee04a92027?q=80&w=1000&auto=format&fit=crop",
-                price: "From 80k RWF",
+                price: "Very affordable",
                 tag: "Business Class",
                 specs: { hp: "320 HP", topSpeed: "250 km/h", year: "2024" }
               },
               {
                 name: "Premium SUV",
-                image: "https://images.unsplash.com/photo-1628278236109-1701389e0241?q=80&w=1000&auto=format&fit=crop",
-                price: "From 120k RWF",
+                image: "https://images.unsplash.com/photo-1760713164476-7eb5063b3d07?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                price: "Very affordable",
                 tag: "First Class",
                 specs: { hp: "450 HP", topSpeed: "280 km/h", year: "2024" }
               },
+
               {
                 name: "Convertible",
                 image: "https://images.unsplash.com/photo-1580274455191-1c62238fa333?q=80&w=1000&auto=format&fit=crop",
-                price: "From 150k RWF",
+                price: "Very affordable",
                 tag: "Exclusive",
                 specs: { hp: "500 HP", topSpeed: "300 km/h", year: "2024" }
               }

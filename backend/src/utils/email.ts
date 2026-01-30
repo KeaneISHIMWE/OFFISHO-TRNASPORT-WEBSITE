@@ -31,8 +31,8 @@ transporter.verify((error, success) => {
 
 // Payment information (static)
 const PAYMENT_INFO = {
-  mtnMomo: '+250 788 123 456',
-  bankAccount: 'Account: 1234567890, Bank: Bank of Rwanda',
+  mtnMomo: '0 785 344 214',
+  bankAccount: 'Account: 2001161010013164, Bank: NCBA',
 };
 
 export const sendRequestConfirmationEmail = async (

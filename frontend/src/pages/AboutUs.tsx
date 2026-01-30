@@ -10,21 +10,21 @@ const AboutUs: React.FC = () => {
       <section className="py-12 md:py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <span className="inline-block px-3 py-1 text-xs font-semibold tracking-wider text-primary uppercase bg-primary/10 rounded-full mb-4">
+            <span className="inline-block px-3 py-1 text-xs font-semibold tracking-wider text-purple-electric uppercase bg-purple-electric/10 rounded-full mb-4 neon-border">
               About Offisho
             </span>
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-6xl font-bold text-center mb-6 text-white"
+              className="text-4xl md:text-6xl font-bold text-center mb-6 text-silver"
             >
-              Your Trusted Partner for <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-sky-300">Event Transportation</span>
+              Your Trusted Partner for <span className="electric-gradient-text">Event Transportation</span>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-lg md:text-xl text-center max-w-3xl mx-auto text-slate-400"
+              className="text-lg md:text-xl text-center max-w-3xl mx-auto text-silver/80"
             >
               For over 15 years, Offisho Transport has been the premier choice for luxury event transportation, delivering exceptional service for weddings, corporate events, and special occasions.
             </motion.p>
@@ -33,8 +33,8 @@ const AboutUs: React.FC = () => {
       </section>
 
       {/* Statistics Section */}
-      <section className="py-12 md:py-20 bg-card border-y border-white/5 relative overflow-hidden">
-        <div className="absolute inset-0 bg-primary/5 pointer-events-none" />
+      <section className="py-12 md:py-20 bg-purple-card border-y border-purple-electric/20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-purple-electric/5 pointer-events-none" />
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
             {[
@@ -54,10 +54,10 @@ const AboutUs: React.FC = () => {
                 <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-white/5 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300">
                   <stat.icon className="w-6 h-6" />
                 </div>
-                <p className="text-4xl font-bold mb-2 text-white">
+                <p className="text-4xl font-bold mb-2 electric-gradient-text">
                   {stat.number}
                 </p>
-                <p className="text-sm font-medium text-slate-400 uppercase tracking-wide">
+                <p className="text-sm font-medium text-silver/70 uppercase tracking-wide">
                   {stat.label}
                 </p>
               </motion.div>
@@ -67,7 +67,7 @@ const AboutUs: React.FC = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-12 md:py-20 bg-background">
+      <section className="py-12 md:py-20 bg-purple-midnight">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
             {[
@@ -100,7 +100,7 @@ const AboutUs: React.FC = () => {
                 transition={{ delay: index * 0.1 }}
                 className="bg-card p-6 rounded-2xl border border-white/5 hover:border-primary/50 transition-all duration-300 group hover:bg-white/5"
               >
-                <div className="mb-4 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-300">
+                <div className="mb-4 w-12 h-12 rounded-lg bg-purple-electric/10 border border-purple-electric/20 flex items-center justify-center text-purple-electric group-hover:scale-110 transition-transform duration-300 neon-glow">
                   <feature.icon className="w-6 h-6" />
                 </div>
                 <h3 className="text-xl font-bold mb-3 text-white">

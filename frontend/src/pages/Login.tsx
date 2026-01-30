@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { LogIn, Mail, Lock, AlertCircle, Wifi, WifiOff, RefreshCw } from 'lucide-react';
 import { useServerStatus } from '../hooks/useServerStatus';
 import { healthCheck } from '../services/api';
+import { useNotification } from '../context/NotificationContext';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -18,6 +19,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 const Login: React.FC = () => {
   const { login, isAuthenticated, isAdmin, loading: authLoading } = useAuth();
+  const { showNotification } = useNotification();
   const navigate = useNavigate();
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -75,6 +77,9 @@ const Login: React.FC = () => {
       
       // Wait a bit longer to ensure React state has updated
       await new Promise(resolve => setTimeout(resolve, 200));
+      
+      // Show success notification
+      showNotification('Login successful! Welcome back.', 'success');
       
       // Double-check user role before navigation
       const storedUser = localStorage.getItem('user');

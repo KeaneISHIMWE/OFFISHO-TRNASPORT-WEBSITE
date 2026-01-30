@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, MessageSquare } from 'lucide-react';
 import { contactAPI } from '../services/api';
+import { useNotification } from '../context/NotificationContext';
 import { cn } from '../utils/cn';
 
 const Contact: React.FC = () => {
+  const { showNotification } = useNotification();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -25,6 +27,7 @@ const Contact: React.FC = () => {
     e.preventDefault();
     try {
       await contactAPI.sendMessage(formData);
+      showNotification('Message sent successfully! We will get back to you soon.', 'success');
       setSubmitted(true);
       setFormData({ name: '', email: '', message: '' });
       setTimeout(() => {
@@ -32,7 +35,7 @@ const Contact: React.FC = () => {
       }, 5000);
     } catch (error) {
       console.error('Failed to send message:', error);
-      alert('Failed to send message. Please try again later.');
+      showNotification('Failed to send message. Please try again later.', 'error');
     }
   };
 
@@ -149,7 +152,7 @@ const Contact: React.FC = () => {
                     </div>
                     <div>
                       <h3 className="font-bold text-lg text-white mb-1">Phone</h3>
-                      <p className="text-slate-400">+250 788 123 456</p>
+                      <p className="text-slate-400">+250 785 344 214</p>
                     </div>
                   </div>
 
@@ -159,7 +162,7 @@ const Contact: React.FC = () => {
                     </div>
                     <div>
                       <h3 className="font-bold text-lg text-white mb-1">Email</h3>
-                      <p className="text-slate-400">info@offisho.com</p>
+                      <p className="text-slate-400">prospertuop@gmail.com</p>
                     </div>
                   </div>
 
@@ -169,7 +172,7 @@ const Contact: React.FC = () => {
                     </div>
                     <div>
                       <h3 className="font-bold text-lg text-white mb-1">Address</h3>
-                      <p className="text-slate-400">Kigali, Rwanda</p>
+                      <p className="text-slate-400">Musanze, Rwanda</p>
                     </div>
                   </div>
                 </div>
@@ -183,7 +186,7 @@ const Contact: React.FC = () => {
                   height="100%"
                   frameBorder="0"
                   style={{ border: 0 }}
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.497311789123!2d30.0616!3d-1.9441!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dca4258ed8e797%3A0x2967a3b8e5e5e5e5!2sKigali%2C%20Rwanda!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.123456789!2d29.6!3d-1.5!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dc8a123456789%3A0xabcdef123456789!2sMusanze%2C%20Rwanda!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus"
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"

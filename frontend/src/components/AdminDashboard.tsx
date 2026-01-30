@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { carsAPI, requestsAPI } from '../services/api';
 import { Car, Request } from '../types';
+import { useNotification } from '../context/NotificationContext';
 import { LayoutDashboard, Car as CarIcon, FileText, BarChart3, Plus, Edit, Trash2, CheckCircle, XCircle, Clock, TrendingUp } from 'lucide-react';
 import { cn } from '../utils/cn';
 
 const AdminDashboard: React.FC = () => {
+  const { showNotification } = useNotification();
   const [activeTab, setActiveTab] = useState<'cars' | 'requests' | 'analytics'>('cars');
   const [cars, setCars] = useState<Car[]>([]);
   const [requests, setRequests] = useState<Request[]>([]);
@@ -279,6 +281,7 @@ const AdminDashboard: React.FC = () => {
                   setShowCarForm(false);
                   setEditingCar(null);
                   loadCars();
+                  showNotification(editingCar ? 'Car updated successfully!' : 'Car registered successfully!', 'success');
                 }}
               />
             )}

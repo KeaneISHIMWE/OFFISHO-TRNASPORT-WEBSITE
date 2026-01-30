@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useNotification } from '../context/NotificationContext';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -32,6 +33,7 @@ type BookingFormData = z.infer<typeof bookingSchema>;
 
 const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
   const { isAuthenticated } = useAuth();
+  const { showNotification } = useNotification();
   const navigate = useNavigate();
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -108,7 +110,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
       };
 
       await requestsAPI.createRequest(requestData);
-      navigate('/cars', { state: { message: 'Request submitted successfully!' } });
+      showNotification('Request submitted successfully! We will review it shortly.', 'success');
+      navigate('/cars');
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to submit request. Please try again.');
     } finally {
@@ -117,8 +120,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
   };
 
   const PAYMENT_INFO = {
-    mtnMomo: '+250 788 123 456',
-    bankAccount: 'Account: 1234567890, Bank: Bank of Rwanda',
+    mtnMomo: '0 785 344 214',
+    bankAccount: 'Account: 2001161010013164, Bank: NCBA',
   };
 
   const TERMS_AND_CONDITIONS = `
@@ -332,7 +335,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
         <button
           type="submit"
           disabled={loading || !isAuthenticated}
-          className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-xl font-bold text-lg transition-all duration-300 shadow-lg shadow-primary/25 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full electric-gradient hover:opacity-90 text-white py-4 rounded-xl font-bold text-lg transition-all duration-300 shadow-lg shadow-purple-electric/25 disabled:opacity-50 disabled:cursor-not-allowed neon-glow"
         >
           {loading ? 'Submitting...' : 'Submit Request'}
         </button>
