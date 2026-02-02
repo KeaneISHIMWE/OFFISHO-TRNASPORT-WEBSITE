@@ -1,5 +1,6 @@
-﻿// Global type declarations for backend modules
+// Global type declarations for backend modules
 // This file is included globally to prevent TypeScript errors during Vercel build
+// These stubs prevent TypeScript from trying to resolve backend dependencies
 
 declare module 'express' {
   export = any;
@@ -14,7 +15,9 @@ declare module 'helmet' {
 }
 
 declare module 'dotenv' {
-  export = any;
+  const config: (options?: { path?: string } & Record<string, any>) => { parsed?: Record<string, string> };
+  export default config;
+  export = config;
 }
 
 declare module 'express-rate-limit' {
@@ -38,7 +41,11 @@ declare module 'multer' {
 }
 
 declare module 'cloudinary' {
-  export = any;
+  export const v2: {
+    uploader: any;
+    config: (options: any) => void;
+  };
+  export = { v2: any };
 }
 
 declare module 'joi' {
@@ -53,7 +60,25 @@ declare module 'mysql2/promise' {
   export = any;
 }
 
-// Fix for Express.Multer namespace errors
+// Fix for Express.Multer namespace errors - declare in both namespaces
+declare namespace global {
+  namespace Express {
+    namespace Multer {
+      interface File {
+        fieldname: string;
+        originalname: string;
+        encoding: string;
+        mimetype: string;
+        size: number;
+        destination?: string;
+        filename?: string;
+        path?: string;
+        buffer: Buffer;
+      }
+    }
+  }
+}
+
 declare namespace Express {
   namespace Multer {
     interface File {
@@ -62,9 +87,9 @@ declare namespace Express {
       encoding: string;
       mimetype: string;
       size: number;
-      destination: string;
-      filename: string;
-      path: string;
+      destination?: string;
+      filename?: string;
+      path?: string;
       buffer: Buffer;
     }
   }

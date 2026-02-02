@@ -1,5 +1,6 @@
-﻿// Stub type declarations for backend modules to prevent TypeScript errors
+// Stub type declarations for backend modules to prevent TypeScript errors
 // These are only used during Vercel build - actual modules are available at runtime
+// Backend code is included at runtime via includeFiles in vercel.json
 
 declare module 'express' {
   export = any;
@@ -14,7 +15,9 @@ declare module 'helmet' {
 }
 
 declare module 'dotenv' {
-  export = any;
+  const config: (options?: any) => void;
+  export default config;
+  export = config;
 }
 
 declare module 'express-rate-limit' {
@@ -38,7 +41,8 @@ declare module 'multer' {
 }
 
 declare module 'cloudinary' {
-  export = any;
+  export const v2: any;
+  export = { v2: any };
 }
 
 declare module 'joi' {
@@ -54,6 +58,25 @@ declare module 'mysql2/promise' {
 }
 
 // Fix for Express.Multer namespace errors
+declare namespace global {
+  namespace Express {
+    namespace Multer {
+      interface File {
+        fieldname: string;
+        originalname: string;
+        encoding: string;
+        mimetype: string;
+        size: number;
+        destination?: string;
+        filename?: string;
+        path?: string;
+        buffer: Buffer;
+      }
+    }
+  }
+}
+
+// Also declare in Express namespace for compatibility
 declare namespace Express {
   namespace Multer {
     interface File {
@@ -62,9 +85,9 @@ declare namespace Express {
       encoding: string;
       mimetype: string;
       size: number;
-      destination: string;
-      filename: string;
-      path: string;
+      destination?: string;
+      filename?: string;
+      path?: string;
       buffer: Buffer;
     }
   }

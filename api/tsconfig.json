@@ -10,10 +10,13 @@
     "noEmit": true,
     "strict": false,
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "types": [],
+    "noResolve": false
   },
   "include": [
-    "**/*"
+    "index.ts",
+    "*.d.ts"
   ],
   "exclude": [
     "../backend",

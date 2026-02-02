@@ -1,8 +1,3 @@
-database/
-node_modules/
-*.md
-*.ps1
-*.sql
-.env
-.env.local
-.env.*.local
+# Note: .vercelignore doesn't prevent TypeScript from seeing files included via includeFiles
+# Backend files are included at runtime, but we use @ts-nocheck and type stubs to prevent compilation errors
+# This file is kept for reference but may not affect TypeScript compilation

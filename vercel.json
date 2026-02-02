@@ -2,10 +2,11 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/index.ts",
+      "src": "api/index.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["backend/**"]
+        "includeFiles": ["backend/**"],
+        "maxLambdaSize": "50mb"
       }
     },
     {
@@ -19,7 +20,7 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/index.ts"
+      "dest": "/api/index.js"
     },
     {
       "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
@@ -30,7 +31,12 @@
       "dest": "/frontend/dist/index.html"
     }
   ],
-  "installCommand": "cd backend && npm install && cd ../frontend && npm install",
+  "installCommand": "cd backend && npm install --production=false && cd ../api && npm install && cd ../frontend && npm install",
   "buildCommand": "cd frontend && npm run build",
-  "outputDirectory": "frontend/dist"
+  "outputDirectory": "frontend/dist",
+  "functions": {
+    "api/index.ts": {
+      "includeFiles": ["backend/**"]
+    }
+  }
 }

@@ -73,7 +73,7 @@ const Booking: React.FC = () => {
   const [bgImageError, setBgImageError] = useState(false);
   // Using multiple fallback URLs for reliability - dark luxury car
   const bgImageUrls = [
-    process.env.REACT_APP_HERO_CAR_IMAGE,
+    import.meta.env.VITE_HERO_CAR_IMAGE || import.meta.env.REACT_APP_HERO_CAR_IMAGE,
     'https://images.unsplash.com/photo-1617531653332-bd46c24f2068?w=1920&q=80&auto=format&fit=crop',
     'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1920&q=80&auto=format&fit=crop',
     'https://images.unsplash.com/photo-1617531653332-bd46c24f2068?ixlib=rb-4.0.3&w=1920&q=80',

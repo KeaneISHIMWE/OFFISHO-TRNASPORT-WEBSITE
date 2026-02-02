@@ -2,7 +2,12 @@ import axios, { AxiosInstance, AxiosError } from 'axios';
 import { AuthResponse, Car, Request, User, ApiError } from '../types';
 import { retryWithBackoff } from '../utils/retry';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+// Support both Vite (import.meta.env) and Webpack (process.env) for compatibility
+const API_URL = 
+  import.meta.env.VITE_API_URL || 
+  import.meta.env.REACT_APP_API_URL || 
+  (typeof process !== 'undefined' && process.env?.REACT_APP_API_URL) ||
+  'http://localhost:5000/api';
 
 // Create axios instance with timeout
 const api: AxiosInstance = axios.create({

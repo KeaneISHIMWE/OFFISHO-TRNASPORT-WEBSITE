@@ -107,7 +107,7 @@ const Login: React.FC = () => {
         errorMessage = err.response.data.error;
         // Add details if available (for development or database errors)
         if (err.response.data.details) {
-          if (process.env.NODE_ENV === 'development') {
+          if (import.meta.env.DEV) {
             errorMessage += ` (${err.response.data.details})`;
           } else if (err.response.data.error.includes('Database')) {
             // Show details for database errors even in production for debugging

@@ -1,0 +1,3 @@
+# Prevent Vercel from compiling backend TypeScript files
+../backend/src/**/*.ts
+../backend/**/*.ts

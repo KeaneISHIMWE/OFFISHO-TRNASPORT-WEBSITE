@@ -1,7 +1,6 @@
 {
   "name": "api",
   "version": "1.0.0",
-  "type": "module",
   "dependencies": {
     "@vercel/node": "^5.5.24"
   }

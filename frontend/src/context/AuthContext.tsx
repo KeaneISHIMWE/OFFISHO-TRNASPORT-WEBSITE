@@ -80,7 +80,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const errorMessage = error.response?.data?.error || error.message || 'Login failed';
       const errorDetails = error.response?.data?.details;
       
-      if (errorDetails && process.env.NODE_ENV === 'development') {
+      if (errorDetails && import.meta.env.DEV) {
         throw new Error(`${errorMessage}: ${errorDetails}`);
       }
       throw error;
