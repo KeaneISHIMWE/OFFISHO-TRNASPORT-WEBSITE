@@ -2,8 +2,8 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci --production=false
+COPY package*.json package-lock.json* ./
+RUN npm ci --omit=dev || npm install
 
 COPY . .
 RUN npm run build
@@ -12,8 +12,8 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci --production=true
+COPY package*.json package-lock.json* ./
+RUN npm ci --omit=dev || npm install --production
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/src ./src
