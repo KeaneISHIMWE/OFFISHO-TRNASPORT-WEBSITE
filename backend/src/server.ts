@@ -19,7 +19,7 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 // CORS configuration - support multiple frontend URLs
-const allowedOrigins = process.env.FRONTEND_URL
+const allowedOrigins: (string | RegExp)[] = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
   : ['http://localhost:3000'];
 
@@ -36,13 +36,15 @@ app.use(
       if (!origin) return callback(null, true);
       
       // Check if origin is in allowed list
-      if (allowedOrigins.some(allowed => {
+      const isAllowed = allowedOrigins.some(allowed => {
         if (typeof allowed === 'string') {
           return origin === allowed;
         }
         // Handle regex patterns
         return allowed.test(origin);
-      })) {
+      });
+      
+      if (isAllowed) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));
