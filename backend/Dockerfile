@@ -13,7 +13,7 @@ FROM node:18-alpine
 WORKDIR /app
 
 COPY package*.json package-lock.json* ./
-RUN npm ci --omit=dev || npm install --production
+RUN npm install --production
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/src ./src

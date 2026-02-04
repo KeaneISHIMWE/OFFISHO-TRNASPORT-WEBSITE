@@ -1,6 +1,7 @@
 [build]
 builder = "DOCKERFILE"
 dockerfilePath = "backend/Dockerfile"
+buildCommand = "npm install"
 
 [deploy]
 startCommand = "node dist/server.js"
