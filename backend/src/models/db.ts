@@ -4,12 +4,13 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // MySQL connection configuration
+// Support both Railway MYSQL* variables and custom DB_* variables
 const dbConfig = {
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '3306'),
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'offisho_transport',
+  host: process.env.MYSQLHOST || process.env.MYSQL_HOST || process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.MYSQLPORT || process.env.MYSQL_PORT || process.env.DB_PORT || '3306'),
+  user: process.env.MYSQLUSER || process.env.MYSQL_USER || process.env.DB_USER || 'root',
+  password: process.env.MYSQLPASSWORD || process.env.MYSQL_PASSWORD || process.env.DB_PASSWORD || '',
+  database: process.env.MYSQLDATABASE || process.env.MYSQL_DATABASE || process.env.DB_NAME || 'offisho_transport',
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
