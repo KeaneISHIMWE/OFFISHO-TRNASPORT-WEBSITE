@@ -505,6 +505,7 @@ const CarForm: React.FC<CarFormProps> = ({ car, onClose, onSuccess }) => {
 
   const createCarMutation = useMutation(api.cars.create);
   const updateCarMutation = useMutation(api.cars.update);
+  const generateUploadUrl = useMutation(api.cars.generateUploadUrl);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -529,6 +530,23 @@ const CarForm: React.FC<CarFormProps> = ({ car, onClose, onSuccess }) => {
         specs.fuel_type = formData.fuel_type;
       }
 
+      let storageId = car?.storageId;
+
+      if (imageFile) {
+        // Step 1: Get a short-lived upload URL
+        const postUrl = await generateUploadUrl();
+
+        // Step 2: POST the file to the URL
+        const result = await fetch(postUrl, {
+          method: "POST",
+          headers: { "Content-Type": imageFile.type },
+          body: imageFile,
+        });
+
+        const { storageId: newStorageId } = await result.json();
+        storageId = newStorageId;
+      }
+
       const carData = {
         name: formData.name,
         model: formData.model,
@@ -540,6 +558,8 @@ const CarForm: React.FC<CarFormProps> = ({ car, onClose, onSuccess }) => {
         availability_status: formData.availability_status as any,
         event_suitability: eventSuitabilityArray,
         specs,
+        storageId: storageId as Id<"_storage">,
+        // We can keep image_url as a fallback/cache if we want, or rely on dynamic resolution
       };
 
       if (car && car._id) {

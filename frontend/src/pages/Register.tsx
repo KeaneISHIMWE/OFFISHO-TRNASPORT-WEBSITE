@@ -45,7 +45,11 @@ const Register: React.FC = () => {
       await registerUser(data.name, data.email, data.password, data.phone_number || undefined);
       navigate('/');
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Registration failed. Please try again.');
+      console.error('Registration error details:', err);
+      // Convex errors often have a .message property
+      const errorMessage = err instanceof Error ? err.message :
+        (typeof err === 'string' ? err : 'Registration failed. Please try again.');
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

@@ -69,7 +69,7 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-purple-midnight via-purple-midnight/80 to-transparent opacity-80" />
-        
+
         {/* Global Illumination behind image */}
         <div className="absolute inset-0 global-illumination opacity-40"></div>
 
@@ -126,7 +126,7 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
           </div>
           {car.availability_status === 'available' ? (
             <Link
-              to={`/cars/${car.id}?action=rent`}
+              to={`/cars/${car._id}?action=rent`}
               className="touch-target px-4 py-2.5 sm:py-2 rounded-lg electric-gradient hover:opacity-90 active:opacity-80 text-white font-medium transition-all duration-300 flex items-center gap-2 group/btn hover:scale-105 active:scale-95 neon-glow"
             >
               Book

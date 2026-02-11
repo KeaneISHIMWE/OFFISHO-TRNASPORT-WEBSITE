@@ -32,6 +32,9 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const { signIn, signOut } = useAuthActions();
     const signInQuery = useQuery(api.auth.getMe);
+    const debugAuth = useQuery(api.auth.debugAuth);
+    console.log('AuthContext: signInQuery:', signInQuery);
+    console.log('AuthContext: debugAuth:', debugAuth);
     const user = signInQuery ? ({
         ...signInQuery,
         id: signInQuery._id,
@@ -39,6 +42,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const navigate = useNavigate();
 
     const loading = signInQuery === undefined;
+    console.log('AuthContext: loading:', loading, 'user:', user);
 
     const login = async (email: string, password: string): Promise<void> => {
         await signIn("password", { email, password, flow: "signIn" });

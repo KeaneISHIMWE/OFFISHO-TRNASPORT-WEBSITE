@@ -61,7 +61,20 @@ export const list = query({
             );
         }
 
-        return { cars };
+        // Resolve image URLs
+        const carsWithImages = await Promise.all(
+            cars.map(async (car) => {
+                if (car.storageId) {
+                    return {
+                        ...car,
+                        image_url: await ctx.storage.getUrl(car.storageId) || car.image_url,
+                    };
+                }
+                return car;
+            })
+        );
+
+        return { cars: carsWithImages };
     },
 });
 
@@ -77,6 +90,9 @@ export const getById = query({
         if (!car) {
             throw new Error("Car not found");
         }
+        if (car.storageId) {
+            car.image_url = await ctx.storage.getUrl(car.storageId) || car.image_url;
+        }
         return { car };
     },
 });
@@ -90,6 +106,7 @@ export const create = mutation({
         model: v.string(),
         description: v.optional(v.string()),
         image_url: v.optional(v.string()),
+        storageId: v.optional(v.id("_storage")),
         rental_price_per_day: v.number(),
         buy_price: v.optional(v.number()),
         sell_price: v.optional(v.number()),
@@ -118,6 +135,7 @@ export const create = mutation({
             model: args.model,
             description: args.description,
             image_url: args.image_url,
+            storageId: args.storageId,
             rental_price_per_day: args.rental_price_per_day,
             buy_price: args.buy_price,
             sell_price: args.sell_price,
@@ -142,6 +160,7 @@ export const update = mutation({
         model: v.optional(v.string()),
         description: v.optional(v.string()),
         image_url: v.optional(v.string()),
+        storageId: v.optional(v.id("_storage")),
         rental_price_per_day: v.optional(v.number()),
         buy_price: v.optional(v.number()),
         sell_price: v.optional(v.number()),
@@ -220,7 +239,16 @@ export const remove = mutation({
             );
         }
 
+
         await ctx.db.delete(args.id);
         return { message: "Car deleted successfully" };
     },
+});
+
+/**
+ * Generate upload URL for file storage
+ */
+export const generateUploadUrl = mutation(async (ctx) => {
+    await requireAdmin(ctx);
+    return await ctx.storage.generateUploadUrl();
 });

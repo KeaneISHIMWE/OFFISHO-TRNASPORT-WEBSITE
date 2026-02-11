@@ -17,6 +17,7 @@ import type * as http from "../http.js";
 import type * as lib_auth from "../lib/auth.js";
 import type * as migrations from "../migrations.js";
 import type * as requests from "../requests.js";
+import type * as reset_roles from "../reset_roles.js";
 
 import type {
   ApiFromModules,
@@ -34,6 +35,7 @@ declare const fullApi: ApiFromModules<{
   "lib/auth": typeof lib_auth;
   migrations: typeof migrations;
   requests: typeof requests;
+  reset_roles: typeof reset_roles;
 }>;
 
 /**

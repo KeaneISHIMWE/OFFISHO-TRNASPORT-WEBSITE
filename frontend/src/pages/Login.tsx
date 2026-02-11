@@ -60,8 +60,10 @@ const Login: React.FC = () => {
       showNotification('Login successful! Welcome back.', 'success');
       // Redirection is handled by the useEffect above
     } catch (err: any) {
-      setError(err.message || 'Login failed. Please try again.');
-      console.error('Login error:', err);
+      console.error('Login error details:', err);
+      const errorMessage = err instanceof Error ? err.message :
+        (typeof err === 'string' ? err : 'Login failed. Please try again.');
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

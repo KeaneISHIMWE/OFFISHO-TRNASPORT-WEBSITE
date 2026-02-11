@@ -27,6 +27,7 @@ export default defineSchema({
         model: v.string(),
         description: v.optional(v.string()),
         image_url: v.optional(v.string()), // Cloudinary URL
+        storageId: v.optional(v.id("_storage")), // Convex Storage ID
         rental_price_per_day: v.number(),
         buy_price: v.optional(v.number()),
         sell_price: v.optional(v.number()),

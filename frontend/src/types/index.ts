@@ -16,6 +16,7 @@ export interface Car {
   model: string;
   description: string | null;
   image_url: string | null;
+  storageId?: string;
   rental_price_per_day: number;
   buy_price: number | null;
   sell_price: number | null;

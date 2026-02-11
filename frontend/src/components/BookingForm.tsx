@@ -5,7 +5,9 @@ import { useNotification } from '../context/NotificationContext';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { requestsAPI } from '../services/api';
+import { useMutation } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
+import { Id } from '../../../convex/_generated/dataModel';
 import { Car } from '../types';
 import { CreditCard, Calendar, AlertCircle, Info, Check, User } from 'lucide-react';
 
@@ -99,6 +101,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
     }).format(price).replace('RWF', 'FRW');
   };
 
+  const createRequestMutation = useMutation(api.requests.create);
+
   const onSubmit = async (data: BookingFormData) => {
     if (!isAuthenticated) {
       navigate('/login');
@@ -109,21 +113,21 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
       setLoading(true);
       setError('');
 
-      const requestData: any = {
-        car_id: carId,
-        request_type: data.request_type,
+      await createRequestMutation({
+        car_id: carId as Id<"cars">,
+        request_type: data.request_type as "rent" | "buy" | "sell",
         with_driver: data.with_driver || false,
         event_date: data.event_date || undefined,
         event_type: data.event_type || undefined,
         agreement_text: data.agreement_text || undefined,
         payment_method: data.payment_method || undefined,
-      };
+      });
 
-      await requestsAPI.createRequest(requestData);
       showNotification('Request submitted successfully! We will review it shortly.', 'success');
       navigate('/cars');
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to submit request. Please try again.');
+      console.error("Booking error:", err);
+      setError(err.message || 'Failed to submit request. Please try again.');
     } finally {
       setLoading(false);
     }

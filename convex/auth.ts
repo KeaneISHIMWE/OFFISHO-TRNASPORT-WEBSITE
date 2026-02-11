@@ -3,6 +3,7 @@ import { convexAuth } from "@convex-dev/auth/server";
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
+
 export const { auth, signIn, signOut, store } = convexAuth({
     providers: [
         Password({
@@ -68,5 +69,14 @@ export const setUserRole = mutation({
     handler: async (ctx, args) => {
         // In a real app, you'd check if the caller is an admin
         await ctx.db.patch(args.userId, { role: args.role });
+    },
+});
+
+export const debugAuth = query({
+    args: {},
+    handler: async (ctx) => {
+        const userId = await auth.getUserId(ctx);
+        const identity = await ctx.auth.getUserIdentity();
+        return { userId, identity };
     },
 });
