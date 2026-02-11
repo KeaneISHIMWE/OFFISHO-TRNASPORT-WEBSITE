@@ -8,6 +8,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      'convex/server': path.resolve(__dirname, './src/mocks/convex-server.js'),
     },
   },
   server: {
