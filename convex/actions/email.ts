@@ -11,164 +11,184 @@ import nodemailer from "nodemailer";
 
 // Payment information (static)
 const PAYMENT_INFO = {
-    mtnMomo: "0 785 344 214",
-    bankAccount: "Account: 2001161010013164, Bank: NCBA",
+  mtnMomo: "0 785 344 214",
+  bankAccount: "Account: 2001161010013164, Bank: NCBA",
 };
 
 /**
  * Create email transporter
  */
 function createTransporter() {
-    return nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: parseInt(process.env.SMTP_PORT || "587"),
-        secure: false,
-        auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-        },
-    });
+  return nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT || "587"),
+    secure: false,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
 }
 
 /**
  * Send request confirmation and admin notification emails
  */
 export const sendRequestEmails = action({
-    args: {
-        requestId: v.id("requests"),
-    },
-    handler: async (ctx, args) => {
-        // Get request details
-        const request = await ctx.runQuery(api.requests.getById, {
-            id: args.requestId,
-        });
+  args: {
+    requestId: v.id("requests"),
+  },
+  handler: async (ctx, args) => {
+    // Get request details
+    const request = await ctx.runQuery(api.requests.getById, {
+      id: args.requestId,
+    });
 
-        if (!request) {
-            throw new Error("Request not found");
-        }
+    if (!request) {
+      throw new Error("Request not found");
+    }
 
-        const transporter = createTransporter();
+    const transporter = createTransporter();
 
-        // Get user and car details
-        const user = await ctx.runQuery(api.auth.getUserById, {
-            userId: request.request.user_id,
-        });
-        const car = await ctx.runQuery(api.cars.getById, {
-            id: request.request.car_id,
-        });
+    // Get user and car details
+    const userResult = await ctx.runQuery(api.auth.getUserById, {
+      userId: request.request.user_id,
+    });
+    const carResult = await ctx.runQuery(api.cars.getById, {
+      id: request.request.car_id,
+    });
 
-        // Send confirmation email to user
-        try {
-            await transporter.sendMail({
-                from: `"Offisho Transport" <${process.env.SMTP_USER}>`,
-                to: user.user.email,
-                subject: "Request Confirmation - Offisho Transport",
-                html: generateRequestConfirmationEmail(
-                    user.user.name,
-                    request.request,
-                    car.car
-                ),
-            });
-            console.log(`✅ Request confirmation email sent to: ${user.user.email}`);
-        } catch (error) {
-            console.error("❌ Failed to send request confirmation email:", error);
-        }
+    if (!userResult || !userResult.user) {
+      throw new Error("User associated with request not found");
+    }
+    if (!carResult || !carResult.car) {
+      throw new Error("Car associated with request not found");
+    }
 
-        // Send admin notification
-        const adminEmails = [
-            "prospertuop@gmail.com",
-            "keaneishimwe@gmail.com",
-        ];
+    const user = userResult.user;
+    const car = carResult.car;
 
-        try {
-            await transporter.sendMail({
-                from: `"Offisho Transport" <${process.env.SMTP_USER}>`,
-                to: adminEmails.join(", "),
-                subject: `New ${request.request.request_type} Request - ${car.car.name} ${car.car.model}`,
-                html: generateAdminNotificationEmail(request.request, car.car, user.user),
-            });
-            console.log(`✅ Admin notification email sent to: ${adminEmails.join(", ")}`);
-        } catch (error) {
-            console.error("❌ Failed to send admin notification email:", error);
-        }
-    },
+    // Send confirmation email to user
+    try {
+      await transporter.sendMail({
+        from: `"Offisho Transport" <${process.env.SMTP_USER}>`,
+        to: user.email!,
+        subject: "Request Confirmation - Offisho Transport",
+        html: generateRequestConfirmationEmail(
+          user.name || "Customer",
+          request.request,
+          car
+        ),
+      });
+      console.log(`✅ Request confirmation email sent to: ${user.email}`);
+    } catch (error) {
+      console.error("❌ Failed to send request confirmation email:", error);
+    }
+
+    // Send admin notification
+    const adminEmails = [
+      "prospertuop@gmail.com",
+      "keaneishimwe@gmail.com",
+    ];
+
+    try {
+      await transporter.sendMail({
+        from: `"Offisho Transport" <${process.env.SMTP_USER}>`,
+        to: adminEmails.join(", "),
+        subject: `New ${request.request.request_type} Request - ${car.name} ${car.model}`,
+        html: generateAdminNotificationEmail(request.request, car, user),
+      });
+      console.log(`✅ Admin notification email sent to: ${adminEmails.join(", ")}`);
+    } catch (error) {
+      console.error("❌ Failed to send admin notification email:", error);
+    }
+  },
 });
 
 /**
  * Send status update email
  */
 export const sendStatusUpdateEmail = action({
-    args: {
-        requestId: v.id("requests"),
-    },
-    handler: async (ctx, args) => {
-        const request = await ctx.runQuery(api.requests.getById, {
-            id: args.requestId,
-        });
+  args: {
+    requestId: v.id("requests"),
+  },
+  handler: async (ctx, args) => {
+    const request = await ctx.runQuery(api.requests.getById, {
+      id: args.requestId,
+    });
 
-        if (!request) {
-            throw new Error("Request not found");
-        }
+    if (!request) {
+      throw new Error("Request not found");
+    }
 
-        const user = await ctx.runQuery(api.auth.getUserById, {
-            userId: request.request.user_id,
-        });
-        const car = await ctx.runQuery(api.cars.getById, {
-            id: request.request.car_id,
-        });
+    const userResult = await ctx.runQuery(api.auth.getUserById, {
+      userId: request.request.user_id,
+    });
+    const carResult = await ctx.runQuery(api.cars.getById, {
+      id: request.request.car_id,
+    });
 
-        const transporter = createTransporter();
+    if (!userResult || !userResult.user) {
+      throw new Error("User associated with request not found");
+    }
+    if (!carResult || !carResult.car) {
+      throw new Error("Car associated with request not found");
+    }
 
-        try {
-            await transporter.sendMail({
-                from: `"Offisho Transport" <${process.env.SMTP_USER}>`,
-                to: user.user.email,
-                subject: `Request Status Update - ${request.request.status.toUpperCase()}`,
-                html: generateStatusUpdateEmail(
-                    user.user.name,
-                    request.request,
-                    car.car
-                ),
-            });
-            console.log(`✅ Status update email sent to: ${user.user.email}`);
-        } catch (error) {
-            console.error("❌ Failed to send status update email:", error);
-        }
-    },
+    const user = userResult.user;
+    const car = carResult.car;
+
+    const transporter = createTransporter();
+
+    try {
+      await transporter.sendMail({
+        from: `"Offisho Transport" <${process.env.SMTP_USER}>`,
+        to: user.email!,
+        subject: `Request Status Update - ${request.request.status.toUpperCase()}`,
+        html: generateStatusUpdateEmail(
+          user.name || "Customer",
+          request.request,
+          car
+        ),
+      });
+      console.log(`✅ Status update email sent to: ${user.email}`);
+    } catch (error) {
+      console.error("❌ Failed to send status update email:", error);
+    }
+  },
 });
 
 /**
  * Send contact form email
  */
 export const sendContactEmail = action({
-    args: {
-        name: v.string(),
-        email: v.string(),
-        message: v.string(),
-    },
-    handler: async (ctx, args) => {
-        const adminEmails = [
-            "prospertuop@gmail.com",
-            process.env.ADMIN_EMAIL_SECONDARY || "keaneishimwe@gmail.com",
-        ];
+  args: {
+    name: v.string(),
+    email: v.string(),
+    message: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const adminEmails = [
+      "prospertuop@gmail.com",
+      process.env.ADMIN_EMAIL_SECONDARY || "keaneishimwe@gmail.com",
+    ];
 
-        const transporter = createTransporter();
+    const transporter = createTransporter();
 
-        try {
-            await transporter.sendMail({
-                from: `"Offisho Transport" <${process.env.SMTP_USER}>`,
-                to: adminEmails.join(", "),
-                replyTo: args.email,
-                subject: `New Contact Message from ${args.name}`,
-                html: generateContactEmail(args.name, args.email, args.message),
-            });
-            console.log(`✅ Contact email sent to: ${adminEmails.join(", ")}`);
-            return { message: "Message sent successfully" };
-        } catch (error) {
-            console.error("❌ Failed to send contact email:", error);
-            throw new Error("Failed to send message");
-        }
-    },
+    try {
+      await transporter.sendMail({
+        from: `"Offisho Transport" <${process.env.SMTP_USER}>`,
+        to: adminEmails.join(", "),
+        replyTo: args.email,
+        subject: `New Contact Message from ${args.name}`,
+        html: generateContactEmail(args.name, args.email, args.message),
+      });
+      console.log(`✅ Contact email sent to: ${adminEmails.join(", ")}`);
+      return { message: "Message sent successfully" };
+    } catch (error) {
+      console.error("❌ Failed to send contact email:", error);
+      throw new Error("Failed to send message");
+    }
+  },
 });
 
 /**
@@ -176,11 +196,11 @@ export const sendContactEmail = action({
  */
 
 function generateRequestConfirmationEmail(
-    userName: string,
-    request: any,
-    car: any
+  userName: string,
+  request: any,
+  car: any
 ): string {
-    return `
+  return `
     <!DOCTYPE html>
     <html>
     <head>
@@ -234,13 +254,13 @@ function generateRequestConfirmationEmail(
 }
 
 function generateAdminNotificationEmail(
-    request: any,
-    car: any,
-    user: any
+  request: any,
+  car: any,
+  user: any
 ): string {
-    const phoneDisplay = user.phone_number || '<span style="color: #999; font-style: italic;">Not provided</span>';
+  const phoneDisplay = user.phone_number || '<span style="color: #999; font-style: italic;">Not provided</span>';
 
-    return `
+  return `
     <!DOCTYPE html>
     <html>
     <head>
@@ -291,11 +311,11 @@ function generateAdminNotificationEmail(
 }
 
 function generateStatusUpdateEmail(
-    userName: string,
-    request: any,
-    car: any
+  userName: string,
+  request: any,
+  car: any
 ): string {
-    return `
+  return `
     <!DOCTYPE html>
     <html>
     <head>
@@ -357,11 +377,11 @@ function generateStatusUpdateEmail(
 }
 
 function generateContactEmail(
-    name: string,
-    email: string,
-    message: string
+  name: string,
+  email: string,
+  message: string
 ): string {
-    return `
+  return `
     <!DOCTYPE html>
     <html>
     <head>

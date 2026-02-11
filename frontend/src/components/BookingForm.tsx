@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContextConvex';
 import { useNotification } from '../context/NotificationContext';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -31,8 +32,7 @@ const bookingSchema = z.object({
 type BookingFormData = z.infer<typeof bookingSchema>;
 
 const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
-  // Temporarily no auth - allow all submissions for testing
-  const isAuthenticated = true;
+  const { isAuthenticated } = useAuth();
   const { showNotification } = useNotification();
   const navigate = useNavigate();
   const [error, setError] = useState<string>('');

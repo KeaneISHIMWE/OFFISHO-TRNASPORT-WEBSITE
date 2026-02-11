@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { api } from "./_generated/api";
+import { requireAdmin, requireAuth, requireAuthId, requireOwnerOrAdmin } from "./lib/auth";
 
 /**
  * Requests Queries and Mutations
@@ -16,6 +17,7 @@ const DEPOSIT_AMOUNT = 50000; // 50,000 FRW (refundable)
 export const list = query({
     args: {},
     handler: async (ctx) => {
+        await requireAdmin(ctx);
         const requests = await ctx.db.query("requests").collect();
 
         // Enrich with car and user details
@@ -74,7 +76,6 @@ export const getById = query({
  */
 export const create = mutation({
     args: {
-        user_id: v.id("users"),
         car_id: v.id("cars"),
         request_type: v.union(
             v.literal("rent"),
@@ -88,6 +89,7 @@ export const create = mutation({
         payment_method: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
+        const userId = await requireAuthId(ctx);
         // Get car details
         const car = await ctx.db.get(args.car_id);
         if (!car) {
@@ -117,7 +119,7 @@ export const create = mutation({
 
         // Create request
         const requestId = await ctx.db.insert("requests", {
-            user_id: args.user_id,
+            user_id: userId,
             car_id: args.car_id,
             request_type: args.request_type,
             with_driver: args.with_driver,
@@ -163,6 +165,7 @@ export const updateStatus = mutation({
         ),
     },
     handler: async (ctx, args) => {
+        await requireAdmin(ctx);
         const request = await ctx.db.get(args.id);
         if (!request) {
             throw new Error("Request not found");
@@ -217,10 +220,10 @@ export const remove = mutation({
     },
     handler: async (ctx, args) => {
         const request = await ctx.db.get(args.id);
-
         if (!request) {
             throw new Error("Request not found");
         }
+        await requireOwnerOrAdmin(ctx, request.user_id);
 
         // Only allow deletion of pending or rejected requests
         if (request.status !== "pending" && request.status !== "rejected") {

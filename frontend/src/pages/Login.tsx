@@ -55,15 +55,10 @@ const Login: React.FC = () => {
     try {
       setLoading(true);
       setError('');
-      const user = await login(data.email, data.password);
+      await login(data.email, data.password);
 
       showNotification('Login successful! Welcome back.', 'success');
-
-      if (user.role === 'admin') {
-        navigate('/admin', { replace: true });
-      } else {
-        navigate('/', { replace: true });
-      }
+      // Redirection is handled by the useEffect above
     } catch (err: any) {
       setError(err.message || 'Login failed. Please try again.');
       console.error('Login error:', err);

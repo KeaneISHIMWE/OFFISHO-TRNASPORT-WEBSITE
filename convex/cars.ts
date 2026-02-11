@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { requireAdmin } from "./lib/auth";
 
 /**
  * Cars Queries and Mutations
@@ -111,7 +112,7 @@ export const create = mutation({
         specs: v.optional(v.any()),
     },
     handler: async (ctx, args) => {
-        // Note: Auth check removed for simplification
+        await requireAdmin(ctx);
         const carId = await ctx.db.insert("cars", {
             name: args.name,
             model: args.model,
@@ -165,7 +166,7 @@ export const update = mutation({
         specs: v.optional(v.any()),
     },
     handler: async (ctx, args) => {
-        // Note: Auth check removed for simplification
+        await requireAdmin(ctx);
         const { id, ...updates } = args;
 
         // Check if car exists
@@ -194,7 +195,7 @@ export const remove = mutation({
         id: v.id("cars"),
     },
     handler: async (ctx, args) => {
-        // Note: Auth check removed for simplification
+        await requireAdmin(ctx);
         // Check if car exists
         const car = await ctx.db.get(args.id);
         if (!car) {

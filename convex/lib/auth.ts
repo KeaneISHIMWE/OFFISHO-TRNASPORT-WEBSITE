@@ -1,40 +1,40 @@
-/**
- * Authentication helper functions
- * Note: Auth temporarily disabled for initial Convex deployment
- * These are placeholder functions that will be properly implemented later
- */
+import { ActionCtx, QueryCtx, MutationCtx } from "../_generated/server";
+import { auth } from "../auth";
+import { Doc, Id } from "../_generated/dataModel";
 
-/**
- * Require admin role - PLACEHOLDER
- */
-export async function requireAdmin() {
-    return true;
+type AnyCtx = QueryCtx | MutationCtx | ActionCtx;
+type DataCtx = QueryCtx | MutationCtx;
+
+export async function getViewerId(ctx: AnyCtx): Promise<Id<"users"> | null> {
+    return await auth.getUserId(ctx);
 }
 
-/**
- * Require authentication - PLACEHOLDER
- */
-export async function requireAuth() {
-    return true;
+export async function getViewer(ctx: DataCtx): Promise<Doc<"users"> | null> {
+    const userId = await getViewerId(ctx);
+    if (userId === null) return null;
+    return await ctx.db.get(userId);
 }
 
-/**
- * Get current user - PLACEHOLDER
- */
-export async function getCurrentUser() {
-    return null;
+export async function requireAuthId(ctx: AnyCtx): Promise<Id<"users">> {
+    const userId = await getViewerId(ctx);
+    if (userId === null) throw new Error("Authentication required");
+    return userId;
 }
 
-/**
- * Require owner or admin - PLACEHOLDER
- */
-export async function requireOwnerOrAdmin() {
-    return true;
+export async function requireAuth(ctx: DataCtx): Promise<Doc<"users">> {
+    const user = await getViewer(ctx);
+    if (user === null) throw new Error("Authentication required");
+    return user;
 }
 
-/**
- * Check if user is admin - PLACEHOLDER
- */
-export async function isAdmin() {
-    return false;
+export async function requireAdmin(ctx: DataCtx): Promise<Doc<"users">> {
+    const user = await requireAuth(ctx);
+    if (user.role !== "admin") throw new Error("Admin privileges required");
+    return user;
+}
+
+export async function requireOwnerOrAdmin(ctx: DataCtx, ownerId: Id<"users">): Promise<Doc<"users">> {
+    const user = await requireAuth(ctx);
+    if (user._id !== ownerId && user.role !== "admin") throw new Error("No permission");
+    return user;
 }

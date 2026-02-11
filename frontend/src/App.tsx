@@ -17,9 +17,9 @@ import './App.css';
 
 function App() {
   return (
-    <AuthProvider>
-      <NotificationProvider>
-        <Router>
+    <Router>
+      <AuthProvider>
+        <NotificationProvider>
           <div className="flex flex-col min-h-screen">
             <Navbar />
             <main className="flex-grow">
@@ -37,9 +37,9 @@ function App() {
             </main>
             <Footer />
           </div>
-        </Router>
-      </NotificationProvider>
-    </AuthProvider>
+        </NotificationProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 

@@ -17,7 +17,6 @@ export const migrateUser = mutation({
         name: v.string(),
         email: v.string(),
         phone_number: v.optional(v.string()),
-        password_hash: v.string(), // Already hashed from MySQL
         role: v.union(v.literal("user"), v.literal("admin")),
     },
     handler: async (ctx, args) => {
@@ -36,7 +35,6 @@ export const migrateUser = mutation({
             name: args.name,
             email: args.email,
             phone_number: args.phone_number,
-            password_hash: args.password_hash,
             role: args.role,
         });
 

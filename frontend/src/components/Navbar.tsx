@@ -2,14 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Search, ChevronDown, User, LogOut, Shield } from 'lucide-react';
+import { useAuth } from '../context/AuthContextConvex';
 import { cn } from '../utils/cn';
 
 const Navbar: React.FC = () => {
-  // Temporarily removed auth - no authentication for now
-  const isAuthenticated = false;
-  const user = null;
-  const isAdmin = false;
-
+  const { isAuthenticated, user, logout, isAdmin } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -34,10 +31,15 @@ const Navbar: React.FC = () => {
     }
   };
 
-  const handleLogout = () => {
-    // No auth to logout from
+  const handleLogout = async () => {
+    await logout();
     navigate('/');
     setIsMenuOpen(false);
+  };
+
+  const getUserInitials = (name?: string) => {
+    if (!name) return 'U';
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
   };
 
   return (
@@ -97,16 +99,48 @@ const Navbar: React.FC = () => {
               <Search className="w-5 h-5" />
             </button>
 
-            {/* Auth section - Always show login/book for now */}
-            <div className="flex items-center gap-2 sm:gap-4">
-              <Link to="/login" className="touch-target text-silver hover:text-purple-electric font-medium transition-colors px-3 sm:px-4 py-2">Login</Link>
-              <Link
-                to="/booking"
-                className="touch-target px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg electric-gradient hover:opacity-90 active:opacity-80 text-white font-semibold shadow-lg neon-glow transition-all hover:scale-105 active:scale-95 text-sm sm:text-base"
-              >
-                Book Now
-              </Link>
-            </div>
+            {/* Auth section */}
+            {isAuthenticated ? (
+              <div className="relative group">
+                <button className="touch-target flex items-center gap-2 pl-2 pr-3 sm:pr-4 py-2 rounded-full bg-purple-card hover:bg-purple-card/80 active:bg-purple-card border border-purple-electric/30 transition-all neon-border">
+                  <div className="w-8 h-8 rounded-full electric-gradient flex items-center justify-center text-white font-bold text-sm neon-glow">
+                    {getUserInitials(user?.name)}
+                  </div>
+                  <span className="text-sm font-medium text-silver hidden sm:inline">{user?.name?.split(' ')[0]}</span>
+                  <ChevronDown className="w-4 h-4 text-purple-electric" />
+                </button>
+
+                {/* Dropdown */}
+                <div className="absolute right-0 mt-2 w-56 glass-card rounded-xl shadow-xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right neon-border">
+                  <div className="p-2 space-y-1">
+                    {isAdmin && (
+                      <Link to="/admin" className="flex items-center gap-2 px-3 py-2 text-sm text-silver hover:bg-purple-card hover:text-purple-electric rounded-lg transition-colors">
+                        <Shield className="w-4 h-4" />
+                        Admin Portal
+                      </Link>
+                    )}
+                    <Link to="/profile" className="flex items-center gap-2 px-3 py-2 text-sm text-silver hover:bg-purple-card hover:text-purple-electric rounded-lg transition-colors">
+                      <User className="w-4 h-4" />
+                      My Profile
+                    </Link>
+                    <button onClick={handleLogout} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
+                      <LogOut className="w-4 h-4" />
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 sm:gap-4">
+                <Link to="/login" className="touch-target text-silver hover:text-purple-electric font-medium transition-colors px-3 sm:px-4 py-2">Login</Link>
+                <Link
+                  to="/booking"
+                  className="touch-target px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg electric-gradient hover:opacity-90 active:opacity-80 text-white font-semibold shadow-lg neon-glow transition-all hover:scale-105 active:scale-95 text-sm sm:text-base"
+                >
+                  Book Now
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -177,14 +211,32 @@ const Navbar: React.FC = () => {
                 </div>
 
                 <div className="pt-4 border-t border-white/10">
-                  <div className="grid grid-cols-2 gap-4">
-                    <Link to="/login" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center px-4 py-2.5 rounded-lg border border-white/10 text-white hover:bg-white/5 font-medium transition-colors">
-                      Login
-                    </Link>
-                    <Link to="/register" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center px-4 py-2.5 rounded-lg bg-primary text-white hover:bg-primary/90 font-medium transition-colors shadow-lg shadow-primary/20">
-                      Register
-                    </Link>
-                  </div>
+                  {isAuthenticated ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3 px-4">
+                        <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">
+                          {getUserInitials(user?.name)}
+                        </div>
+                        <div>
+                          <p className="text-white font-medium">{user?.name}</p>
+                          <p className="text-white/50 text-xs">{user?.email}</p>
+                        </div>
+                      </div>
+                      {isAdmin && (
+                        <Link to="/admin" onClick={() => setIsMenuOpen(false)} className="touch-target block px-4 py-3 text-purple-electric hover:bg-purple-card rounded-lg transition-colors">Admin Portal</Link>
+                      )}
+                      <button onClick={handleLogout} className="touch-target block w-full text-left px-4 py-3 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors">Logout</button>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-4">
+                      <Link to="/login" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center px-4 py-2.5 rounded-lg border border-white/10 text-white hover:bg-white/5 font-medium transition-colors">
+                        Login
+                      </Link>
+                      <Link to="/register" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center px-4 py-2.5 rounded-lg bg-primary text-white hover:bg-primary/90 font-medium transition-colors shadow-lg shadow-primary/20">
+                        Register
+                      </Link>
+                    </div>
+                  )}
                 </div>
               </div>
             </motion.div>

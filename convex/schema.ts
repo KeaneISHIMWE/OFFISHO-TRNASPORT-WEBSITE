@@ -1,23 +1,25 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { authTables } from "@convex-dev/auth/server";
 
 /**
  * Convex Schema for Offisho Transport
- * Migrated from MySQL schema
+ * Migrated from MySQL schema and integrated with Convex Auth
  */
 export default defineSchema({
-    // Users table - Authentication and user management
+    ...authTables,
+
+    // Extend or modify the default users table if needed
+    // The authTables includes 'users', 'sessions', 'accounts', 'verifications'
+    // We overlay our custom profile fields onto the 'users' table
     users: defineTable({
-        name: v.string(),
-        email: v.string(),
+        name: v.optional(v.string()),
+        email: v.optional(v.string()),
+        image: v.optional(v.string()),
         phone_number: v.optional(v.string()),
-        password_hash: v.string(), // bcrypt hash
-        role: v.union(v.literal("user"), v.literal("admin")),
-        // Note: _creationTime is auto-managed by Convex
+        role: v.optional(v.union(v.literal("user"), v.literal("admin"))),
     })
-        .index("by_email", ["email"])
-        .index("by_phone", ["phone_number"])
-        .index("by_role", ["role"]),
+        .index("by_email", ["email"]),
 
     // Cars table - Vehicle inventory
     cars: defineTable({
