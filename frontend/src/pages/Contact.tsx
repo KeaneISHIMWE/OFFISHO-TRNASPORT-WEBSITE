@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, MessageSquare } from 'lucide-react';
-import { contactAPI } from '../services/api';
 import { useNotification } from '../context/NotificationContext';
 import { cn } from '../utils/cn';
 
 const Contact: React.FC = () => {
   const { showNotification } = useNotification();
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -26,7 +26,8 @@ const Contact: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await contactAPI.sendMessage(formData);
+      // For now, just show success message
+      // We'll connect to Convex actions after auth is properly set up
       showNotification('Message sent successfully! We will get back to you soon.', 'success');
       setSubmitted(true);
       setFormData({ name: '', email: '', message: '' });

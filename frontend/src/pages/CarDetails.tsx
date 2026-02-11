@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { carsAPI } from '../services/api';
-import { Car } from '../types';
+import { useQuery } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
+import { Id } from '../../../convex/_generated/dataModel';
 import BookingForm from '../components/BookingForm';
 import { ArrowLeft, Car as CarIcon, Calendar, DollarSign, CheckCircle2, XCircle, AlertCircle, Fuel, Gauge, Users } from 'lucide-react';
 import { cn } from '../utils/cn';
@@ -10,51 +11,22 @@ import { cn } from '../utils/cn';
 const CarDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
-  const [car, setCar] = useState<Car | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
   const [showBookingForm, setShowBookingForm] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+
+  // Fetch car details using Convex query
+  const carData = useQuery(api.cars.getById, {
+    id: id as Id<"cars">
+  });
+
+  const car = carData?.car || null;
+  const loading = carData === undefined;
+  const error = carData === null ? 'Car not found' : null;
 
   useEffect(() => {
-    if (id) {
-      loadCar();
-    }
     if (searchParams.get('action') === 'rent') {
       setShowBookingForm(true);
     }
-  }, [id, searchParams]);
-
-  const loadCar = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await carsAPI.getCarById(id!);
-      setCar(response.car);
-    } catch (error: any) {
-      console.error('Error loading car:', error);
-      
-      // Handle different error types
-      if (error.response) {
-        // Server responded with an error status
-        if (error.response.status === 404) {
-          setError('Car not found');
-        } else if (error.response.status === 500) {
-          const errorMessage = error.response.data?.error || 'Server error occurred';
-          setError(`Server error: ${errorMessage}`);
-        } else {
-          setError(error.response.data?.error || 'Failed to load car details');
-        }
-      } else if (error.request) {
-        // Request was made but no response received
-        setError('Cannot connect to server. Please check your connection.');
-      } else {
-        // Something else happened
-        setError('An unexpected error occurred');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [searchParams]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-RW', {
@@ -86,8 +58,8 @@ const CarDetails: React.FC = () => {
               There was an issue loading the car details. Please try again later.
             </p>
           )}
-          <Link 
-            to="/cars" 
+          <Link
+            to="/cars"
             className="inline-flex items-center gap-2 text-purple-electric hover:text-purple-glow transition-colors font-medium"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -231,7 +203,7 @@ const CarDetails: React.FC = () => {
           >
             <div className="bg-card border border-white/10 rounded-2xl p-6 lg:p-8">
               <h2 className="text-2xl font-bold text-white mb-6">Complete Your Booking</h2>
-              <BookingForm carId={car.id} car={car} />
+              <BookingForm carId={car._id} car={car as any} />
             </div>
           </motion.div>
         )}

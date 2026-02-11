@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -32,7 +31,8 @@ const bookingSchema = z.object({
 type BookingFormData = z.infer<typeof bookingSchema>;
 
 const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
-  const { isAuthenticated } = useAuth();
+  // Temporarily no auth - allow all submissions for testing
+  const isAuthenticated = true;
   const { showNotification } = useNotification();
   const navigate = useNavigate();
   const [error, setError] = useState<string>('');
@@ -66,24 +66,24 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
 
     if (requestType === 'rent') {
       // Ensure rental_price_per_day is a number
-      const baseRental = typeof car.rental_price_per_day === 'string' 
-        ? parseFloat(car.rental_price_per_day) 
+      const baseRental = typeof car.rental_price_per_day === 'string'
+        ? parseFloat(car.rental_price_per_day)
         : car.rental_price_per_day;
-      
+
       total = baseRental || 0;
-      
+
       if (withDriver) {
         total += DRIVER_FEE;
       } else {
         total += DEPOSIT_AMOUNT;
       }
     } else if (requestType === 'buy' && car.buy_price) {
-      total = typeof car.buy_price === 'string' 
-        ? parseFloat(car.buy_price) 
+      total = typeof car.buy_price === 'string'
+        ? parseFloat(car.buy_price)
         : car.buy_price;
     } else if (requestType === 'sell' && car.sell_price) {
-      total = typeof car.sell_price === 'string' 
-        ? parseFloat(car.sell_price) 
+      total = typeof car.sell_price === 'string'
+        ? parseFloat(car.sell_price)
         : car.sell_price;
     }
 

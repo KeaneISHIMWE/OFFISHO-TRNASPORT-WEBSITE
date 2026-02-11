@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Search, ChevronDown, User, LogOut, Shield } from 'lucide-react';
-import { cn } from '../utils/cn'; // Assuming utils exists or I will just use clsx directly
+import { cn } from '../utils/cn';
 
 const Navbar: React.FC = () => {
-  const { isAuthenticated, user, logout, isAdmin } = useAuth();
+  // Temporarily removed auth - no authentication for now
+  const isAuthenticated = false;
+  const user = null;
+  const isAdmin = false;
+
   const [searchQuery, setSearchQuery] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -32,7 +35,7 @@ const Navbar: React.FC = () => {
   };
 
   const handleLogout = () => {
-    logout();
+    // No auth to logout from
     navigate('/');
     setIsMenuOpen(false);
   };
@@ -47,15 +50,15 @@ const Navbar: React.FC = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 sm:gap-3 group touch-target">
             <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 relative">
-              <img 
-                src="/logo.png" 
-                alt="Logo" 
-                className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 object-contain brightness-0 invert" 
+              <img
+                src="/logo.png"
+                alt="Logo"
+                className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 object-contain brightness-0 invert"
                 style={{ filter: 'drop-shadow(0 0 8px rgba(157, 80, 255, 0.6))' }}
                 onError={(e) => {
                   const parent = e.currentTarget.parentElement!;
                   parent.innerHTML = '<span class="text-purple-electric font-bold text-lg sm:text-xl font-display neon-glow px-2 py-1 rounded">OT</span>';
-                }} 
+                }}
               />
             </div>
             <div className="flex flex-col">
@@ -94,48 +97,16 @@ const Navbar: React.FC = () => {
               <Search className="w-5 h-5" />
             </button>
 
-            {/* Auth section */}
-            {isAuthenticated ? (
-              <div className="relative group">
-                <button className="touch-target flex items-center gap-2 pl-2 pr-3 sm:pr-4 py-2 rounded-full bg-purple-card hover:bg-purple-card/80 active:bg-purple-card border border-purple-electric/30 transition-all neon-border">
-                  <div className="w-8 h-8 rounded-full electric-gradient flex items-center justify-center text-white font-bold text-sm neon-glow">
-                    {user?.name.charAt(0).toUpperCase()}
-                  </div>
-                  <span className="text-sm font-medium text-silver hidden sm:inline">{user?.name.split(' ')[0]}</span>
-                  <ChevronDown className="w-4 h-4 text-purple-electric" />
-                </button>
-
-                {/* Dropdown */}
-                <div className="absolute right-0 mt-2 w-56 glass-card rounded-xl shadow-xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right neon-border">
-                  <div className="p-2 space-y-1">
-                    {isAdmin && (
-                      <Link to="/admin" className="flex items-center gap-2 px-3 py-2 text-sm text-silver hover:bg-purple-card hover:text-purple-electric rounded-lg transition-colors">
-                        <Shield className="w-4 h-4" />
-                        Admin Portal
-                      </Link>
-                    )}
-                    <Link to="/profile" className="flex items-center gap-2 px-3 py-2 text-sm text-silver hover:bg-purple-card hover:text-purple-electric rounded-lg transition-colors">
-                      <User className="w-4 h-4" />
-                      My Profile
-                    </Link>
-                    <button onClick={handleLogout} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
-                      <LogOut className="w-4 h-4" />
-                      Logout
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 sm:gap-4">
-                <Link to="/login" className="touch-target text-silver hover:text-purple-electric font-medium transition-colors px-3 sm:px-4 py-2">Login</Link>
-                <Link
-                  to="/booking"
-                  className="touch-target px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg electric-gradient hover:opacity-90 active:opacity-80 text-white font-semibold shadow-lg neon-glow transition-all hover:scale-105 active:scale-95 text-sm sm:text-base"
-                >
-                  Book Now
-                </Link>
-              </div>
-            )}
+            {/* Auth section - Always show login/book for now */}
+            <div className="flex items-center gap-2 sm:gap-4">
+              <Link to="/login" className="touch-target text-silver hover:text-purple-electric font-medium transition-colors px-3 sm:px-4 py-2">Login</Link>
+              <Link
+                to="/booking"
+                className="touch-target px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg electric-gradient hover:opacity-90 active:opacity-80 text-white font-semibold shadow-lg neon-glow transition-all hover:scale-105 active:scale-95 text-sm sm:text-base"
+              >
+                Book Now
+              </Link>
+            </div>
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -206,32 +177,14 @@ const Navbar: React.FC = () => {
                 </div>
 
                 <div className="pt-4 border-t border-white/10">
-                  {isAuthenticated ? (
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3 px-4">
-                        <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">
-                          {user?.name.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                          <p className="text-white font-medium">{user?.name}</p>
-                          <p className="text-white/50 text-xs">{user?.email}</p>
-                        </div>
-                      </div>
-                      {isAdmin && (
-                        <Link to="/admin" onClick={() => setIsMenuOpen(false)} className="touch-target block px-4 py-3 text-purple-electric hover:bg-lavender rounded-lg transition-colors">Admin Portal</Link>
-                      )}
-                      <button onClick={handleLogout} className="touch-target block w-full text-left px-4 py-3 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">Logout</button>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-2 gap-4">
-                      <Link to="/login" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center px-4 py-2.5 rounded-lg border border-white/10 text-white hover:bg-white/5 font-medium transition-colors">
-                        Login
-                      </Link>
-                      <Link to="/register" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center px-4 py-2.5 rounded-lg bg-primary text-white hover:bg-primary/90 font-medium transition-colors shadow-lg shadow-primary/20">
-                        Register
-                      </Link>
-                    </div>
-                  )}
+                  <div className="grid grid-cols-2 gap-4">
+                    <Link to="/login" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center px-4 py-2.5 rounded-lg border border-white/10 text-white hover:bg-white/5 font-medium transition-colors">
+                      Login
+                    </Link>
+                    <Link to="/register" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center px-4 py-2.5 rounded-lg bg-primary text-white hover:bg-primary/90 font-medium transition-colors shadow-lg shadow-primary/20">
+                      Register
+                    </Link>
+                  </div>
                 </div>
               </div>
             </motion.div>

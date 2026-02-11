@@ -1,5 +1,6 @@
 export interface User {
   id: string;
+  _id?: string;
   name: string;
   email: string;
   phone_number?: string | null;
@@ -10,6 +11,7 @@ export interface User {
 
 export interface Car {
   id: string;
+  _id?: string;
   name: string;
   model: string;
   description: string | null;
@@ -27,6 +29,7 @@ export interface Car {
 
 export interface Request {
   id: string;
+  _id?: string;
   user_id: string;
   car_id: string;
   request_type: 'rent' | 'buy' | 'sell';

@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { carsAPI, requestsAPI } from '../services/api';
+import { useQuery, useMutation } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
+import { Id } from '../../../convex/_generated/dataModel';
 import { Car, Request } from '../types';
 import { useNotification } from '../context/NotificationContext';
 import { LayoutDashboard, Car as CarIcon, FileText, BarChart3, Plus, Edit, Trash2, CheckCircle, XCircle, Clock, TrendingUp } from 'lucide-react';
@@ -9,64 +11,45 @@ import { cn } from '../utils/cn';
 const AdminDashboard: React.FC = () => {
   const { showNotification } = useNotification();
   const [activeTab, setActiveTab] = useState<'cars' | 'requests' | 'analytics'>('cars');
-  const [cars, setCars] = useState<Car[]>([]);
-  const [requests, setRequests] = useState<Request[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
   const [editingCar, setEditingCar] = useState<Car | null>(null);
   const [showCarForm, setShowCarForm] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (activeTab === 'cars') {
-      loadCars();
-    } else if (activeTab === 'requests') {
-      loadRequests();
-    }
-  }, [activeTab]);
+  // Convex Queries
+  const carsData = useQuery(api.cars.list, {});
+  const cars = carsData?.cars || [];
 
-  const loadCars = async () => {
-    try {
-      setLoading(true);
-      const response = await carsAPI.getCars();
-      setCars(response.cars);
-    } catch (error) {
-      console.error('Error loading cars:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const requestsData = useQuery(api.requests.list, {});
+  const requests = requestsData?.requests || [];
 
-  const loadRequests = async () => {
-    try {
-      setLoading(true);
-      const response = await requestsAPI.getRequests();
-      setRequests(response.requests);
-    } catch (error) {
-      console.error('Error loading requests:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const loading = carsData === undefined || (activeTab === 'requests' && requestsData === undefined);
+
+  // Convex Mutations
+  const deleteCarMutation = useMutation(api.cars.remove);
+  const updateStatusMutation = useMutation(api.requests.updateStatus);
 
   const handleDeleteCar = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this car?')) {
       return;
     }
     try {
-      await carsAPI.deleteCar(id);
-      loadCars();
-    } catch (error) {
+      await deleteCarMutation({ id: id as Id<"cars"> });
+      showNotification('Car deleted successfully', 'success');
+    } catch (error: any) {
       console.error('Error deleting car:', error);
-      alert('Failed to delete car');
+      showNotification(error.message || 'Failed to delete car', 'error');
     }
   };
 
   const handleUpdateRequestStatus = async (id: string, status: Request['status']) => {
     try {
-      await requestsAPI.updateRequestStatus(id, status);
-      loadRequests();
-    } catch (error) {
+      await updateStatusMutation({
+        id: id as Id<"requests">,
+        status: status as any
+      });
+      showNotification(`Request ${status} successfully`, 'success');
+    } catch (error: any) {
       console.error('Error updating request status:', error);
-      alert('Failed to update request status');
+      showNotification(error.message || 'Failed to update request status', 'error');
     }
   };
 
@@ -259,10 +242,10 @@ const AdminDashboard: React.FC = () => {
                   <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-display font-bold text-white">Cars Management</h2>
                     <button
-                onClick={() => {
-                  setEditingCar(null);
-                  setShowCarForm(true);
-                }}
+                      onClick={() => {
+                        setEditingCar(null);
+                        setShowCarForm(true);
+                      }}
                       className="touch-target bg-primary hover:bg-primary/90 active:bg-primary/80 text-white px-4 py-2.5 sm:py-2 rounded-xl flex items-center gap-2 transition-all duration-300 hover:scale-105 active:scale-95 glow-blue text-sm sm:text-base"
                     >
                       <Plus className="w-4 h-4" />
@@ -270,107 +253,106 @@ const AdminDashboard: React.FC = () => {
                     </button>
                   </div>
 
-            {showCarForm && (
-              <CarForm
-                car={editingCar}
-                onClose={() => {
-                  setShowCarForm(false);
-                  setEditingCar(null);
-                }}
-                onSuccess={() => {
-                  setShowCarForm(false);
-                  setEditingCar(null);
-                  loadCars();
-                  showNotification(editingCar ? 'Car updated successfully!' : 'Car registered successfully!', 'success');
-                }}
-              />
-            )}
+                  {showCarForm && (
+                    <CarForm
+                      car={editingCar}
+                      onClose={() => {
+                        setShowCarForm(false);
+                        setEditingCar(null);
+                      }}
+                      onSuccess={() => {
+                        setShowCarForm(false);
+                        setEditingCar(null);
+                        showNotification(editingCar ? 'Car updated successfully!' : 'Car registered successfully!', 'success');
+                      }}
+                    />
+                  )}
 
-            {loading ? (
-              <div className="flex justify-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-electric neon-glow"></div>
-              </div>
-            ) : (
-              <div className="glass-card rounded-2xl overflow-hidden neon-border">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left">
-                    <thead className="bg-purple-card border-b border-purple-electric/20 text-silver/70">
-                      <tr>
-                        <th className="px-6 py-4 font-semibold">Image</th>
-                        <th className="px-6 py-4 font-semibold">Name</th>
-                        <th className="px-6 py-4 font-semibold">Price/Day</th>
-                        <th className="px-6 py-4 font-semibold">Status</th>
-                        <th className="px-6 py-4 font-semibold">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-purple-electric/10">
-                      {cars.map((car, idx) => (
-                        <tr key={car.id} className={cn(
-                          "hover:bg-purple-card/50 transition-colors",
-                          idx % 2 === 0 ? "bg-purple-card/30" : "bg-purple-midnight"
-                        )}>
-                          <td className="px-6 py-4">
-                            {car.image_url ? (
-                              <img
-                                src={car.image_url}
-                                alt={car.name}
-                                className="w-16 h-12 object-cover rounded-lg neon-border"
-                              />
-                            ) : (
-                              <div className="w-16 h-12 bg-purple-card rounded-lg flex items-center justify-center neon-border">
-                                <CarIcon className="w-6 h-6 text-purple-electric/50" />
-                              </div>
-                            )}
-                          </td>
-                          <td className="px-6 py-4 font-medium text-silver">{car.name}</td>
-                          <td className="px-6 py-4 text-purple-electric font-mono font-bold">
-                            {new Intl.NumberFormat('en-RW', {
-                              style: 'currency',
-                              currency: 'RWF',
-                              minimumFractionDigits: 0,
-                              maximumFractionDigits: 0,
-                            }).format(car.rental_price_per_day).replace('RWF', 'FRW')}
-                          </td>
-                          <td className="px-6 py-4">
-                            <span
-                              className={cn(
-                                "px-3 py-1.5 rounded-full text-xs font-semibold border",
-                                car.availability_status === 'available' 
-                                  ? "bg-purple-electric/20 text-purple-electric border-purple-electric/50 neon-glow" :
-                                  car.availability_status === 'rented' 
-                                    ? "bg-purple-glow/20 text-purple-glow border-purple-glow/50 neon-glow" :
-                                    "bg-red-500/20 text-red-400 border-red-500/30"
-                              )}
-                            >
-                              {car.availability_status}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-3">
-                                <button
-                                  onClick={() => {
-                                    setEditingCar(car);
-                                    setShowCarForm(true);
-                                  }}
-                                  className="text-purple-electric hover:text-purple-glow transition-colors neon-glow"
-                                >
-                                  <Edit className="w-4 h-4" />
-                                </button>
-                                <button
-                                  onClick={() => handleDeleteCar(car.id)}
-                                  className="text-red-400 hover:text-red-300 transition-colors"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
+                  {loading ? (
+                    <div className="flex justify-center py-12">
+                      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-electric neon-glow"></div>
+                    </div>
+                  ) : (
+                    <div className="glass-card rounded-2xl overflow-hidden neon-border">
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left">
+                          <thead className="bg-purple-card border-b border-purple-electric/20 text-silver/70">
+                            <tr>
+                              <th className="px-6 py-4 font-semibold">Image</th>
+                              <th className="px-6 py-4 font-semibold">Name</th>
+                              <th className="px-6 py-4 font-semibold">Price/Day</th>
+                              <th className="px-6 py-4 font-semibold">Status</th>
+                              <th className="px-6 py-4 font-semibold">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-purple-electric/10">
+                            {cars.map((car, idx) => (
+                              <tr key={car._id} className={cn(
+                                "hover:bg-purple-card/50 transition-colors",
+                                idx % 2 === 0 ? "bg-purple-card/30" : "bg-purple-midnight"
+                              )}>
+                                <td className="px-6 py-4">
+                                  {car.image_url ? (
+                                    <img
+                                      src={car.image_url}
+                                      alt={car.name}
+                                      className="w-16 h-12 object-cover rounded-lg neon-border"
+                                    />
+                                  ) : (
+                                    <div className="w-16 h-12 bg-purple-card rounded-lg flex items-center justify-center neon-border">
+                                      <CarIcon className="w-6 h-6 text-purple-electric/50" />
+                                    </div>
+                                  )}
+                                </td>
+                                <td className="px-6 py-4 font-medium text-silver">{car.name}</td>
+                                <td className="px-6 py-4 text-purple-electric font-mono font-bold">
+                                  {new Intl.NumberFormat('en-RW', {
+                                    style: 'currency',
+                                    currency: 'RWF',
+                                    minimumFractionDigits: 0,
+                                    maximumFractionDigits: 0,
+                                  }).format(car.rental_price_per_day).replace('RWF', 'FRW')}
+                                </td>
+                                <td className="px-6 py-4">
+                                  <span
+                                    className={cn(
+                                      "px-3 py-1.5 rounded-full text-xs font-semibold border",
+                                      car.availability_status === 'available'
+                                        ? "bg-purple-electric/20 text-purple-electric border-purple-electric/50 neon-glow" :
+                                        car.availability_status === 'rented'
+                                          ? "bg-purple-glow/20 text-purple-glow border-purple-glow/50 neon-glow" :
+                                          "bg-red-500/20 text-red-400 border-red-500/30"
+                                    )}
+                                  >
+                                    {car.availability_status}
+                                  </span>
+                                </td>
+                                <td className="px-6 py-4">
+                                  <div className="flex items-center gap-3">
+                                    <button
+                                      onClick={() => {
+                                        setEditingCar(car);
+                                        setShowCarForm(true);
+                                      }}
+                                      className="text-purple-electric hover:text-purple-glow transition-colors neon-glow"
+                                    >
+                                      <Edit className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                      onClick={() => handleDeleteCar(car._id!)}
+                                      className="text-red-400 hover:text-red-300 transition-colors"
+                                    >
+                                      <Trash2 className="w-4 h-4" />
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -405,7 +387,7 @@ const AdminDashboard: React.FC = () => {
                           </thead>
                           <tbody className="divide-y divide-purple-electric/10">
                             {requests.map((request, idx) => (
-                              <tr key={request.id} className={cn(
+                              <tr key={request._id} className={cn(
                                 "hover:bg-purple-card/50 transition-colors",
                                 idx % 2 === 0 ? "bg-purple-card/30" : "bg-purple-midnight"
                               )}>
@@ -426,54 +408,54 @@ const AdminDashboard: React.FC = () => {
                                   <span
                                     className={cn(
                                       "px-3 py-1.5 rounded-full text-xs font-semibold border flex items-center w-fit gap-1",
-                                      request.status === 'approved' 
+                                      request.status === 'approved'
                                         ? "bg-purple-electric/20 text-purple-electric border-purple-electric/50 neon-glow" :
-                                        request.status === 'rejected' 
+                                        request.status === 'rejected'
                                           ? "bg-red-500/20 text-red-400 border-red-500/30" :
-                                        request.status === 'completed' 
-                                          ? "bg-purple-glow/20 text-purple-glow border-purple-glow/50 neon-glow" :
-                                          "bg-purple-glow/20 text-purple-glow border-purple-glow/50 neon-glow"
+                                          request.status === 'completed'
+                                            ? "bg-purple-glow/20 text-purple-glow border-purple-glow/50 neon-glow" :
+                                            "bg-purple-glow/20 text-purple-glow border-purple-glow/50 neon-glow"
                                     )}
                                   >
                                     {request.status}
                                   </span>
                                 </td>
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-3">
-                              {request.status === 'pending' && (
-                                <>
-                                  <button
-                                    onClick={() => handleUpdateRequestStatus(request.id, 'approved')}
-                                    className="text-purple-electric hover:text-purple-glow transition-colors neon-glow"
-                                    title="Approve"
-                                  >
-                                    <CheckCircle className="w-5 h-5" />
-                                  </button>
-                                  <button
-                                    onClick={() => handleUpdateRequestStatus(request.id, 'rejected')}
-                                    className="text-red-400 hover:text-red-300 transition-colors"
-                                    title="Reject"
-                                  >
-                                    <XCircle className="w-5 h-5" />
-                                  </button>
-                                </>
-                              )}
-                              {request.status === 'approved' && (
-                                <button
-                                  onClick={() => handleUpdateRequestStatus(request.id, 'completed')}
-                                  className="text-purple-glow hover:text-purple-electric transition-colors flex items-center gap-1 text-sm font-medium neon-glow"
-                                >
-                                  <Clock className="w-4 h-4" />
-                                  Complete
-                                </button>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                                <td className="px-6 py-4">
+                                  <div className="flex items-center gap-3">
+                                    {request.status === 'pending' && (
+                                      <>
+                                        <button
+                                          onClick={() => handleUpdateRequestStatus(request._id!, 'approved')}
+                                          className="text-purple-electric hover:text-purple-glow transition-colors neon-glow"
+                                          title="Approve"
+                                        >
+                                          <CheckCircle className="w-5 h-5" />
+                                        </button>
+                                        <button
+                                          onClick={() => handleUpdateRequestStatus(request._id!, 'rejected')}
+                                          className="text-red-400 hover:text-red-300 transition-colors"
+                                          title="Reject"
+                                        >
+                                          <XCircle className="w-5 h-5" />
+                                        </button>
+                                      </>
+                                    )}
+                                    {request.status === 'approved' && (
+                                      <button
+                                        onClick={() => handleUpdateRequestStatus(request._id!, 'completed')}
+                                        className="text-purple-glow hover:text-purple-electric transition-colors flex items-center gap-1 text-sm font-medium neon-glow"
+                                      >
+                                        <Clock className="w-4 h-4" />
+                                        Complete
+                                      </button>
+                                    )}
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   )}
                 </motion.div>
@@ -521,38 +503,22 @@ const CarForm: React.FC<CarFormProps> = ({ car, onClose, onSuccess }) => {
     });
   };
 
+  const createCarMutation = useMutation(api.cars.create);
+  const updateCarMutation = useMutation(api.cars.update);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       setLoading(true);
       setError('');
 
-      const formDataToSend = new FormData();
-      formDataToSend.append('name', formData.name);
-      formDataToSend.append('model', formData.model);
-      formDataToSend.append('description', formData.description);
-      formDataToSend.append('rental_price_per_day', formData.rental_price_per_day.toString());
-      if (formData.buy_price) {
-        formDataToSend.append('buy_price', formData.buy_price.toString());
-      }
-      if (formData.sell_price) {
-        formDataToSend.append('sell_price', formData.sell_price.toString());
-      }
-      formDataToSend.append('car_type', formData.car_type);
-      formDataToSend.append('availability_status', formData.availability_status);
-      // Process event_suitability: split comma-separated string into array, then stringify
       const eventSuitabilityArray = formData.event_suitability
         .split(',')
-        .map((e) => e.trim())
-        .filter((e) => e);
-      
-      // Send as JSON stringified array
-      formDataToSend.append('event_suitability', JSON.stringify(eventSuitabilityArray));
+        .map((e: string) => e.trim())
+        .filter((e: string) => e);
 
-      // Process specs: merge with existing specs if editing, or create new specs object
       const specs: Record<string, any> = car?.specs ? { ...car.specs } : {};
-      
-      // Update specs with form values (only if provided)
+
       if (formData.seats && formData.seats.trim() !== '') {
         specs.seats = parseInt(formData.seats, 10);
       }
@@ -562,38 +528,33 @@ const CarForm: React.FC<CarFormProps> = ({ car, onClose, onSuccess }) => {
       if (formData.fuel_type && formData.fuel_type.trim() !== '') {
         specs.fuel_type = formData.fuel_type;
       }
-      
-      // Send specs as JSON stringified object (even if empty, to ensure it's saved)
-      formDataToSend.append('specs', JSON.stringify(specs));
 
-      if (imageFile) {
-        formDataToSend.append('image', imageFile);
-      }
+      const carData = {
+        name: formData.name,
+        model: formData.model,
+        description: formData.description,
+        rental_price_per_day: Number(formData.rental_price_per_day),
+        buy_price: formData.buy_price ? Number(formData.buy_price) : undefined,
+        sell_price: formData.sell_price ? Number(formData.sell_price) : undefined,
+        car_type: formData.car_type as any,
+        availability_status: formData.availability_status as any,
+        event_suitability: eventSuitabilityArray,
+        specs,
+      };
 
-      if (car) {
-        await carsAPI.updateCar(car.id, formDataToSend);
+      if (car && car._id) {
+        await updateCarMutation({
+          id: car._id as Id<"cars">,
+          ...carData
+        });
       } else {
-        await carsAPI.createCar(formDataToSend);
+        await createCarMutation(carData);
       }
 
       onSuccess();
     } catch (err: any) {
       console.error('Save car error:', err);
-      let errorMessage = 'Failed to save car';
-
-      if (err.response?.data?.errors && Array.isArray(err.response.data.errors)) {
-        errorMessage = err.response.data.errors
-          .map((e: any) => e.message.replace(/['"]/g, ''))
-          .join('. ');
-      } else if (err.response?.data?.error) {
-        errorMessage = err.response.data.error;
-      } else if (typeof err.response?.data === 'string') {
-        errorMessage = err.response.data;
-      } else if (err.message) {
-        errorMessage = err.message;
-      }
-
-      setError(errorMessage);
+      setError(err.message || 'Failed to save car');
     } finally {
       setLoading(false);
     }

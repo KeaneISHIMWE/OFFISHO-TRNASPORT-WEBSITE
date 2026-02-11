@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import CarCard from '../components/CarCard';
-import { carsAPI } from '../services/api';
-import { Car } from '../types';
 import { Search, Filter, X } from 'lucide-react';
 import { cn } from '../utils/cn';
+import { useQuery } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
 
 const Cars: React.FC = () => {
   const [searchParams] = useSearchParams();
-  const [cars, setCars] = useState<Car[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [filters, setFilters] = useState({
     type: searchParams.get('type') || '',
@@ -21,29 +19,18 @@ const Cars: React.FC = () => {
     eventType: searchParams.get('eventType') || '',
   });
 
-  useEffect(() => {
-    loadCars();
-  }, [filters]);
+  // Fetch cars using Convex query
+  const carsData = useQuery(api.cars.list, {
+    type: filters.type || undefined,
+    minPrice: filters.minPrice ? parseFloat(filters.minPrice) : undefined,
+    maxPrice: filters.maxPrice ? parseFloat(filters.maxPrice) : undefined,
+    availability: filters.availability || undefined,
+    search: filters.search || undefined,
+    eventType: filters.eventType || undefined,
+  });
 
-  const loadCars = async () => {
-    try {
-      setLoading(true);
-      const params: any = {};
-      if (filters.type) params.type = filters.type;
-      if (filters.minPrice) params.minPrice = parseFloat(filters.minPrice);
-      if (filters.maxPrice) params.maxPrice = parseFloat(filters.maxPrice);
-      if (filters.availability) params.availability = filters.availability;
-      if (filters.search) params.search = filters.search;
-      if (filters.eventType) params.eventType = filters.eventType;
-
-      const response = await carsAPI.getCars(params);
-      setCars(response.cars);
-    } catch (error) {
-      console.error('Error loading cars:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const cars = carsData?.cars || [];
+  const loading = carsData === undefined;
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value }));

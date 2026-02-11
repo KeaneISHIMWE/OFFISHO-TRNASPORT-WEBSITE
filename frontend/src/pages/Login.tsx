@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContextConvex';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion } from 'framer-motion';
-import { LogIn, Mail, Lock, AlertCircle, Wifi, WifiOff, RefreshCw } from 'lucide-react';
-import { useServerStatus } from '../hooks/useServerStatus';
-import { healthCheck } from '../services/api';
+import { LogIn, Mail, Lock, AlertCircle, RefreshCw } from 'lucide-react';
 import { useNotification } from '../context/NotificationContext';
 
 const loginSchema = z.object({
@@ -23,8 +21,6 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const [checkingConnection, setCheckingConnection] = useState<boolean>(false);
-  const { status: serverStatus, checkServerStatus } = useServerStatus();
 
   // IMPORTANT: All hooks must be called before any conditional returns
   const {
@@ -55,78 +51,22 @@ const Login: React.FC = () => {
     );
   }
 
-  const handleCheckConnection = async () => {
-    setCheckingConnection(true);
-    setError('');
-    try {
-      await healthCheck();
-      await checkServerStatus();
-      setError('');
-    } catch (err: any) {
-      setError('Cannot reach server. Please check your network connection and ensure the backend is running.');
-    } finally {
-      setCheckingConnection(false);
-    }
-  };
-
   const onSubmit = async (data: LoginFormData) => {
     try {
       setLoading(true);
       setError('');
       const user = await login(data.email, data.password);
-      
-      // Wait a bit longer to ensure React state has updated
-      await new Promise(resolve => setTimeout(resolve, 200));
-      
-      // Show success notification
+
       showNotification('Login successful! Welcome back.', 'success');
-      
-      // Double-check user role before navigation
-      const storedUser = localStorage.getItem('user');
-      if (storedUser) {
-        const parsedUser = JSON.parse(storedUser);
-        console.log('Navigating after login. User role:', parsedUser.role);
-        
-        if (parsedUser.role === 'admin') {
-          navigate('/admin', { replace: true });
-        } else {
-          navigate('/', { replace: true });
-        }
+
+      if (user.role === 'admin') {
+        navigate('/admin', { replace: true });
       } else {
-        // Fallback to user object from login response
-        if (user.role === 'admin') {
-          navigate('/admin', { replace: true });
-        } else {
-          navigate('/', { replace: true });
-        }
+        navigate('/', { replace: true });
       }
     } catch (err: any) {
-      let errorMessage = 'Login failed. Please try again.';
-      
-      if (err.response?.data?.error) {
-        errorMessage = err.response.data.error;
-        // Add details if available (for development or database errors)
-        if (err.response.data.details) {
-          if (import.meta.env.DEV) {
-            errorMessage += ` (${err.response.data.details})`;
-          } else if (err.response.data.error.includes('Database')) {
-            // Show details for database errors even in production for debugging
-            errorMessage += `. ${err.response.data.details}`;
-          }
-        }
-      } else if (err.message) {
-        errorMessage = err.message;
-      } else if (err.response?.status === 0 || err.code === 'ERR_NETWORK' || err.code === 'ECONNABORTED' || err.code === 'ETIMEDOUT') {
-        errorMessage = 'Cannot reach database server. Please check your network connection and database host.';
-      }
-      
-      setError(errorMessage);
-      console.error('Login error:', {
-        message: err.message,
-        response: err.response?.data,
-        code: err.code,
-        status: err.response?.status
-      });
+      setError(err.message || 'Login failed. Please try again.');
+      console.error('Login error:', err);
     } finally {
       setLoading(false);
     }
@@ -159,40 +99,6 @@ const Login: React.FC = () => {
               <AlertCircle className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0 text-red-500" />
               <div className="flex-1">
                 <p className="text-red-400 font-medium">{error}</p>
-                {(error.includes('Cannot reach') || error.includes('network') || error.includes('server')) && (
-                  <div className="mt-3 flex flex-col sm:flex-row gap-2">
-                    <button
-                      onClick={handleCheckConnection}
-                      disabled={checkingConnection}
-                      className="inline-flex items-center justify-center px-4 py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 rounded-lg text-red-300 text-sm font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {checkingConnection ? (
-                        <>
-                          <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                          Checking...
-                        </>
-                      ) : (
-                        <>
-                          <Wifi className="w-4 h-4 mr-2" />
-                          Check Connection
-                        </>
-                      )}
-                    </button>
-                    <a
-                      href="https://github.com/your-repo/docs/troubleshooting"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center px-4 py-2 bg-purple-card hover:bg-purple-card/80 border border-purple-electric/30 rounded-lg text-purple-electric text-sm font-medium transition-all duration-200"
-                    >
-                      Troubleshooting Guide
-                    </a>
-                  </div>
-                )}
-                {error.includes('Database connection') && (
-                  <p className="text-red-400/70 text-sm mt-2">
-                    Please check your database configuration. See QUICK_DATABASE_SETUP.md for help.
-                  </p>
-                )}
               </div>
             </div>
           </motion.div>
@@ -245,7 +151,7 @@ const Login: React.FC = () => {
 
           <button
             type="submit"
-            disabled={loading || serverStatus === 'offline'}
+            disabled={loading}
             className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-[1.02] shadow-lg shadow-primary/25 disabled:opacity-50 disabled:transform-none disabled:cursor-not-allowed relative overflow-hidden"
           >
             {loading ? (
@@ -254,12 +160,7 @@ const Login: React.FC = () => {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Connecting to server...
-              </span>
-            ) : serverStatus === 'offline' ? (
-              <span className="flex items-center justify-center">
-                <WifiOff className="w-5 h-5 mr-2" />
-                Server Offline
+                Connecting...
               </span>
             ) : (
               'Sign In'
