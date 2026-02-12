@@ -64,10 +64,18 @@ const Login: React.FC = () => {
       window.location.href = '/';
     } catch (err: any) {
       console.error('Login error details:', err);
-      const errorMessage = err instanceof Error ? err.message :
-        (typeof err === 'string' ? err : 'Login failed. Please try again.');
+      let errorMessage = 'Login failed. Please check your credentials and try again.';
+
+      const errorStr = err instanceof Error ? err.message : String(err);
+
+      // Specifically handle common auth errors for better UX
+      if (errorStr.includes('invalid') || errorStr.includes('Invalid') || errorStr.includes('password') || errorStr.includes('credential')) {
+        errorMessage = 'Incorrect email or password. Please try again.';
+      } else if (errorStr.includes('Not Found') || errorStr.includes('user')) {
+        errorMessage = 'No account found with this email. Please register first.';
+      }
+
       setError(errorMessage);
-      setLoading(false);
     } finally {
       setLoading(false);
     }
