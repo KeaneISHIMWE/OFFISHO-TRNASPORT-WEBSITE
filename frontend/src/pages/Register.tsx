@@ -43,7 +43,11 @@ const Register: React.FC = () => {
       setLoading(true);
       setError('');
       await registerUser(data.name, data.email, data.password, data.phone_number || undefined);
-      navigate('/');
+
+      // Wait a moment for auth state to update before redirecting
+      setTimeout(() => {
+        navigate('/', { replace: true });
+      }, 100);
     } catch (err: any) {
       console.error('Registration error details:', err);
       // Convex errors often have a .message property

@@ -58,7 +58,16 @@ const Login: React.FC = () => {
       await login(data.email, data.password);
 
       showNotification('Login successful! Welcome back.', 'success');
-      // Redirection is handled by the useEffect above
+
+      // Explicit redirect after successful login
+      // Wait a moment for auth state to update
+      setTimeout(() => {
+        if (isAdmin) {
+          navigate('/admin', { replace: true });
+        } else {
+          navigate('/', { replace: true });
+        }
+      }, 100);
     } catch (err: any) {
       console.error('Login error details:', err);
       const errorMessage = err instanceof Error ? err.message :
