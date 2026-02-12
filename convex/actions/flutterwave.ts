@@ -74,23 +74,30 @@ export const initializePaymentInternal = internalAction({
                 return;
             }
 
+            const payload = {
+                tx_ref: args.tx_ref,
+                amount: args.amount,
+                currency: "RWF",
+                email: args.email,
+                phone_number: args.phoneNumber,
+                fullname: args.fullName,
+            };
+
+            console.log("Flutterwave request payload:", JSON.stringify(payload));
+
             const response = await fetch(FLUTTERWAVE_URL, {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${secretKey}`,
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    tx_ref: args.tx_ref,
-                    amount: args.amount,
-                    currency: "RWF",
-                    email: args.email,
-                    phone_number: args.phoneNumber,
-                    fullname: args.fullName,
-                }),
+                body: JSON.stringify(payload),
             });
 
             const data = await response.json();
+
+            console.log("Flutterwave response status:", response.status);
+            console.log("Flutterwave response data:", JSON.stringify(data));
 
             if (!response.ok) {
                 console.error("Flutterwave error:", data);
@@ -99,8 +106,17 @@ export const initializePaymentInternal = internalAction({
                     status: "failed",
                 });
             } else {
-                console.log("Flutterwave payment initialized:", data);
-                // Payment will be updated by webhook when user completes it
+                console.log("Flutterwave payment initialized successfully");
+
+                // Store the payment redirect URL if available
+                if (data.meta?.authorization?.redirect) {
+                    await ctx.runMutation(internal.payments.updatePaymentUrl, {
+                        tx_ref: args.tx_ref,
+                        paymentUrl: data.meta.authorization.redirect,
+                        flutterwaveId: data.data?.id?.toString(),
+                    });
+                    console.log("Payment redirect URL stored:", data.meta.authorization.redirect);
+                }
             }
         } catch (error) {
             console.error("Failed to initialize Flutterwave:", error);

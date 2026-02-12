@@ -110,6 +110,33 @@ export const updatePaymentStatusInternal = internalMutation({
 });
 
 /**
+ * Internal mutation to update payment URL (called from internal action)
+ */
+export const updatePaymentUrl = internalMutation({
+    args: {
+        tx_ref: v.string(),
+        paymentUrl: v.string(),
+        flutterwaveId: v.optional(v.string()),
+    },
+    handler: async (ctx, args) => {
+        const payment = await ctx.db
+            .query("payments")
+            .withIndex("by_tx_ref", (q) => q.eq("tx_ref", args.tx_ref))
+            .first();
+
+        if (!payment) {
+            console.error(`Payment not found for tx_ref: ${args.tx_ref}`);
+            return;
+        }
+
+        await ctx.db.patch(payment._id, {
+            paymentUrl: args.paymentUrl,
+            flutterwaveId: args.flutterwaveId,
+        });
+    },
+});
+
+/**
  * Get payment status
  */
 export const getStatus = query({
@@ -120,5 +147,26 @@ export const getStatus = query({
             .withIndex("by_tx_ref", (q) => q.eq("tx_ref", args.tx_ref))
             .first();
         return payment?.status || null;
+    },
+});
+
+/**
+ * Get payment details including URL
+ */
+export const getPaymentDetails = query({
+    args: { tx_ref: v.string() },
+    handler: async (ctx, args) => {
+        const payment = await ctx.db
+            .query("payments")
+            .withIndex("by_tx_ref", (q) => q.eq("tx_ref", args.tx_ref))
+            .first();
+
+        if (!payment) return null;
+
+        return {
+            status: payment.status,
+            paymentUrl: payment.paymentUrl,
+            amount: payment.amount,
+        };
     },
 });

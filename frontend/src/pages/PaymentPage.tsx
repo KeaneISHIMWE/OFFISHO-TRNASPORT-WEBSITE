@@ -17,22 +17,30 @@ const PaymentPage: React.FC = () => {
     const [paymentStatus, setPaymentStatus] = useState<'pending' | 'successful' | 'failed' | null>(null);
 
     const requestPayment = useMutation(api.payments.requestPayment);
-    const currentStatus = useQuery(api.payments.getStatus, txRef ? { tx_ref: txRef } : "skip");
+    const paymentDetails = useQuery(api.payments.getPaymentDetails, txRef ? { tx_ref: txRef } : "skip");
     const { showNotification } = useNotification();
 
     const requestId = searchParams.get('requestId');
 
-    // Watch for status changes from webhook
+    // Watch for payment details and redirect to Flutterwave URL
     useEffect(() => {
-        if (currentStatus) {
-            setPaymentStatus(currentStatus as any);
-            if (currentStatus === 'successful') {
+        if (paymentDetails) {
+            setPaymentStatus(paymentDetails.status as any);
+
+            // If we have a payment URL and status is still pending, redirect to Flutterwave
+            if (paymentDetails.paymentUrl && paymentDetails.status === 'pending') {
+                showNotification('Redirecting to payment gateway...', 'info');
+                // Small delay to show the notification
+                setTimeout(() => {
+                    window.location.href = paymentDetails.paymentUrl!;
+                }, 1000);
+            } else if (paymentDetails.status === 'successful') {
                 showNotification('Payment successful!', 'success');
-            } else if (currentStatus === 'failed') {
+            } else if (paymentDetails.status === 'failed') {
                 showNotification('Payment failed. Please try again.', 'error');
             }
         }
-    }, [currentStatus, showNotification]);
+    }, [paymentDetails, showNotification]);
 
     const handlePayment = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -52,7 +60,7 @@ const PaymentPage: React.FC = () => {
             });
 
             setTxRef(result.tx_ref);
-            showNotification('Payment initialized. Please check your phone for the MTN MoMo prompt.', 'info');
+            showNotification('Initializing payment...', 'info');
 
         } catch (error: any) {
             console.error('Payment error:', error);

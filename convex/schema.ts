@@ -95,6 +95,7 @@ export default defineSchema({
         ),
         flutterwaveId: v.optional(v.string()),
         payment_method: v.string(),
+        paymentUrl: v.optional(v.string()),
         createdAt: v.number(),
     })
         .index("by_user", ["userId"])
