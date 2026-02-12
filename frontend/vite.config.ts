@@ -8,10 +8,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      'convex/server': path.resolve(__dirname, './src/mocks/convex-server.js'),
     },
-  },
-  optimizeDeps: {
-    include: ['convex/server'],
   },
   server: {
     port: 3000,
@@ -22,9 +20,6 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false,
-    commonjsOptions: {
-      include: [/convex/, /node_modules/],
-    },
     rollupOptions: {
       output: {
         manualChunks: undefined,
