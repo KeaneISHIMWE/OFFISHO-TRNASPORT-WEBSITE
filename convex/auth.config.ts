@@ -5,15 +5,7 @@ export default {
             applicationID: "convex",
         },
         {
-            domain: "https://vivid-kookabura-368.convex.cloud",
-            applicationID: "convex",
-        },
-        {
             domain: "https://greedy-gull-254.convex.site",
-            applicationID: "convex",
-        },
-        {
-            domain: "https://greedy-gull-254.convex.cloud",
             applicationID: "convex",
         },
     ],
