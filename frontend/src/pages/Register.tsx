@@ -44,17 +44,14 @@ const Register: React.FC = () => {
       setError('');
       await registerUser(data.name, data.email, data.password, data.phone_number || undefined);
 
-      // Wait a moment for auth state to update before redirecting
-      setTimeout(() => {
-        navigate('/', { replace: true });
-      }, 100);
+      // Use window.location for a full page reload to ensure auth state is fresh
+      window.location.href = '/';
     } catch (err: any) {
       console.error('Registration error details:', err);
       // Convex errors often have a .message property
       const errorMessage = err instanceof Error ? err.message :
         (typeof err === 'string' ? err : 'Registration failed. Please try again.');
       setError(errorMessage);
-    } finally {
       setLoading(false);
     }
   };

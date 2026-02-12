@@ -59,20 +59,15 @@ const Login: React.FC = () => {
 
       showNotification('Login successful! Welcome back.', 'success');
 
-      // Explicit redirect after successful login
-      // Wait a moment for auth state to update
-      setTimeout(() => {
-        if (isAdmin) {
-          navigate('/admin', { replace: true });
-        } else {
-          navigate('/', { replace: true });
-        }
-      }, 100);
+      // Always redirect to home - the app will handle admin routing
+      // Use window.location for a full page reload to ensure auth state is fresh
+      window.location.href = '/';
     } catch (err: any) {
       console.error('Login error details:', err);
       const errorMessage = err instanceof Error ? err.message :
         (typeof err === 'string' ? err : 'Login failed. Please try again.');
       setError(errorMessage);
+      setLoading(false);
     } finally {
       setLoading(false);
     }
