@@ -10,6 +10,9 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  optimizeDeps: {
+    include: ['convex/server'],
+  },
   server: {
     port: 3000,
     open: false,
@@ -19,6 +22,9 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false,
+    commonjsOptions: {
+      include: [/convex/, /node_modules/],
+    },
     rollupOptions: {
       output: {
         manualChunks: undefined,
