@@ -1,8 +1,8 @@
 "use node";
 
-import { action } from "../_generated/server";
+import { action, internalAction } from "../_generated/server";
 import { v } from "convex/values";
-import { api } from "../_generated/api";
+import { internal } from "../_generated/api";
 import crypto from "crypto";
 
 const FLUTTERWAVE_URL = "https://api.flutterwave.com/v3/charges?type=mobile_money_rwanda";
@@ -48,6 +48,67 @@ export const initializePayment = action({
         }
 
         return data;
+    },
+});
+
+/**
+ * Internal action that calls Flutterwave and updates payment status
+ */
+export const initializePaymentInternal = internalAction({
+    args: {
+        amount: v.number(),
+        phoneNumber: v.string(),
+        email: v.string(),
+        fullName: v.string(),
+        tx_ref: v.string(),
+    },
+    handler: async (ctx, args) => {
+        try {
+            const secretKey = process.env.FLUTTERWAVE_SECRET_KEY;
+            if (!secretKey) {
+                console.error("FLUTTERWAVE_SECRET_KEY not set");
+                await ctx.runMutation(internal.payments.updatePaymentStatusInternal, {
+                    tx_ref: args.tx_ref,
+                    status: "failed",
+                });
+                return;
+            }
+
+            const response = await fetch(FLUTTERWAVE_URL, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${secretKey}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    tx_ref: args.tx_ref,
+                    amount: args.amount,
+                    currency: "RWF",
+                    email: args.email,
+                    phone_number: args.phoneNumber,
+                    fullname: args.fullName,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error("Flutterwave error:", data);
+                await ctx.runMutation(internal.payments.updatePaymentStatusInternal, {
+                    tx_ref: args.tx_ref,
+                    status: "failed",
+                });
+            } else {
+                console.log("Flutterwave payment initialized:", data);
+                // Payment will be updated by webhook when user completes it
+            }
+        } catch (error) {
+            console.error("Failed to initialize Flutterwave:", error);
+            await ctx.runMutation(internal.payments.updatePaymentStatusInternal, {
+                tx_ref: args.tx_ref,
+                status: "failed",
+            });
+        }
     },
 });
 

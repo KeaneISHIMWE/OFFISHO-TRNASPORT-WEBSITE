@@ -1,6 +1,6 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
-import { api } from "./_generated/api";
+import { mutation, query, internalMutation } from "./_generated/server";
+import { internal } from "./_generated/api";
 import { requireAuthId } from "./lib/auth";
 
 /**
@@ -32,7 +32,7 @@ export const requestPayment = mutation({
         });
 
         // Schedule the Flutterwave action to run asynchronously
-        await ctx.scheduler.runAfter(0, api.actions.flutterwave.initializePayment, {
+        await ctx.scheduler.runAfter(0, internal.actions.flutterwave.initializePaymentInternal, {
             amount: args.amount,
             phoneNumber: args.phoneNumber,
             email: user.email || "customer@offisho.rw",
@@ -79,6 +79,33 @@ export const updatePaymentStatus = mutation({
             // await ctx.db.patch(payment.requestId, { status: "approved" });
             console.log(`Payment successful for request: ${payment.requestId}`);
         }
+    },
+});
+
+/**
+ * Internal mutation to update payment status (called from internal action)
+ */
+export const updatePaymentStatusInternal = internalMutation({
+    args: {
+        tx_ref: v.string(),
+        status: v.union(v.literal("successful"), v.literal("failed")),
+        flutterwaveId: v.optional(v.string()),
+    },
+    handler: async (ctx, args) => {
+        const payment = await ctx.db
+            .query("payments")
+            .withIndex("by_tx_ref", (q) => q.eq("tx_ref", args.tx_ref))
+            .first();
+
+        if (!payment) {
+            console.error(`Payment not found for tx_ref: ${args.tx_ref}`);
+            return;
+        }
+
+        await ctx.db.patch(payment._id, {
+            status: args.status,
+            flutterwaveId: args.flutterwaveId,
+        });
     },
 });
 
