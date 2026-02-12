@@ -80,20 +80,25 @@ export default defineSchema({
         .index("by_status", ["status"])
         .index("by_user_and_status", ["user_id", "status"]),
 
-    // Payments table - Payment tracking
+    // Payments table - Payment tracking (Flutterwave integration)
     payments: defineTable({
-        request_id: v.id("requests"),
+        userId: v.id("users"),
+        requestId: v.optional(v.id("requests")),
         amount: v.number(),
-        payment_method: v.string(),
-        transaction_id: v.optional(v.string()),
+        phoneNumber: v.string(),
+        tx_ref: v.string(),
         status: v.union(
             v.literal("pending"),
-            v.literal("completed"),
+            v.literal("successful"),
             v.literal("failed"),
             v.literal("refunded")
         ),
+        flutterwaveId: v.optional(v.string()),
+        payment_method: v.string(),
+        createdAt: v.number(),
     })
-        .index("by_request", ["request_id"])
+        .index("by_user", ["userId"])
+        .index("by_tx_ref", ["tx_ref"])
         .index("by_status", ["status"]),
 
     // Contacts table - Contact form submissions

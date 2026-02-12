@@ -137,7 +137,9 @@ export const migrateRequest = mutation({
 
 /**
  * Migrate a payment from MySQL
+ * DEPRECATED: Schema has changed for Flutterwave integration
  */
+/*
 export const migratePayment = mutation({
     args: {
         request_id: v.id("requests"),
@@ -163,6 +165,7 @@ export const migratePayment = mutation({
         return { paymentId };
     },
 });
+*/
 
 /**
  * Get migration statistics
