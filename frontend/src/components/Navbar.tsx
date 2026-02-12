@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Search, ChevronDown, User, LogOut, Shield } from 'lucide-react';
+import { Menu, X, Search, ChevronDown, User, LogOut, Shield, ClipboardList } from 'lucide-react';
 import { useAuth } from '../context/AuthContextConvex';
 import { cn } from '../utils/cn';
 
@@ -123,6 +123,10 @@ const Navbar: React.FC = () => {
                       <User className="w-4 h-4" />
                       My Profile
                     </Link>
+                    <Link to="/my-requests" className="flex items-center gap-2 px-3 py-2 text-sm text-silver hover:bg-purple-card hover:text-purple-electric rounded-lg transition-colors">
+                      <ClipboardList className="w-4 h-4" />
+                      My Requests
+                    </Link>
                     <button onClick={handleLogout} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
                       <LogOut className="w-4 h-4" />
                       Logout
@@ -222,6 +226,7 @@ const Navbar: React.FC = () => {
                           <p className="text-white/50 text-xs">{user?.email}</p>
                         </div>
                       </div>
+                      <Link to="/my-requests" onClick={() => setIsMenuOpen(false)} className="touch-target block px-4 py-3 text-silver hover:bg-purple-card rounded-lg transition-colors">My Requests</Link>
                       {isAdmin && (
                         <Link to="/admin" onClick={() => setIsMenuOpen(false)} className="touch-target block px-4 py-3 text-purple-electric hover:bg-purple-card rounded-lg transition-colors">Admin Portal</Link>
                       )}

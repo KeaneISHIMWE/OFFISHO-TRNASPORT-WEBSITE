@@ -64,8 +64,18 @@ const Booking: React.FC = () => {
 
     try {
       setLoading(true);
-      // For now, just show success message
-      // We'll connect to Convex mutations after auth is properly set up
+
+      await createRequestMutation({
+        car_id: formData.vehicle as Id<"cars">,
+        request_type: transactionType,
+        with_driver: transactionType === 'rent' ? formData.withDriver : undefined,
+        event_date: formData.eventDate,
+        event_type: formData.eventType,
+        agreement_text: formData.additionalDetails,
+        // payment_method is hardcoded for now or can be added to form
+        payment_method: 'Mobile Money',
+      });
+
       showNotification('Booking request submitted successfully! We will contact you soon.', 'success');
 
       // Reset form

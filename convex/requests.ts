@@ -237,3 +237,33 @@ export const remove = mutation({
         return { message: "Request deleted successfully" };
     },
 });
+/**
+ * Get requests for the current authenticated user
+ */
+export const listByUser = query({
+    args: {},
+    handler: async (ctx) => {
+        const userId = await requireAuthId(ctx);
+        const requests = await ctx.db
+            .query("requests")
+            .withIndex("by_user", (q) => q.eq("user_id", userId))
+            .collect();
+
+        // Enrich with car details
+        const enrichedRequests = await Promise.all(
+            requests.map(async (request) => {
+                const car = await ctx.db.get(request.car_id);
+                return {
+                    ...request,
+                    car_name: car?.name,
+                    car_model: car?.model,
+                    car_image: car?.storageId
+                        ? await ctx.storage.getUrl(car.storageId)
+                        : car?.image_url,
+                };
+            })
+        );
+
+        return { requests: enrichedRequests };
+    },
+});

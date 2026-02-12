@@ -13,6 +13,7 @@ import Booking from './pages/Booking';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminPortal from './pages/AdminPortal';
+import MyRequests from './pages/MyRequests';
 import './App.css';
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
                 <Route path="/about" element={<AboutUs />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/booking" element={<Booking />} />
+                <Route path="/my-requests" element={<MyRequests />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/admin" element={<AdminPortal />} />

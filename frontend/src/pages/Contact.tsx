@@ -4,15 +4,21 @@ import { Mail, Phone, MapPin, Send, MessageSquare } from 'lucide-react';
 import { useNotification } from '../context/NotificationContext';
 import { cn } from '../utils/cn';
 
+import { useMutation } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
+
 const Contact: React.FC = () => {
   const { showNotification } = useNotification();
+  const submitContactMutation = useMutation(api.contact.submit);
 
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    subject: 'General Inquiry',
     message: '',
   });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -26,17 +32,25 @@ const Contact: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // For now, just show success message
-      // We'll connect to Convex actions after auth is properly set up
+      setLoading(true);
+      await submitContactMutation({
+        fullName: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+      });
+
       showNotification('Message sent successfully! We will get back to you soon.', 'success');
       setSubmitted(true);
-      setFormData({ name: '', email: '', message: '' });
+      setFormData({ name: '', email: '', subject: 'General Inquiry', message: '' });
       setTimeout(() => {
         setSubmitted(false);
       }, 5000);
     } catch (error) {
       console.error('Failed to send message:', error);
       showNotification('Failed to send message. Please try again later.', 'error');
+    } finally {
+      setLoading(false);
     }
   };
 

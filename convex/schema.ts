@@ -95,4 +95,14 @@ export default defineSchema({
     })
         .index("by_request", ["request_id"])
         .index("by_status", ["status"]),
+
+    // Contacts table - Contact form submissions
+    contacts: defineTable({
+        fullName: v.string(),
+        email: v.string(),
+        subject: v.string(),
+        message: v.string(),
+        status: v.union(v.literal("new"), v.literal("read"), v.literal("replied")),
+    })
+        .index("by_status", ["status"]),
 });
