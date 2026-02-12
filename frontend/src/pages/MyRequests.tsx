@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import { useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 import { useAuth } from '../context/AuthContextConvex';
-import { Calendar, Clock, Car as CarIcon, CheckCircle2, XCircle, AlertCircle, FileText } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Calendar, Clock, Car as CarIcon, CheckCircle2, XCircle, AlertCircle, FileText, CreditCard } from 'lucide-react';
 import { cn } from '../utils/cn';
 
 const MyRequests: React.FC = () => {
@@ -140,6 +141,16 @@ const MyRequests: React.FC = () => {
                                         <span className="text-slate-500 text-xs">Total Amount</span>
                                         <span className="text-primary font-bold">{request.total_amount?.toLocaleString()} FRW</span>
                                     </div>
+
+                                    {(request.status === 'pending' || request.status === 'approved') && (
+                                        <Link
+                                            to={`/payment?amount=${request.total_amount}&requestId=${request._id}`}
+                                            className="mt-4 w-full bg-gradient-to-r from-primary to-purple-electric hover:from-primary/90 hover:to-purple-electric/90 text-white py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/30 transform hover:scale-[1.02]"
+                                        >
+                                            <CreditCard className="w-4 h-4" />
+                                            Pay Now
+                                        </Link>
+                                    )}
                                 </div>
                             </motion.div>
                         ))}

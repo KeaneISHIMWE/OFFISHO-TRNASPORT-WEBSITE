@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 import { motion } from 'framer-motion';
-import { CreditCard, Phone, Smartphone, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
+import { CreditCard, Phone, Smartphone, AlertCircle, CheckCircle2, Loader2, ArrowLeft } from 'lucide-react';
 import { useNotification } from '../context/NotificationContext';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { cn } from '../utils/cn';
 
 const PaymentPage: React.FC = () => {
+    const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
     const [phoneNumber, setPhoneNumber] = useState('');
-    const [amount, setAmount] = useState('');
+    const [amount, setAmount] = useState(searchParams.get('amount') || '');
     const [loading, setLoading] = useState(false);
     const [txRef, setTxRef] = useState<string | null>(null);
     const [paymentStatus, setPaymentStatus] = useState<'pending' | 'successful' | 'failed' | null>(null);
@@ -17,8 +20,10 @@ const PaymentPage: React.FC = () => {
     const currentStatus = useQuery(api.payments.getStatus, txRef ? { tx_ref: txRef } : "skip");
     const { showNotification } = useNotification();
 
+    const requestId = searchParams.get('requestId');
+
     // Watch for status changes from webhook
-    React.useEffect(() => {
+    useEffect(() => {
         if (currentStatus) {
             setPaymentStatus(currentStatus as any);
             if (currentStatus === 'successful') {
@@ -43,10 +48,11 @@ const PaymentPage: React.FC = () => {
             const result = await requestPayment({
                 amount: parseFloat(amount),
                 phoneNumber,
+                requestId: requestId as any,
             });
 
             setTxRef(result.tx_ref);
-            showNotification('Payment initialized. Please check your phone for the Prompt.', 'info');
+            showNotification('Payment initialized. Please check your phone for the MTN MoMo prompt.', 'info');
 
         } catch (error: any) {
             console.error('Payment error:', error);
@@ -60,18 +66,26 @@ const PaymentPage: React.FC = () => {
     return (
         <div className="min-h-screen bg-background pt-32 pb-20 px-4">
             <div className="max-w-md mx-auto">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="mb-6 flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+                >
+                    <ArrowLeft className="w-4 h-4" />
+                    Back
+                </button>
+
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-card rounded-2xl border border-white/10 p-8 shadow-2xl relative overflow-hidden"
+                    className="bg-purple-card rounded-2xl border border-purple-electric/20 p-8 shadow-2xl relative overflow-hidden"
                 >
                     {/* Glassmorphism Background Decoration */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-16 -mt-16" />
-                    <div className="absolute bottom-0 left-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl -ml-16 -mb-16" />
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-purple-electric/10 rounded-full blur-3xl -mr-16 -mt-16" />
+                    <div className="absolute bottom-0 left-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -ml-16 -mb-16" />
 
                     <div className="relative z-10">
                         <div className="flex items-center gap-4 mb-8">
-                            <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center text-primary">
+                            <div className="w-12 h-12 bg-purple-electric/20 rounded-xl flex items-center justify-center text-purple-electric">
                                 <Smartphone className="w-6 h-6" />
                             </div>
                             <div>
@@ -86,10 +100,10 @@ const PaymentPage: React.FC = () => {
                                 <h2 className="text-xl font-bold text-white mb-2">Payment Complete!</h2>
                                 <p className="text-slate-400 mb-6">Your transaction was successful.</p>
                                 <button
-                                    onClick={() => window.location.reload()}
-                                    className="w-full bg-white/5 hover:bg-white/10 text-white py-3 rounded-xl transition-colors"
+                                    onClick={() => navigate('/my-requests')}
+                                    className="w-full bg-gradient-to-r from-primary to-purple-electric hover:from-primary/90 hover:to-purple-electric/90 text-white py-3 rounded-xl font-bold transition-all shadow-lg shadow-primary/20"
                                 >
-                                    Make Another Payment
+                                    View My Requests
                                 </button>
                             </div>
                         ) : (
@@ -105,7 +119,7 @@ const PaymentPage: React.FC = () => {
                                             value={phoneNumber}
                                             onChange={(e) => setPhoneNumber(e.target.value)}
                                             placeholder="e.g. 250780000000"
-                                            className="w-full bg-background border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                                            className="w-full bg-background border border-purple-electric/20 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-purple-electric/50 focus:border-purple-electric transition-all"
                                             required
                                         />
                                     </div>
@@ -122,16 +136,16 @@ const PaymentPage: React.FC = () => {
                                             value={amount}
                                             onChange={(e) => setAmount(e.target.value)}
                                             placeholder="0.00"
-                                            className="w-full bg-background border border-white/10 rounded-xl py-3 pl-14 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                                            className="w-full bg-background border border-purple-electric/20 rounded-xl py-3 pl-14 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-purple-electric/50 focus:border-purple-electric transition-all"
                                             required
                                         />
                                     </div>
                                 </div>
 
                                 {paymentStatus === 'pending' && txRef && (
-                                    <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 flex items-center gap-3">
-                                        <Loader2 className="w-5 h-5 text-primary animate-spin" />
-                                        <p className="text-sm text-primary">Awaiting payment confirmation...</p>
+                                    <div className="bg-purple-electric/10 border border-purple-electric/20 rounded-xl p-4 flex items-center gap-3">
+                                        <Loader2 className="w-5 h-5 text-purple-electric animate-spin" />
+                                        <p className="text-sm text-purple-electric">Awaiting payment confirmation...</p>
                                     </div>
                                 )}
 
@@ -139,10 +153,10 @@ const PaymentPage: React.FC = () => {
                                     type="submit"
                                     disabled={loading || paymentStatus === 'pending'}
                                     className={cn(
-                                        "w-full py-4 rounded-xl font-bold text-white transition-all shadow-lg shadow-primary/20",
+                                        "w-full py-4 rounded-xl font-bold text-white transition-all shadow-lg",
                                         loading || paymentStatus === 'pending'
                                             ? "bg-slate-700 cursor-not-allowed"
-                                            : "bg-primary hover:bg-primary/90 transform hover:scale-[1.02]"
+                                            : "bg-gradient-to-r from-primary to-purple-electric hover:from-primary/90 hover:to-purple-electric/90 transform hover:scale-[1.02] shadow-primary/20"
                                     )}
                                 >
                                     {loading ? "Initializing..." : paymentStatus === 'pending' ? "Validating..." : "Pay Now"}
