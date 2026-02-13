@@ -14,7 +14,6 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminPortal from './pages/AdminPortal';
 import MyRequests from './pages/MyRequests';
-import PaymentPage from './pages/PaymentPage';
 import './App.css';
 
 function App() {
@@ -36,7 +35,6 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/admin" element={<AdminPortal />} />
-                <Route path="/payment" element={<PaymentPage />} />
               </Routes>
             </main>
             <Footer />

@@ -9,10 +9,11 @@ import nodemailer from "nodemailer";
  * Email Actions - External API calls for sending emails
  */
 
-// Payment information (static)
+// Payment information (Manual via Support)
 const PAYMENT_INFO = {
   mtnMomo: "0 785 344 214",
   bankAccount: "Account: 2001161010013164, Bank: NCBA",
+  supportContact: "+250 785 344 214",
 };
 
 /**
@@ -235,10 +236,15 @@ function generateRequestConfirmationEmail(
           </div>
 
           <div class="details">
-            <h3>Payment Information:</h3>
-            <p><strong>MTN MoMo:</strong> ${PAYMENT_INFO.mtnMomo}</p>
-            <p><strong>Bank Transfer:</strong> ${PAYMENT_INFO.bankAccount}</p>
-            <p>Please make payment using one of the methods above and include your request ID: <strong>${request._id}</strong></p>
+            <h3>Payment Instructions:</h3>
+            <p><strong>Manual Payment:</strong> Payments are processed manually. Please contact our support team to arrange your payment.</p>
+            <p><strong>Support Phone:</strong> ${PAYMENT_INFO.supportContact}</p>
+            <p><strong>Available Methods:</strong></p>
+            <ul>
+              <li>MTN MoMo: ${PAYMENT_INFO.mtnMomo}</li>
+              <li>Bank Transfer: ${PAYMENT_INFO.bankAccount}</li>
+            </ul>
+            <p>Please include your request ID when contacting us or making payment: <strong>${request._id}</strong></p>
           </div>
 
           <p>We will review your request and notify you once it's approved.</p>
@@ -349,11 +355,13 @@ function generateStatusUpdateEmail(
           </div>
 
           ${request.status === 'approved' ? `
-            <p>Your request has been approved! Please proceed with payment if you haven't already.</p>
+            <p>Your request has been approved! <strong>Please contact our support team to complete your payment manually.</strong></p>
             <div class="details">
-              <h3>Payment Information:</h3>
+              <h3>Payment Instructions:</h3>
+              <p><strong>Support Contact:</strong> ${PAYMENT_INFO.supportContact}</p>
               <p><strong>MTN MoMo:</strong> ${PAYMENT_INFO.mtnMomo}</p>
               <p><strong>Bank Transfer:</strong> ${PAYMENT_INFO.bankAccount}</p>
+              <p>Please include your request ID: <strong>${request._id}</strong></p>
             </div>
           ` : ''}
 

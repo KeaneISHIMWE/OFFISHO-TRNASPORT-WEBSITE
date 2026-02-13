@@ -86,7 +86,6 @@ export const create = mutation({
         event_date: v.optional(v.string()),
         event_type: v.optional(v.string()),
         agreement_text: v.optional(v.string()),
-        payment_method: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
         const userId = await requireAuthId(ctx);
@@ -129,7 +128,6 @@ export const create = mutation({
             event_type: args.event_type,
             status: "pending",
             agreement_text: args.agreement_text,
-            payment_method: args.payment_method,
         });
 
         const request = await ctx.db.get(requestId);

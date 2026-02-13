@@ -25,7 +25,6 @@ const bookingSchema = z.object({
   event_date: z.string().optional(),
   event_type: z.string().optional(),
   agreement_text: z.string().optional(),
-  payment_method: z.string().optional(),
   agreed_to_terms: z.boolean().refine((val) => val === true, {
     message: 'You must agree to the terms and conditions',
   }),
@@ -120,7 +119,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
         event_date: data.event_date || undefined,
         event_type: data.event_type || undefined,
         agreement_text: data.agreement_text || undefined,
-        payment_method: data.payment_method || undefined,
       });
 
       showNotification('Request submitted successfully! We will review it shortly.', 'success');
@@ -242,23 +240,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
           </>
         )}
 
-        {/* Payment Method */}
-        <div>
-          <label className="block text-sm font-semibold text-slate-300 mb-2">
-            Payment Method
-          </label>
-          <div className="nebula-select-container relative">
-            <select
-              {...register('payment_method')}
-              className="nebula-select"
-            >
-              <option value="">Select payment method</option>
-              <option value="mtn_momo">MTN MoMo</option>
-              <option value="bank_transfer">Bank Transfer</option>
-            </select>
-            <CreditCard className="absolute right-16 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-500 pointer-events-none z-10" />
-          </div>
-        </div>
+
 
         {/* Price Breakdown */}
         <div className="bg-background/50 p-6 rounded-xl border border-white/5">
@@ -302,20 +284,27 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
           </div>
         </div>
 
-        {/* Payment Information */}
-        <div className="bg-primary/10 p-6 rounded-xl border border-primary/20">
-          <h3 className="font-semibold text-primary mb-3 flex items-center gap-2">
-            <Info className="w-4 h-4" />
-            Payment Information
+        {/* Manual Payment Notification */}
+        <div className="bg-purple-electric/10 p-6 rounded-xl border border-purple-electric/20">
+          <h3 className="font-semibold text-purple-electric mb-3 flex items-center gap-2">
+            <CreditCard className="w-4 h-4" />
+            Manual Payment Required
           </h3>
-          <p className="text-sm text-slate-300 mb-1">
-            <strong className="text-white">MTN MoMo:</strong> {PAYMENT_INFO.mtnMomo}
+          <p className="text-sm text-slate-300 mb-3">
+            Payments are processed manually. Once your request is submitted, please contact our support team to complete your payment.
           </p>
-          <p className="text-sm text-slate-300">
-            <strong className="text-white">Bank Transfer:</strong> {PAYMENT_INFO.bankAccount}
-          </p>
-          <p className="text-xs text-slate-500 mt-3">
-            Please include your request ID when making payment.
+          <div className="space-y-2">
+            <p className="text-sm text-slate-300">
+              <strong className="text-white">Support Phone:</strong> {PAYMENT_INFO.mtnMomo}
+            </p>
+            <div className="bg-background/40 p-3 rounded-lg border border-white/5 mt-2">
+              <p className="text-xs text-slate-400 mb-1 font-medium italic">Payment Details:</p>
+              <p className="text-xs text-slate-300"><strong className="text-white">MoMo:</strong> {PAYMENT_INFO.mtnMomo}</p>
+              <p className="text-xs text-slate-300"><strong className="text-white">Bank:</strong> {PAYMENT_INFO.bankAccount}</p>
+            </div>
+          </div>
+          <p className="text-xs text-slate-500 mt-4 italic">
+            * Please mention your Request ID after submitting this form.
           </p>
         </div>
 

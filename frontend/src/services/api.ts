@@ -3,9 +3,9 @@ import { AuthResponse, Car, Request, User, ApiError } from '../types';
 import { retryWithBackoff } from '../utils/retry';
 
 // Support both Vite (import.meta.env) and Webpack (process.env) for compatibility
-const API_URL = 
-  import.meta.env.VITE_API_URL || 
-  import.meta.env.REACT_APP_API_URL || 
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  import.meta.env.REACT_APP_API_URL ||
   (typeof process !== 'undefined' && process.env?.REACT_APP_API_URL) ||
   'http://localhost:5000/api';
 
@@ -42,7 +42,7 @@ api.interceptors.response.use(
     } else if (error.code === 'ERR_NETWORK' || !error.response) {
       error.message = 'Cannot reach server. Please check your network connection and ensure the backend is running.';
     }
-    
+
     if (error.response?.status === 401) {
       // Unauthorized - clear token and redirect to login
       localStorage.removeItem('token');
@@ -73,11 +73,11 @@ export const healthCheck = async (): Promise<{ status: string }> => {
 export const authAPI = {
   register: async (name: string, email: string, password: string, phone_number?: string): Promise<AuthResponse> => {
     return retryWithBackoff(async () => {
-      const response = await api.post<AuthResponse>('/auth/register', { 
-        name, 
-        email, 
-        password, 
-        phone_number: phone_number || undefined 
+      const response = await api.post<AuthResponse>('/auth/register', {
+        name,
+        email,
+        password,
+        phone_number: phone_number || undefined
       });
       return response.data;
     });
@@ -160,7 +160,6 @@ export const requestsAPI = {
     event_date?: string;
     event_type?: string;
     agreement_text?: string;
-    payment_method?: string;
   }): Promise<{ message: string; request: Request }> => {
     const response = await api.post<{ message: string; request: Request }>(
       '/requests',

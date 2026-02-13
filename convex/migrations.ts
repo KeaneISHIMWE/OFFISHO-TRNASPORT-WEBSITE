@@ -114,7 +114,6 @@ export const migrateRequest = mutation({
             v.literal("cancelled")
         ),
         agreement_text: v.optional(v.string()),
-        payment_method: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
         const requestId = await ctx.db.insert("requests", {
@@ -128,44 +127,11 @@ export const migrateRequest = mutation({
             event_type: args.event_type,
             status: args.status,
             agreement_text: args.agreement_text,
-            payment_method: args.payment_method,
         });
 
         return { requestId };
     },
 });
-
-/**
- * Migrate a payment from MySQL
- * DEPRECATED: Schema has changed for Flutterwave integration
- */
-/*
-export const migratePayment = mutation({
-    args: {
-        request_id: v.id("requests"),
-        amount: v.number(),
-        payment_method: v.string(),
-        transaction_id: v.optional(v.string()),
-        status: v.union(
-            v.literal("pending"),
-            v.literal("completed"),
-            v.literal("failed"),
-            v.literal("refunded")
-        ),
-    },
-    handler: async (ctx, args) => {
-        const paymentId = await ctx.db.insert("payments", {
-            request_id: args.request_id,
-            amount: args.amount,
-            payment_method: args.payment_method,
-            transaction_id: args.transaction_id,
-            status: args.status,
-        });
-
-        return { paymentId };
-    },
-});
-*/
 
 /**
  * Get migration statistics
@@ -176,13 +142,11 @@ export const getMigrationStats = mutation({
         const users = await ctx.db.query("users").collect();
         const cars = await ctx.db.query("cars").collect();
         const requests = await ctx.db.query("requests").collect();
-        const payments = await ctx.db.query("payments").collect();
 
         return {
             users: users.length,
             cars: cars.length,
             requests: requests.length,
-            payments: payments.length,
         };
     },
 });

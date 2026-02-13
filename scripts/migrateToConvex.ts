@@ -74,17 +74,6 @@ interface MySQLRequest {
     event_type: string | null;
     status: "pending" | "approved" | "rejected" | "completed" | "cancelled";
     agreement_text: string | null;
-    payment_method: string | null;
-    created_at: Date;
-}
-
-interface MySQLPayment {
-    id: string;
-    request_id: string;
-    amount: number;
-    payment_method: string;
-    transaction_id: string | null;
-    status: "pending" | "completed" | "failed" | "refunded";
     created_at: Date;
 }
 
@@ -193,41 +182,7 @@ async function migrateRequests(
     return requestIdMap;
 }
 
-async function migratePayments(
-    connection: mysql.Connection,
-    requestIdMap: Map<string, string>
-) {
-    console.log("\n📊 Migrating payments...");
 
-    const [rows] = await connection.execute<mysql.RowDataPacket[]>(
-        "SELECT * FROM payments ORDER BY created_at ASC"
-    );
-
-    const payments = rows as unknown as MySQLPayment[];
-
-    for (const payment of payments) {
-        try {
-            const convexRequestId = requestIdMap.get(payment.request_id);
-
-            if (!convexRequestId) {
-                console.error(
-                    `  ⚠️  Skipping payment ${payment.id}: Missing request mapping`
-                );
-                continue;
-            }
-
-            // Note: You'll need to create a migration-specific mutation
-            console.log(`  ✅ Migrated payment: ${payment.id}`);
-        } catch (error: any) {
-            console.error(
-                `  ❌ Failed to migrate payment ${payment.id}:`,
-                error.message
-            );
-        }
-    }
-
-    console.log(`✅ Migrated ${payments.length} payments`);
-}
 
 async function validateMigration(connection: mysql.Connection) {
     console.log("\n🔍 Validating migration...");
@@ -242,15 +197,11 @@ async function validateMigration(connection: mysql.Connection) {
     const [requestCount] = await connection.execute<mysql.RowDataPacket[]>(
         "SELECT COUNT(*) as count FROM requests"
     );
-    const [paymentCount] = await connection.execute<mysql.RowDataPacket[]>(
-        "SELECT COUNT(*) as count FROM payments"
-    );
 
     console.log("\nMySQL Record Counts:");
     console.log(`  Users: ${userCount[0].count}`);
     console.log(`  Cars: ${carCount[0].count}`);
     console.log(`  Requests: ${requestCount[0].count}`);
-    console.log(`  Payments: ${paymentCount[0].count}`);
 
     // TODO: Query Convex and compare counts
     console.log("\n⚠️  Note: Manual validation required in Convex dashboard");
@@ -273,7 +224,6 @@ async function main() {
         const userIdMap = await migrateUsers(connection);
         const carIdMap = await migrateCars(connection);
         const requestIdMap = await migrateRequests(connection, userIdMap, carIdMap);
-        await migratePayments(connection, requestIdMap);
 
         // Validate
         await validateMigration(connection);

@@ -72,8 +72,6 @@ const Booking: React.FC = () => {
         event_date: formData.eventDate,
         event_type: formData.eventType,
         agreement_text: formData.additionalDetails,
-        // payment_method is hardcoded for now or can be added to form
-        payment_method: 'Mobile Money',
       });
 
       showNotification('Booking request submitted successfully! We will contact you soon.', 'success');

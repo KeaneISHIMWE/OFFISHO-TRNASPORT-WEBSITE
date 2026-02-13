@@ -3,8 +3,7 @@ import { motion } from 'framer-motion';
 import { useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 import { useAuth } from '../context/AuthContextConvex';
-import { Link } from 'react-router-dom';
-import { Calendar, Clock, Car as CarIcon, CheckCircle2, XCircle, AlertCircle, FileText, CreditCard } from 'lucide-react';
+import { Calendar, Clock, Car as CarIcon, CheckCircle2, XCircle, AlertCircle, FileText, Phone } from 'lucide-react';
 import { cn } from '../utils/cn';
 
 const MyRequests: React.FC = () => {
@@ -143,13 +142,23 @@ const MyRequests: React.FC = () => {
                                     </div>
 
                                     {(request.status === 'pending' || request.status === 'approved') && (
-                                        <Link
-                                            to={`/payment?amount=${request.total_amount}&requestId=${request._id}`}
-                                            className="mt-4 w-full bg-gradient-to-r from-primary to-purple-electric hover:from-primary/90 hover:to-purple-electric/90 text-white py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/30 transform hover:scale-[1.02]"
-                                        >
-                                            <CreditCard className="w-4 h-4" />
-                                            Pay Now
-                                        </Link>
+                                        <div className="mt-4 bg-purple-electric/10 border border-purple-electric/20 rounded-xl p-4">
+                                            <div className="flex items-start gap-3">
+                                                <Phone className="w-5 h-5 text-purple-electric flex-shrink-0 mt-0.5" />
+                                                <div>
+                                                    <h4 className="text-sm font-bold text-purple-electric mb-1">Payment Required</h4>
+                                                    <p className="text-xs text-slate-300 mb-2">
+                                                        Please contact our support team to complete your payment manually.
+                                                    </p>
+                                                    <a
+                                                        href="/contact"
+                                                        className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 transition-colors"
+                                                    >
+                                                        Contact Support →
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
                                     )}
                                 </div>
                             </motion.div>

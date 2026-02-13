@@ -10,7 +10,6 @@
 
 import type * as actions_cloudinary from "../actions/cloudinary.js";
 import type * as actions_email from "../actions/email.js";
-import type * as actions_flutterwave from "../actions/flutterwave.js";
 import type * as actions_index from "../actions/index.js";
 import type * as auth from "../auth.js";
 import type * as cars from "../cars.js";
@@ -18,7 +17,6 @@ import type * as contact from "../contact.js";
 import type * as http from "../http.js";
 import type * as lib_auth from "../lib/auth.js";
 import type * as migrations from "../migrations.js";
-import type * as payments from "../payments.js";
 import type * as requests from "../requests.js";
 import type * as reset_roles from "../reset_roles.js";
 import type * as users from "../users.js";
@@ -32,7 +30,6 @@ import type {
 declare const fullApi: ApiFromModules<{
   "actions/cloudinary": typeof actions_cloudinary;
   "actions/email": typeof actions_email;
-  "actions/flutterwave": typeof actions_flutterwave;
   "actions/index": typeof actions_index;
   auth: typeof auth;
   cars: typeof cars;
@@ -40,7 +37,6 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   "lib/auth": typeof lib_auth;
   migrations: typeof migrations;
-  payments: typeof payments;
   requests: typeof requests;
   reset_roles: typeof reset_roles;
   users: typeof users;

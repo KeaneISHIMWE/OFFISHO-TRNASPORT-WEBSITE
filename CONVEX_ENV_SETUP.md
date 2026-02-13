@@ -31,12 +31,6 @@ CLOUDINARY_API_SECRET=VBnQk722oYi_MC1pOXhlddhnKbQ
 ADMIN_EMAIL_SECONDARY=keaneishimwe@gmail.com
 ```
 
-### 5. Flutterwave Configuration
-```
-FLUTTERWAVE_SECRET_KEY=FLWPUBK_TEST-...
-FLUTTERWAVE_WEBHOOK_HASH=your_webhook_secret_hash
-```
-
 
 ## How to Set Environment Variables
 

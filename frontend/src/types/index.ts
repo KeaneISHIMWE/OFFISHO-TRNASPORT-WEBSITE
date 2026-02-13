@@ -41,7 +41,6 @@ export interface Request {
   event_type: string | null;
   status: 'pending' | 'approved' | 'rejected' | 'completed' | 'cancelled';
   agreement_text: string | null;
-  payment_method: string | null;
   created_at?: string;
   updated_at?: string;
   car_name?: string;
@@ -49,11 +48,6 @@ export interface Request {
   car_image?: string;
   user_name?: string;
   user_email?: string;
-}
-
-export interface PaymentInfo {
-  mtnMomo: string;
-  bankAccount: string;
 }
 
 export interface AuthResponse {
