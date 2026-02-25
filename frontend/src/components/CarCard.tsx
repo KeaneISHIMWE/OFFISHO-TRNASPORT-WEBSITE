@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Car } from '../types';
-import { Users, Fuel, Gauge, ArrowRight, Zap, Car as CarIcon } from 'lucide-react';
+import { Users, Fuel, Gauge, ArrowRight, Zap, Car as CarIcon, XCircle } from 'lucide-react';
 import { cn } from '../utils/cn';
 
 interface CarCardProps {
@@ -157,20 +157,25 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
               </span>
             </div>
 
-            {car.availability_status === 'rented' && car.booked_from && car.booked_until ? (
+            {car.availability_status === 'available' ? (
+              <div className="flex items-center gap-2 text-green-400">
+                <Users className="w-3 h-3" />
+                <span>Ready for immediate booking</span>
+              </div>
+            ) : car.availability_status === 'rented' && car.booked_from && car.booked_until ? (
               <>
                 <div className="grid grid-cols-2 gap-2 text-[10px] sm:text-xs">
                   <div className="flex flex-col">
-                    <span className="text-silver/40">From</span>
+                    <span className="text-silver/40">Booked From</span>
                     <span className="font-medium text-silver">{new Date(car.booked_from).toLocaleDateString()}</span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-silver/40">Until</span>
+                    <span className="text-silver/40">Booked Until</span>
                     <span className="font-medium text-silver">{new Date(car.booked_until).toLocaleDateString()}</span>
                   </div>
                 </div>
                 <div className="pt-2 border-t border-purple-electric/10 mt-2 flex items-center justify-between">
-                  <span className="text-purple-electric font-medium">Next Available</span>
+                  <span className="text-purple-electric font-medium">Available On</span>
                   <span className="text-silver font-bold">
                     {(() => {
                       const nextDate = new Date(car.booked_until);
@@ -181,9 +186,9 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
                 </div>
               </>
             ) : (
-              <div className="flex items-center gap-2 text-green-400">
-                <Users className="w-3 h-3" />
-                <span>Ready for immediate booking</span>
+              <div className="flex items-center gap-2 text-red-400">
+                <XCircle className="w-3 h-3" />
+                <span>Not ready for immediate booking</span>
               </div>
             )}
           </div>
