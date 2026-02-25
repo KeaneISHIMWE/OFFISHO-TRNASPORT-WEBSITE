@@ -5,12 +5,12 @@ import { api } from '../../../convex/_generated/api';
 import { Id } from '../../../convex/_generated/dataModel';
 import { Car, Request } from '../types';
 import { useNotification } from '../context/NotificationContext';
-import { LayoutDashboard, Car as CarIcon, FileText, BarChart3, Plus, Edit, Trash2, CheckCircle, XCircle, Clock, TrendingUp } from 'lucide-react';
+import { LayoutDashboard, Car as CarIcon, FileText, BarChart3, Plus, Edit, Trash2, CheckCircle, XCircle, Clock, TrendingUp, Settings } from 'lucide-react';
 import { cn } from '../utils/cn';
 
 const AdminDashboard: React.FC = () => {
   const { showNotification } = useNotification();
-  const [activeTab, setActiveTab] = useState<'cars' | 'requests' | 'analytics'>('cars');
+  const [activeTab, setActiveTab] = useState<'cars' | 'requests' | 'analytics' | 'settings'>('cars');
   const [editingCar, setEditingCar] = useState<Car | null>(null);
   const [showCarForm, setShowCarForm] = useState<boolean>(false);
 
@@ -62,6 +62,13 @@ const AdminDashboard: React.FC = () => {
       .reduce((sum, r) => sum + r.total_amount, 0),
   };
 
+  const navItems = [
+    { id: 'cars', label: 'Cars', icon: CarIcon },
+    { id: 'requests', label: 'Requests', icon: FileText },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+    { id: 'settings', label: 'Settings', icon: Settings },
+  ];
+
   return (
     <div className="min-h-screen bg-obsidian pt-20 sm:pt-24 pb-8 sm:pb-12">
       <div className="container mx-auto">
@@ -74,11 +81,7 @@ const AdminDashboard: React.FC = () => {
                 Dashboard
               </h1>
               <nav className="space-y-2">
-                {[
-                  { id: 'cars', label: 'Cars', icon: CarIcon },
-                  { id: 'requests', label: 'Requests', icon: FileText },
-                  { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-                ].map((tab) => (
+                {navItems.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as any)}
@@ -101,11 +104,7 @@ const AdminDashboard: React.FC = () => {
           <main className="flex-1 min-w-0">
             {/* Mobile Tabs */}
             <div className="lg:hidden mb-6 sm:mb-8 flex space-x-1 sm:space-x-2 border-b border-purple-electric/30 overflow-x-auto px-4">
-              {[
-                { id: 'cars', label: 'Cars', icon: CarIcon },
-                { id: 'requests', label: 'Requests', icon: FileText },
-                { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-              ].map((tab) => (
+              {navItems.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
@@ -470,6 +469,21 @@ const AdminDashboard: React.FC = () => {
                       </div>
                     </div>
                   )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Settings Tab */}
+            <AnimatePresence mode="wait">
+              {activeTab === 'settings' && (
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <h2 className="text-2xl font-display font-bold text-silver mb-6">Admin Settings</h2>
+                  <AdminSettings />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -846,6 +860,99 @@ const CarForm: React.FC<CarFormProps> = ({ car, onClose, onSuccess }) => {
           </div>
         </form>
       </div>
+    </div>
+  );
+};
+
+// Admin Settings Component
+const AdminSettings: React.FC = () => {
+  const { showNotification } = useNotification();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    oldPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+
+  const updatePasswordMutation = useMutation(api.users.updatePassword);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (formData.newPassword !== formData.confirmPassword) {
+      showNotification('New passwords do not match', 'error');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await updatePasswordMutation({
+        oldPassword: formData.oldPassword,
+        newPassword: formData.newPassword,
+      });
+      showNotification('Password updated successfully', 'success');
+      setFormData({ oldPassword: '', newPassword: '', confirmPassword: '' });
+    } catch (error: any) {
+      console.error('Update password error:', error);
+      showNotification(error.message || 'Failed to update password', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="glass-card rounded-2xl p-8 max-w-xl neon-border">
+      <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+        <Settings className="w-5 h-5 text-purple-electric" />
+        Change Password
+      </h3>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-semibold text-silver/70 mb-2">Current Password</label>
+          <input
+            type="password"
+            name="oldPassword"
+            value={formData.oldPassword}
+            onChange={(e) => setFormData({ ...formData, oldPassword: e.target.value })}
+            required
+            className="w-full px-4 py-3 bg-purple-midnight border border-purple-electric/20 rounded-xl text-white focus:outline-none focus:border-purple-electric transition-all"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-silver/70 mb-2">New Password</label>
+          <input
+            type="password"
+            name="newPassword"
+            value={formData.newPassword}
+            onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
+            required
+            className="w-full px-4 py-3 bg-purple-midnight border border-purple-electric/20 rounded-xl text-white focus:outline-none focus:border-purple-electric transition-all"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-silver/70 mb-2">Confirm New Password</label>
+          <input
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+            required
+            className="w-full px-4 py-3 bg-purple-midnight border border-purple-electric/20 rounded-xl text-white focus:outline-none focus:border-purple-electric transition-all"
+          />
+        </div>
+
+        <div className="pt-4">
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-purple-electric hover:bg-purple-glow text-white py-3 rounded-xl font-bold transition-all disabled:opacity-50 neon-glow"
+          >
+            {loading ? 'Updating...' : 'Update Password'}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

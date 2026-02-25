@@ -1,5 +1,7 @@
 import { v } from "convex/values";
-import { query } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
+import { requireAuth } from "./lib/auth";
+import bcrypt from "bcryptjs";
 
 /**
  * Find user by email - helper for admin promotion
@@ -24,5 +26,47 @@ export const findByEmail = query({
             name: user.name,
             role: user.role,
         };
+    },
+});
+
+/**
+ * Update the current user's password
+ */
+export const updatePassword = mutation({
+    args: {
+        oldPassword: v.string(),
+        newPassword: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const user = await requireAuth(ctx);
+        const userId = user._id;
+
+        // Find the password entry for this user in the authAccounts table
+        // convex-dev/auth stores credentials in authAccounts
+        const account = await ctx.db
+            .query("authAccounts")
+            .withIndex("userIdAndProvider", (q) => q.eq("userId", userId).eq("provider", "password"))
+            .first();
+
+        if (!account || !account.secret) {
+            throw new Error("Password account not found. Are you logged in with a password?");
+        }
+
+        // Verify old password
+        const isValid = await bcrypt.compare(args.oldPassword, account.secret as string);
+        if (!isValid) {
+            throw new Error("Invalid current password");
+        }
+
+        // Hash new password
+        const salt = await bcrypt.genSalt(12);
+        const passwordHash = await bcrypt.hash(args.newPassword, salt);
+
+        // Update the account record
+        await ctx.db.patch(account._id, {
+            secret: passwordHash,
+        });
+
+        return { message: "Password updated successfully" };
     },
 });
