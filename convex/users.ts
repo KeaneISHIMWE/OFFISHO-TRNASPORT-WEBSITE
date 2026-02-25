@@ -70,3 +70,60 @@ export const updatePassword = mutation({
         return { message: "Password updated successfully" };
     },
 });
+
+/**
+ * Update the current user's email
+ */
+export const updateEmail = mutation({
+    args: {
+        newEmail: v.string(),
+        password: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const user = await requireAuth(ctx);
+        const userId = user._id;
+
+        // Verify email format basically
+        if (!args.newEmail.includes("@")) {
+            throw new Error("Invalid email format");
+        }
+
+        // Check if new email is already taken
+        const existingUser = await ctx.db
+            .query("users")
+            .withIndex("by_email", (q) => q.eq("email", args.newEmail))
+            .first();
+
+        if (existingUser && existingUser._id !== userId) {
+            throw new Error("Email is already in use by another account");
+        }
+
+        // Find the password entry to verify identity
+        const account = await ctx.db
+            .query("authAccounts")
+            .withIndex("userIdAndProvider", (q) => q.eq("userId", userId).eq("provider", "password"))
+            .first();
+
+        if (!account || !account.secret) {
+            throw new Error("Authentication account not found");
+        }
+
+        // Verify password before allowing email change
+        const isValid = await bcrypt.compare(args.password, account.secret as string);
+        if (!isValid) {
+            throw new Error("Invalid password. Identity verification failed.");
+        }
+
+        // Update the user profile
+        await ctx.db.patch(userId, {
+            email: args.newEmail,
+        });
+
+        // Update the auth account (providerAccountId is the email for password provider)
+        await ctx.db.patch(account._id, {
+            providerAccountId: args.newEmail,
+        });
+
+        return { message: "Email updated successfully" };
+    },
+});

@@ -5,7 +5,7 @@ import { api } from '../../../convex/_generated/api';
 import { Id } from '../../../convex/_generated/dataModel';
 import { Car, Request } from '../types';
 import { useNotification } from '../context/NotificationContext';
-import { LayoutDashboard, Car as CarIcon, FileText, BarChart3, Plus, Edit, Trash2, CheckCircle, XCircle, Clock, TrendingUp, Settings } from 'lucide-react';
+import { LayoutDashboard, Car as CarIcon, FileText, BarChart3, Plus, Edit, Trash2, CheckCircle, XCircle, Clock, TrendingUp, Settings, Mail } from 'lucide-react';
 import { cn } from '../utils/cn';
 
 const AdminDashboard: React.FC = () => {
@@ -866,6 +866,16 @@ const CarForm: React.FC<CarFormProps> = ({ car, onClose, onSuccess }) => {
 
 // Admin Settings Component
 const AdminSettings: React.FC = () => {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <AdminPasswordSettings />
+      <AdminEmailSettings />
+    </div>
+  );
+};
+
+// Admin Password Settings Component
+const AdminPasswordSettings: React.FC = () => {
   const { showNotification } = useNotification();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -900,7 +910,7 @@ const AdminSettings: React.FC = () => {
   };
 
   return (
-    <div className="glass-card rounded-2xl p-8 max-w-xl neon-border">
+    <div className="glass-card rounded-2xl p-8 neon-border">
       <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
         <Settings className="w-5 h-5 text-purple-electric" />
         Change Password
@@ -950,6 +960,82 @@ const AdminSettings: React.FC = () => {
             className="w-full bg-purple-electric hover:bg-purple-glow text-white py-3 rounded-xl font-bold transition-all disabled:opacity-50 neon-glow"
           >
             {loading ? 'Updating...' : 'Update Password'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+// Admin Email Settings Component
+const AdminEmailSettings: React.FC = () => {
+  const { showNotification } = useNotification();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    newEmail: '',
+    password: '',
+  });
+
+  const updateEmailMutation = useMutation(api.users.updateEmail);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      await updateEmailMutation({
+        newEmail: formData.newEmail,
+        password: formData.password,
+      });
+      showNotification('Email updated successfully. Please use the new email for your next login.', 'success');
+      setFormData({ newEmail: '', password: '' });
+    } catch (error: any) {
+      console.error('Update email error:', error);
+      showNotification(error.message || 'Failed to update email', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="glass-card rounded-2xl p-8 neon-border">
+      <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+        <Mail className="w-5 h-5 text-purple-glow" />
+        Change Email
+      </h3>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-semibold text-silver/70 mb-2">New Email Address</label>
+          <input
+            type="email"
+            name="newEmail"
+            value={formData.newEmail}
+            onChange={(e) => setFormData({ ...formData, newEmail: e.target.value })}
+            required
+            placeholder="new-email@example.com"
+            className="w-full px-4 py-3 bg-purple-midnight border border-purple-electric/20 rounded-xl text-white focus:outline-none focus:border-purple-electric transition-all"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-silver/70 mb-2">Enter Current Password to Confirm</label>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            required
+            className="w-full px-4 py-3 bg-purple-midnight border border-purple-electric/20 rounded-xl text-white focus:outline-none focus:border-purple-electric transition-all"
+          />
+        </div>
+
+        <div className="pt-4">
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-purple-glow hover:bg-purple-electric text-white py-3 rounded-xl font-bold transition-all disabled:opacity-50 neon-glow"
+          >
+            {loading ? 'Updating...' : 'Update Email'}
           </button>
         </div>
       </form>
