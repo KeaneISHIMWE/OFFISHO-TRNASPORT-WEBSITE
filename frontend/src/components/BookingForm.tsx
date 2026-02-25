@@ -22,12 +22,22 @@ const DEPOSIT_AMOUNT = 50000; // 50,000 FRW
 const bookingSchema = z.object({
   request_type: z.enum(['rent', 'buy', 'sell']),
   with_driver: z.boolean().optional(),
+  start_date: z.string().optional(),
+  end_date: z.string().optional(),
   event_date: z.string().optional(),
   event_type: z.string().optional(),
   agreement_text: z.string().optional(),
   agreed_to_terms: z.boolean().refine((val) => val === true, {
     message: 'You must agree to the terms and conditions',
   }),
+}).refine((data) => {
+  if (data.request_type === 'rent') {
+    return !!data.start_date && !!data.end_date;
+  }
+  return true;
+}, {
+  message: 'Start and end dates are required for rentals',
+  path: ['start_date'],
 });
 
 type BookingFormData = z.infer<typeof bookingSchema>;
@@ -40,6 +50,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [showTerms, setShowTerms] = useState<boolean>(false);
+  const [daysCount, setDaysCount] = useState<number>(1);
 
   const {
     register,
@@ -52,29 +63,44 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
       request_type: 'rent',
       with_driver: false,
       agreed_to_terms: false,
+      start_date: new Date().toISOString().split('T')[0],
+      end_date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
     },
   });
 
   const requestType = watch('request_type');
   const withDriver = watch('with_driver');
+  const startDate = watch('start_date');
+  const endDate = watch('end_date');
 
   useEffect(() => {
     calculateTotal();
-  }, [requestType, withDriver, car.rental_price_per_day, car.buy_price, car.sell_price]);
+  }, [requestType, withDriver, startDate, endDate, car.rental_price_per_day, car.buy_price, car.sell_price]);
 
   const calculateTotal = () => {
     let total = 0;
+    let days = 1;
 
     if (requestType === 'rent') {
+      if (startDate && endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        if (end > start) {
+          const diffTime = Math.abs(end.getTime() - start.getTime());
+          days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+      }
+      setDaysCount(days);
+
       // Ensure rental_price_per_day is a number
       const baseRental = typeof car.rental_price_per_day === 'string'
         ? parseFloat(car.rental_price_per_day)
         : car.rental_price_per_day;
 
-      total = baseRental || 0;
+      total = (baseRental || 0) * days;
 
       if (withDriver) {
-        total += DRIVER_FEE;
+        total += (DRIVER_FEE * days);
       } else {
         total += DEPOSIT_AMOUNT;
       }
@@ -116,6 +142,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
         car_id: carId as Id<"cars">,
         request_type: data.request_type as "rent" | "buy" | "sell",
         with_driver: data.with_driver || false,
+        start_date: data.start_date || undefined,
+        end_date: data.end_date || undefined,
         event_date: data.event_date || undefined,
         event_type: data.event_type || undefined,
         agreement_text: data.agreement_text || undefined,
@@ -204,24 +232,47 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
               </label>
             </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-slate-300 mb-2">
-                Event Date
-              </label>
-              <div className="relative">
-                <input
-                  type="date"
-                  {...register('event_date')}
-                  min={new Date().toISOString().split('T')[0]}
-                  className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-slate-500"
-                />
-                <Calendar className="absolute right-3 top-3.5 w-5 h-5 text-slate-500 pointer-events-none" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold text-slate-300 mb-2">
+                  Pick-up Date
+                </label>
+                <div className="relative">
+                  <input
+                    type="date"
+                    {...register('start_date')}
+                    min={new Date().toISOString().split('T')[0]}
+                    className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-slate-500"
+                  />
+                  <Calendar className="absolute right-3 top-3.5 w-5 h-5 text-slate-500 pointer-events-none" />
+                </div>
+                {errors.start_date && (
+                  <p className="text-red-400 text-xs mt-1">{errors.start_date.message}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-300 mb-2">
+                  Return Date
+                </label>
+                <div className="relative">
+                  <input
+                    type="date"
+                    {...register('end_date')}
+                    min={startDate || new Date().toISOString().split('T')[0]}
+                    className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-slate-500"
+                  />
+                  <Calendar className="absolute right-3 top-3.5 w-5 h-5 text-slate-500 pointer-events-none" />
+                </div>
+                {errors.end_date && (
+                  <p className="text-red-400 text-xs mt-1">{errors.end_date.message}</p>
+                )}
               </div>
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-slate-300 mb-2">
-                Event Type
+                Event Type (Optional)
               </label>
               <div className="nebula-select-container">
                 <select
@@ -249,15 +300,16 @@ const BookingForm: React.FC<BookingFormProps> = ({ carId, car }) => {
             {requestType === 'rent' && (
               <>
                 <div className="flex justify-between">
-                  <span>Base Rental:</span>
-                  <span>{formatPrice(car.rental_price_per_day)}</span>
+                  <span>Base Rental ({daysCount} {daysCount === 1 ? 'day' : 'days'}):</span>
+                  <span>{formatPrice(car.rental_price_per_day * daysCount)}</span>
                 </div>
-                {withDriver ? (
+                {withDriver && (
                   <div className="flex justify-between">
-                    <span>Driver Fee:</span>
-                    <span>{formatPrice(DRIVER_FEE)}</span>
+                    <span>Driver Fee ({daysCount} {daysCount === 1 ? 'day' : 'days'}):</span>
+                    <span>{formatPrice(DRIVER_FEE * daysCount)}</span>
                   </div>
-                ) : (
+                )}
+                {!withDriver && (
                   <div className="flex justify-between">
                     <span>Deposit (Refundable):</span>
                     <span>{formatPrice(DEPOSIT_AMOUNT)}</span>

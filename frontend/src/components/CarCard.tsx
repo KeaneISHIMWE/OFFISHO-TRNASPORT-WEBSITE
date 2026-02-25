@@ -116,27 +116,77 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
           </div>
         </div>
 
-        {/* Price and Book Button */}
-        <div className="mt-auto pt-4 border-t border-purple-electric/20 flex items-center justify-between gap-4">
-          <div>
-            <p className="text-lg font-bold electric-gradient-text">
-              {formatPrice(car.rental_price_per_day)}
-              <span className="text-xs font-normal text-silver/60 ml-1">/day</span>
-            </p>
+        {/* Price and Status Card */}
+        <div className="mt-auto space-y-4">
+          <div className="pt-4 border-t border-purple-electric/20 flex items-center justify-between gap-4">
+            <div>
+              <p className="text-lg font-bold electric-gradient-text">
+                {formatPrice(car.rental_price_per_day)}
+                <span className="text-xs font-normal text-silver/60 ml-1">/day</span>
+              </p>
+            </div>
+            {car.availability_status === 'available' ? (
+              <Link
+                to={`/cars/${car._id}?action=rent`}
+                className="touch-target px-4 py-2.5 sm:py-2 rounded-lg electric-gradient hover:opacity-90 active:opacity-80 text-white font-medium transition-all duration-300 flex items-center gap-2 group/btn hover:scale-105 active:scale-95 neon-glow"
+              >
+                Book Now
+                <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+              </Link>
+            ) : (
+              <span className="px-4 py-2.5 sm:py-2 rounded-lg bg-red-500/10 text-red-400 font-medium text-sm border border-red-500/20 cursor-not-allowed">
+                {car.availability_status === 'rented' ? 'Booked' : car.availability_status.toUpperCase()}
+              </span>
+            )}
           </div>
-          {car.availability_status === 'available' ? (
-            <Link
-              to={`/cars/${car._id}?action=rent`}
-              className="touch-target px-4 py-2.5 sm:py-2 rounded-lg electric-gradient hover:opacity-90 active:opacity-80 text-white font-medium transition-all duration-300 flex items-center gap-2 group/btn hover:scale-105 active:scale-95 neon-glow"
-            >
-              Book
-              <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-            </Link>
-          ) : (
-            <span className="px-4 py-2.5 sm:py-2 rounded-lg bg-purple-midnight text-silver/40 font-medium text-sm border border-purple-electric/20 cursor-not-allowed">
-              Unavailable
-            </span>
-          )}
+
+          {/* Booking Period Card */}
+          <div className={cn(
+            "p-3 rounded-xl border text-xs space-y-2 transition-all duration-300",
+            car.availability_status === 'available'
+              ? "bg-green-500/5 border-green-500/20 text-green-400/80"
+              : "bg-purple-midnight border-purple-electric/20 text-silver/60"
+          )}>
+            <div className="flex items-center justify-between">
+              <span className="font-semibold uppercase tracking-wider">Status</span>
+              <span className={cn(
+                "px-2 py-0.5 rounded-full font-bold",
+                car.availability_status === 'available' ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"
+              )}>
+                {car.availability_status === 'available' ? 'AVAILABLE' : 'BOOKED'}
+              </span>
+            </div>
+
+            {car.availability_status === 'rented' && car.booked_from && car.booked_until ? (
+              <>
+                <div className="grid grid-cols-2 gap-2 text-[10px] sm:text-xs">
+                  <div className="flex flex-col">
+                    <span className="text-silver/40">From</span>
+                    <span className="font-medium text-silver">{new Date(car.booked_from).toLocaleDateString()}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-silver/40">Until</span>
+                    <span className="font-medium text-silver">{new Date(car.booked_until).toLocaleDateString()}</span>
+                  </div>
+                </div>
+                <div className="pt-2 border-t border-purple-electric/10 mt-2 flex items-center justify-between">
+                  <span className="text-purple-electric font-medium">Next Available</span>
+                  <span className="text-silver font-bold">
+                    {(() => {
+                      const nextDate = new Date(car.booked_until);
+                      nextDate.setDate(nextDate.getDate() + 1);
+                      return nextDate.toLocaleDateString();
+                    })()}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center gap-2 text-green-400">
+                <Users className="w-3 h-3" />
+                <span>Ready for immediate booking</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </motion.div>

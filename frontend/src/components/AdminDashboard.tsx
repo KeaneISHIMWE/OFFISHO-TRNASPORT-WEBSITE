@@ -380,6 +380,7 @@ const AdminDashboard: React.FC = () => {
                               <th className="px-6 py-4 font-semibold">Customer</th>
                               <th className="px-6 py-4 font-semibold">Car</th>
                               <th className="px-6 py-4 font-semibold">Type</th>
+                              <th className="px-6 py-4 font-semibold">Period</th>
                               <th className="px-6 py-4 font-semibold">Amount</th>
                               <th className="px-6 py-4 font-semibold">Status</th>
                               <th className="px-6 py-4 font-semibold">Actions</th>
@@ -396,6 +397,17 @@ const AdminDashboard: React.FC = () => {
                                   {request.car_name} {request.car_model}
                                 </td>
                                 <td className="px-6 py-4 text-silver/70 capitalize">{request.request_type}</td>
+                                <td className="px-6 py-4 text-silver/60 text-xs">
+                                  {request.start_date && request.end_date ? (
+                                    <div className="flex flex-col">
+                                      <span>{new Date(request.start_date).toLocaleDateString()}</span>
+                                      <span className="text-[10px] text-purple-electric/50">to</span>
+                                      <span>{new Date(request.end_date).toLocaleDateString()}</span>
+                                    </div>
+                                  ) : request.event_date ? (
+                                    <span>{new Date(request.event_date).toLocaleDateString()}</span>
+                                  ) : 'N/A'}
+                                </td>
                                 <td className="px-6 py-4 text-purple-electric font-mono font-bold">
                                   {new Intl.NumberFormat('en-RW', {
                                     style: 'currency',

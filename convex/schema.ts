@@ -45,6 +45,8 @@ export default defineSchema({
             v.literal("sold"),
             v.literal("maintenance")
         ),
+        booked_from: v.optional(v.string()), // ISO date string
+        booked_until: v.optional(v.string()), // ISO date string
         specs: v.optional(v.any()), // Flexible JSON object for car specifications
     })
         .index("by_car_type", ["car_type"])
@@ -63,6 +65,8 @@ export default defineSchema({
         with_driver: v.optional(v.boolean()),
         deposit_amount: v.optional(v.number()),
         total_amount: v.number(),
+        start_date: v.optional(v.string()), // ISO date string
+        end_date: v.optional(v.string()), // ISO date string
         event_date: v.optional(v.string()), // ISO date string
         event_type: v.optional(v.string()),
         status: v.union(

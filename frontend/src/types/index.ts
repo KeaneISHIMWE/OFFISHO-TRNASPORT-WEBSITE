@@ -23,6 +23,8 @@ export interface Car {
   car_type: 'luxury' | 'suv' | 'sedan' | 'convertible' | 'van';
   event_suitability: string[];
   availability_status: 'available' | 'rented' | 'sold' | 'maintenance';
+  booked_from?: string;
+  booked_until?: string;
   specs: Record<string, any>;
   created_at?: string;
   updated_at?: string;

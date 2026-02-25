@@ -83,6 +83,8 @@ export const create = mutation({
             v.literal("sell")
         ),
         with_driver: v.optional(v.boolean()),
+        start_date: v.optional(v.string()),
+        end_date: v.optional(v.string()),
         event_date: v.optional(v.string()),
         event_type: v.optional(v.string()),
         agreement_text: v.optional(v.string()),
@@ -105,9 +107,17 @@ export const create = mutation({
         let deposit_amount = 0;
 
         if (args.request_type === "rent") {
-            total_amount = car.rental_price_per_day;
+            let days = 1;
+            if (args.start_date && args.end_date) {
+                const start = new Date(args.start_date);
+                const end = new Date(args.end_date);
+                const diffTime = Math.abs(end.getTime() - start.getTime());
+                days = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 1;
+            }
+
+            total_amount = car.rental_price_per_day * days;
             if (args.with_driver) {
-                total_amount += DRIVER_FEE;
+                total_amount += (DRIVER_FEE * days);
             }
             deposit_amount = DEPOSIT_AMOUNT;
         } else if (args.request_type === "buy") {
@@ -124,6 +134,8 @@ export const create = mutation({
             with_driver: args.with_driver,
             deposit_amount,
             total_amount,
+            start_date: args.start_date,
+            end_date: args.end_date,
             event_date: args.event_date,
             event_type: args.event_type,
             status: "pending",
@@ -174,7 +186,11 @@ export const updateStatus = mutation({
 
         // Update car availability based on status
         if (args.status === "approved" && request.request_type === "rent") {
-            await ctx.db.patch(request.car_id, { availability_status: "rented" });
+            await ctx.db.patch(request.car_id, {
+                availability_status: "rented",
+                booked_from: request.start_date,
+                booked_until: request.end_date
+            });
         } else if (args.status === "approved" && request.request_type === "buy") {
             await ctx.db.patch(request.car_id, { availability_status: "sold" });
         } else if (
@@ -187,6 +203,8 @@ export const updateStatus = mutation({
             if (car && car.availability_status !== "sold") {
                 await ctx.db.patch(request.car_id, {
                     availability_status: "available",
+                    booked_from: undefined,
+                    booked_until: undefined
                 });
             }
         }
