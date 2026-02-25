@@ -501,6 +501,8 @@ const CarForm: React.FC<CarFormProps> = ({ car, onClose, onSuccess }) => {
     seats: car?.specs?.seats?.toString() || '',
     transmission: car?.specs?.transmission || '',
     fuel_type: car?.specs?.fuel_type || '',
+    booked_from: car?.booked_from || '',
+    booked_until: car?.booked_until || '',
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -571,6 +573,8 @@ const CarForm: React.FC<CarFormProps> = ({ car, onClose, onSuccess }) => {
         event_suitability: eventSuitabilityArray,
         specs,
         storageId: storageId as Id<"_storage">,
+        booked_from: formData.booked_from || undefined,
+        booked_until: formData.booked_until || undefined,
         // We can keep image_url as a fallback/cache if we want, or rely on dynamic resolution
       };
 
@@ -788,6 +792,29 @@ const CarForm: React.FC<CarFormProps> = ({ car, onClose, onSuccess }) => {
                   <option value="Plug-in Hybrid">Plug-in Hybrid</option>
                 </select>
               </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-semibold text-slate-300 mb-2">Booked From</label>
+              <input
+                type="date"
+                name="booked_from"
+                value={formData.booked_from}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-300 mb-2">Booked Until (Next Availability On +1)</label>
+              <input
+                type="date"
+                name="booked_until"
+                value={formData.booked_until}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+              />
             </div>
           </div>
 

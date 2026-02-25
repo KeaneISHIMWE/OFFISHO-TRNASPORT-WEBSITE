@@ -126,6 +126,8 @@ export const create = mutation({
                 v.literal("maintenance")
             )
         ),
+        booked_from: v.optional(v.string()),
+        booked_until: v.optional(v.string()),
         specs: v.optional(v.any()),
     },
     handler: async (ctx, args) => {
@@ -142,6 +144,8 @@ export const create = mutation({
             car_type: args.car_type,
             event_suitability: args.event_suitability,
             availability_status: args.availability_status || "available",
+            booked_from: args.booked_from,
+            booked_until: args.booked_until,
             specs: args.specs,
         });
 
@@ -182,6 +186,8 @@ export const update = mutation({
                 v.literal("maintenance")
             )
         ),
+        booked_from: v.optional(v.string()),
+        booked_until: v.optional(v.string()),
         specs: v.optional(v.any()),
     },
     handler: async (ctx, args) => {
