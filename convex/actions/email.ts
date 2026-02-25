@@ -88,7 +88,7 @@ export const sendRequestEmails = action({
     // Send admin notification
     const adminEmails = [
       "prospertuop@gmail.com",
-      "keaneishimwe@gmail.com"
+      "offishotransport@gmail.com"
     ];
 
     try {
@@ -170,7 +170,7 @@ export const sendContactEmail = action({
   handler: async (ctx, args) => {
     const adminEmails = [
       "prospertuop@gmail.com",
-      "keaneishimwe@gmail.com"
+      "offishotransport@gmail.com"
     ];
 
     const transporter = createTransporter();

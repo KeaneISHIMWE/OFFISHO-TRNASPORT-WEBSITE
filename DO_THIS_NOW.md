@@ -28,10 +28,10 @@ Name: SMTP_PORT
 Value: 587
 
 Name: SMTP_USER
-Value: keaneishimwe@gmail.com
+Value: offishotransport@gmail.com
 
 Name: SMTP_PASS
-Value: mytc rgrj caux eriw
+Value: actd ehxl mysu pgrn
 
 Name: CLOUDINARY_CLOUD_NAME
 Value: dtcufr7mc
@@ -43,7 +43,7 @@ Name: CLOUDINARY_API_SECRET
 Value: VBnQk722oYi_MC1pOXhlddhnKbQ
 
 Name: ADMIN_EMAIL_SECONDARY
-Value: keaneishimwe@gmail.com
+Value: offishotransport@gmail.com
 ```
 
 ### Step 2: Wait for Convex to Redeploy (1-2 minutes)

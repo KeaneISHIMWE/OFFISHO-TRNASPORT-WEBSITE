@@ -8,8 +8,8 @@ const { spawnSync } = require('child_process');
 const SMTP_CONFIG = {
     SMTP_HOST: 'smtp.gmail.com',
     SMTP_PORT: '587',
-    SMTP_USER: 'keaneishimwe@gmail.com',
-    SMTP_PASS: 'mytc rgrj caux eriw',
+    SMTP_USER: 'offishotransport@gmail.com',
+    SMTP_PASS: 'actd ehxl mysu pgrn',
     SMTP_SECURE: 'false'
 };
 

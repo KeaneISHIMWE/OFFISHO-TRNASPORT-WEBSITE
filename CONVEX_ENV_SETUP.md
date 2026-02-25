@@ -15,8 +15,8 @@ Generate a secure random string for this value.
 ```
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=keaneishimwe@gmail.com
-SMTP_PASS=mytc rgrj caux eriw
+SMTP_USER=offishotransport@gmail.com
+SMTP_PASS=actd ehxl mysu pgrn
 ```
 
 ### 3. Cloudinary Configuration
@@ -28,7 +28,7 @@ CLOUDINARY_API_SECRET=VBnQk722oYi_MC1pOXhlddhnKbQ
 
 ### 4. Admin Email (Optional)
 ```
-ADMIN_EMAIL_SECONDARY=keaneishimwe@gmail.com
+ADMIN_EMAIL_SECONDARY=offishotransport@gmail.com
 ```
 
 

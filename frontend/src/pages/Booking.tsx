@@ -6,7 +6,7 @@ import { api } from '../../../convex/_generated/api';
 import { useAuth } from '../context/AuthContextConvex';
 import { Id } from '../../../convex/_generated/dataModel';
 import { useNotification } from '../context/NotificationContext';
-import { User, Mail, Phone, Car as CarIcon, Calendar, CalendarDays, MessageSquare, Check, ArrowRight } from 'lucide-react';
+import { User, Mail, Phone, Car as CarIcon, Calendar, CalendarDays, MessageSquare, Check, ArrowRight, CreditCard } from 'lucide-react';
 import { cn } from '../utils/cn';
 
 const Booking: React.FC = () => {
@@ -49,6 +49,11 @@ const Booking: React.FC = () => {
     }
   };
 
+  const PAYMENT_INFO = {
+    mtnMomo: '0 785 344 214',
+    bankAccount: 'Account: 2001161010013164, Bank: NCBA',
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -74,7 +79,7 @@ const Booking: React.FC = () => {
         agreement_text: formData.additionalDetails,
       });
 
-      showNotification('Booking request submitted successfully! We will contact you soon.', 'success');
+      showNotification('Booking request submitted successfully! Please contact support to complete your manual payment.', 'success');
 
       // Reset form
       setFormData({
@@ -524,6 +529,30 @@ const Booking: React.FC = () => {
                           </div>
                         </label>
                       </div>
+                    </div>
+
+                    {/* Manual Payment Notification */}
+                    <div className="bg-purple-electric/10 p-6 rounded-xl border border-purple-electric/20 mt-6 mb-6">
+                      <h3 className="font-semibold text-purple-electric mb-3 flex items-center gap-2">
+                        <CreditCard className="w-4 h-4" />
+                        Manual Payment Required
+                      </h3>
+                      <p className="text-sm text-silver/70 mb-3">
+                        Payments are processed manually. Once your request is submitted, please contact our support team to complete your payment.
+                      </p>
+                      <div className="space-y-2">
+                        <p className="text-sm text-silver/80">
+                          <strong className="text-silver">Support Phone:</strong> {PAYMENT_INFO.mtnMomo}
+                        </p>
+                        <div className="bg-purple-midnight/40 p-3 rounded-lg border border-white/5 mt-2">
+                          <p className="text-xs text-silver/50 mb-1 font-medium italic">Payment Details:</p>
+                          <p className="text-xs text-silver/70"><strong className="text-silver">MoMo:</strong> {PAYMENT_INFO.mtnMomo}</p>
+                          <p className="text-xs text-silver/70"><strong className="text-silver">Bank:</strong> {PAYMENT_INFO.bankAccount}</p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-silver/40 mt-4 italic">
+                        * Please mention your name and email after submitting this form.
+                      </p>
                     </div>
 
                     {/* Additional Details */}

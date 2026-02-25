@@ -87,12 +87,12 @@ Add these variables:
 AUTH_SECRET=<generate-a-random-secret-key>
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=keaneishimwe@gmail.com
-SMTP_PASS=mytc rgrj caux eriw
+SMTP_USER=offishotransport@gmail.com
+SMTP_PASS=actd ehxl mysu pgrn
 CLOUDINARY_CLOUD_NAME=dtcufr7mc
 CLOUDINARY_API_KEY=574829165463277
 CLOUDINARY_API_SECRET=VBnQk722oYi_MC1pOXhlddhnKbQ
-ADMIN_EMAIL_SECONDARY=keaneishimwe@gmail.com
+ADMIN_EMAIL_SECONDARY=offishotransport@gmail.com
 ```
 
 ### 2. Deploy Convex Functions
