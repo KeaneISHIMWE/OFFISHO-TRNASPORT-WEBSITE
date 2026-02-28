@@ -13,7 +13,7 @@ export const findByEmail = query({
     handler: async (ctx, args) => {
         const user = await ctx.db
             .query("users")
-            .withIndex("by_email", (q) => q.eq("email", args.email))
+            .withIndex("email", (q) => q.eq("email", args.email))
             .first();
 
         if (!user) {
@@ -91,7 +91,7 @@ export const updateEmail = mutation({
         // Check if new email is already taken
         const existingUser = await ctx.db
             .query("users")
-            .withIndex("by_email", (q) => q.eq("email", args.newEmail))
+            .withIndex("email", (q) => q.eq("email", args.newEmail))
             .first();
 
         if (existingUser && existingUser._id !== userId) {

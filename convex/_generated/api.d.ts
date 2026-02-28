@@ -14,6 +14,7 @@ import type * as actions_index from "../actions/index.js";
 import type * as auth from "../auth.js";
 import type * as cars from "../cars.js";
 import type * as contact from "../contact.js";
+import type * as debug from "../debug.js";
 import type * as http from "../http.js";
 import type * as lib_auth from "../lib/auth.js";
 import type * as migrations from "../migrations.js";
@@ -34,6 +35,7 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   cars: typeof cars;
   contact: typeof contact;
+  debug: typeof debug;
   http: typeof http;
   "lib/auth": typeof lib_auth;
   migrations: typeof migrations;

@@ -16,10 +16,14 @@ export default defineSchema({
         name: v.optional(v.string()),
         email: v.optional(v.string()),
         image: v.optional(v.string()),
+        phone: v.optional(v.string()),
         phone_number: v.optional(v.string()),
         role: v.optional(v.union(v.literal("user"), v.literal("admin"))),
+        emailVerificationTime: v.optional(v.number()),
+        phoneVerificationTime: v.optional(v.number()),
+        isAnonymous: v.optional(v.boolean()),
     })
-        .index("by_email", ["email"]),
+        .index("email", ["email"]),
 
     // Cars table - Vehicle inventory
     cars: defineTable({

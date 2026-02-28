@@ -7,7 +7,7 @@ export const resetRoles = mutation({
         // 1. Demote nelly@gmail.com
         const nelly = await ctx.db
             .query("users")
-            .withIndex("by_email", (q) => q.eq("email", "nelly@gmail.com"))
+            .withIndex("email", (q) => q.eq("email", "nelly@gmail.com"))
             .unique();
 
         if (nelly) {
@@ -30,7 +30,7 @@ export const resetRoles = mutation({
 
         const adminUser = await ctx.db
             .query("users")
-            .withIndex("by_email", (q) => q.eq("email", adminEmail))
+            .withIndex("email", (q) => q.eq("email", adminEmail))
             .unique();
 
         if (adminUser) {
