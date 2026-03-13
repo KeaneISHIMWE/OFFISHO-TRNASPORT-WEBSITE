@@ -1,4 +1,4 @@
-import { v } from "convex/values";
+import { v, ConvexError } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { requireAuth } from "./lib/auth";
 import bcrypt from "bcryptjs";
@@ -41,21 +41,21 @@ export const updatePassword = mutation({
         const user = await requireAuth(ctx);
         const userId = user._id;
 
-        // Find the password entry for this user in the authAccounts table
-        // convex-dev/auth stores credentials in authAccounts
+        // Find the password entry for this user in the accounts table
+        // convex-dev/auth stores credentials in accounts
         const account = await ctx.db
-            .query("authAccounts")
+            .query("accounts")
             .withIndex("userIdAndProvider", (q) => q.eq("userId", userId).eq("provider", "password"))
             .first();
 
         if (!account || !account.secret) {
-            throw new Error("Password account not found. Are you logged in with a password?");
+            throw new ConvexError("Password account not found. Are you logged in with a password?");
         }
 
         // Verify old password
         const isValid = await bcrypt.compare(args.oldPassword, account.secret as string);
         if (!isValid) {
-            throw new Error("Invalid current password");
+            throw new ConvexError("Invalid current password");
         }
 
         // Hash new password
@@ -85,7 +85,7 @@ export const updateEmail = mutation({
 
         // Verify email format basically
         if (!args.newEmail.includes("@")) {
-            throw new Error("Invalid email format");
+            throw new ConvexError("Invalid email format");
         }
 
         // Check if new email is already taken
@@ -95,23 +95,23 @@ export const updateEmail = mutation({
             .first();
 
         if (existingUser && existingUser._id !== userId) {
-            throw new Error("Email is already in use by another account");
+            throw new ConvexError("Email is already in use by another account");
         }
 
         // Find the password entry to verify identity
         const account = await ctx.db
-            .query("authAccounts")
+            .query("accounts")
             .withIndex("userIdAndProvider", (q) => q.eq("userId", userId).eq("provider", "password"))
             .first();
 
         if (!account || !account.secret) {
-            throw new Error("Authentication account not found");
+            throw new ConvexError("Authentication account not found");
         }
 
         // Verify password before allowing email change
         const isValid = await bcrypt.compare(args.password, account.secret as string);
         if (!isValid) {
-            throw new Error("Invalid password. Identity verification failed.");
+            throw new ConvexError("Invalid password. Identity verification failed.");
         }
 
         // Update the user profile

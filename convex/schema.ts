@@ -8,6 +8,21 @@ import { authTables } from "@convex-dev/auth/server";
  */
 export default defineSchema({
     ...authTables,
+    accounts: defineTable({
+        userId: v.id("users"),
+        provider: v.string(),
+        providerAccountId: v.string(),
+        secret: v.optional(v.string()),
+        refresh_token: v.optional(v.string()),
+        access_token: v.optional(v.string()),
+        expires_at: v.optional(v.number()),
+        token_type: v.optional(v.string()),
+        scope: v.optional(v.string()),
+        id_token: v.optional(v.string()),
+        session_state: v.optional(v.string()),
+    })
+        .index("userIdAndProvider", ["userId", "provider"])
+        .index("providerAndProviderAccountId", ["provider", "providerAccountId"]),
 
     // Extend or modify the default users table if needed
     // The authTables includes 'users', 'sessions', 'accounts', 'verifications'
